@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './views/App';
+import ADhome from './views/admin/ADhome';
 import reportWebVitals from './reportWebVitals';
 import './styles/global.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ADhome />
   </React.StrictMode>
 );
 
