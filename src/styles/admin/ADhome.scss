@@ -1,0 +1,111 @@
+.web-body {
+
+    .admin-board {
+
+        .menu-bar {
+            position: fixed;
+            width: 16%;
+            height: 100%;
+            z-index: 10;
+            box-shadow: 3px 0 3px 0 rgb(0 0 0 / 0.1), 2px 0 2px -1px rgb(0 0 0 / 0.1);
+            background-color: #fff;
+
+            .logo {
+                display: flex;
+                justify-content: center;
+                img{
+                    width:100px;
+                }
+            }
+
+            .menu {
+                padding: 0 10px 0 0;
+
+                .active {
+                    background-color: #5D87FF;
+                    color: #fff;
+                }
+
+                .small-cap {
+                    padding: 12px 30px;
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+
+                .menu-item {
+                    border: none;
+                    font-size: 18px;
+                    list-style: none;
+                    padding: 12px 30px;
+                    border-radius: 0 60px 60px 0;
+                    cursor:pointer;
+
+                    &:hover {
+                        background-color: #EEF3FF;
+                        color: #2DAAED;
+                    }
+
+                    &.active:hover {
+                        background-color: #5D87FF;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        .ad-display {
+            position: relative;
+            width: calc(100% - 16%);
+            left: 16%;
+
+            .ad-header {
+                position: fixed;
+                background-color: #fff;
+                height: 50px;
+                width: calc(100% - 16%);
+                z-index: 1;
+                box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+                padding: 0 20px;
+
+                .nav-menu {
+                    margin: 0;
+                    list-style: none;
+                    display: flex;
+                    justify-content: flex-end;
+
+                    .nav-menu-item {
+                        font-size: 20px;
+                        .nav-link{
+                            height:50px;
+                            img{
+                                height:100%;
+                                border-radius:50%;
+                            }
+                        }
+
+                        .dropdown-menu {
+                            li {
+                                .dropdown-item-ed {
+                                    text-decoration: none;
+                                    color: black;
+                                    padding: 5px 20px;
+                                    display: block;
+
+                                    &:hover {
+                                        background-color: #EEF3FF;
+                                        color: #2DAAED;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .ad-content {
+                position: relative;
+                top: 50px;
+            }
+        }
+    }
+}
