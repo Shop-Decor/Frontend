@@ -19,11 +19,13 @@
             }
 
             .menu {
-                padding: 0 10px 0 0;
+                padding: 0;
+                color: gray;
+                font-weight: 500;
 
                 .active {
-                    background-color: #5D87FF;
-                    color: #fff;
+                    border-right: 5px solid #4318FF;
+                    color: black;
                 }
 
                 .small-cap {
@@ -33,21 +35,14 @@
                 }
 
                 .menu-item {
-                    border: none;
                     font-size: 18px;
                     list-style: none;
                     padding: 12px 30px;
-                    border-radius: 0 60px 60px 0;
                     cursor:pointer;
 
                     &:hover {
                         background-color: #EEF3FF;
                         color: #2DAAED;
-                    }
-
-                    &.active:hover {
-                        background-color: #5D87FF;
-                        color: #fff;
                     }
                 }
             }
