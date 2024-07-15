@@ -10,7 +10,7 @@ class ADhome extends React.Component {
                     <div className="row">
                         <div className="col-sm-2 menu-bar p-0">
                             <div className="logo mb-3">
-                                <img src={logo} className="img-fluid" alt="Alternate Text" />
+                                <img src={logo} className="img-fluid" alt="Logo" />
                             </div>
                             <ul className="menu">
                                 <li className="menu-item active">Trang chủ</li>

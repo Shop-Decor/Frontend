@@ -1,0 +1,41 @@
+footer{
+    .content{
+        height: 250px;
+        background-color:#EFD4D0;
+        padding: 50px 0 0 0;
+        display: flex;
+        border-bottom: 2px solid #fff;
+        .footer-content{
+            width: 19%;
+            text-align: center;
+            padding: 0;
+            .social-icon{
+                font-size: 40px;
+                padding: 0 5px;
+                color: black;
+            }
+            .title{
+                text-align: left;
+            }
+            ul{
+                list-style: none;
+                padding: 0;
+                text-align: left;
+                font-size: 20px;
+                li{
+                    .link-content{
+                        text-decoration: none;
+                        color: black;
+                    }
+                }
+            }
+        }
+    }
+    .license{
+        height: 50px;
+        background-color:#EFD4D0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }  
+}
