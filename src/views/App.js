@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import ADhome from "../views/admin/ADhome";
 import SanPham from "./user/SanPham";
+import GioHang from "./user/GioHang"
 import NavHome from "./user/nav/NavHome";
 import Footer from "./user/footer/Footer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -19,6 +20,7 @@ class App extends React.Component {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/ProductDetail" element={<ProductDetail />} />
+            <Route path="/GioHang" element={<GioHang />} />
           </Routes>
           <Footer />
         </BrowserRouter>
