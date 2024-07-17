@@ -1,0 +1,225 @@
+
+.container {
+    
+    
+    .contai {
+       
+        .qe{
+            
+            .qq{
+                .vertical-thick-line {
+                    width: 5px;
+                    height: 30px;
+                    background-color: #333;
+                    /* Thay đổi màu sắc nếu cần */
+                    margin: 5px 0px 5px 60px;
+                    display: inline-block;
+                    
+                }
+            }
+            .ee{
+                .linkgh{
+                    margin-top: 8px;
+                    font-size: 16px;
+                }
+            }
+        }
+       
+       
+      
+        margin-top: 40px;
+        background-color: #EFD4D0;
+        height: 40px;
+       
+    }
+
+    .App {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 34px;
+        margin-bottom: 30px;
+    }
+
+    .short-thick-line {
+        width: 70px;
+        height: 6px;
+        background-color: #333;
+        /* Thay đổi màu sắc nếu cần */
+        margin: 20px auto;
+    }
+
+    .aa {
+        .a1 {
+            .bb {
+                
+                .b1 {
+                   
+                    .anh {
+
+                        width: 130px;
+                        height: 130px;
+                        
+
+                        .anhsp {
+                            width: 130px;
+                            height: 130px;
+                        }
+                    }
+                }
+
+                .bao {
+                    margin-left: 70px;
+                    
+                    .tensp {
+                        font-weight: bold;
+                        font-size: 20px;
+                    }
+
+                    .gia {
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .giagoc {
+                        color: darkgrey;
+                        position: relative;
+                        display: inline-block;
+                    }
+
+                    .giagoc::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 50%;
+                        right: 0;
+                        border-top: 1px solid #000;
+                        /* Thay đổi màu sắc và độ dày của gạch chữa */
+                        transform: translateY(-50%);
+                    }
+
+                    .size {
+                        margin: 0px;
+                    }
+
+                    .sl {
+                        margin-top: 15px;
+                        .tru {
+                            
+                            text-align: center;
+                            border: solid 0px;
+                        }
+
+                        .valuesl {
+                            font-size: 14px;
+                            font-weight: bold;
+                            height: 25px;
+                            width: 40px;
+                            text-align: center;
+                            border: lightgray solid 2px;
+                        }
+
+                        .cong {
+                            
+                            text-align: center;
+                            border: solid 0px;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        .d1 {
+            .ttin {
+                border: lightgray solid 2px;
+                height: 300px;
+
+                .cracked-line {
+                    width: 95%;
+                    height: 2px;
+                    background-image: linear-gradient(to right, gray, gray 50%, transparent 50%, transparent 100%);
+                    background-size: 10px 2px;
+                    background-repeat: repeat-x;
+                    margin: 20px 0;
+                    margin-left: 8px;
+
+                }
+
+                .ttdh {
+                    font-weight: bold;
+                    margin-left: 50px;
+                    font-size: 20px;
+                }
+
+                .tongt {
+                    margin-left: 20px;
+                }
+
+                .tongtien {
+                    margin-left: 80px;
+                    font-weight: bold;
+                    color: red;
+                    font-size: 18px;
+                }
+
+                .btn-tt {
+                    margin-top: 45px;
+                    margin-left: 25px;
+                   
+                    border: solid 0px;
+                    width: 250px;
+                    height: 45px;
+                   
+
+                    display: inline-block;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-align: center;
+                    text-decoration: none;
+                    border: none;
+                    border-radius: 4px;
+                    background: linear-gradient(to right, red,#EFD4D0 );
+                    color: #fff;
+                    transition: background-position 0.5s ease;
+                    background-size: 200% auto;
+
+                    .thanhtoan {
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+                }
+                .btn-tt:hover {
+                    background-position: right center;
+                  }
+                .icon {
+                    margin-left: 80px;
+                }
+
+                .muatiep {
+                    color: red;
+                    margin-left: 5px;
+                    font-size: 13px;
+                }
+
+                .iconmualai {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+        }
+    }
+
+    .e1 {
+        margin-left: 65px ;
+        .gh {
+            font-weight: bold;
+        }
+
+        .gcct {
+            width: 300px;
+            height: 120px;
+        }
+    }
+}
