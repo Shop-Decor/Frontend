@@ -26,14 +26,14 @@ const products = [
         image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-Co-y-nghia-nhu-the-nao.png'
     },
     {
-        id: 3,
+        id: 4,
         name: 'Product 3',
         description: 'Description of product 3',
         price: '$39.99',
         image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi.png'
     },
     {
-        id: 3,
+        id: 5,
         name: 'Product 3',
         description: 'Description of product 3',
         price: '$39.99',
