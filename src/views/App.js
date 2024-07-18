@@ -11,6 +11,7 @@ import Footer from "./user/footer/Footer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./user/Home";
 import ProductDetail from "./user/ProductDetail";
+import Payment from "./user/payment";
 
 class App extends React.Component {
   render() {
@@ -21,6 +22,7 @@ class App extends React.Component {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/ProductDetail" element={<ProductDetail />} />
+            <Route path="/Payment" element={<Payment />} />
             <Route path="/ProductUser" element={<ProductUser />} />
             <Route path="/GioHang" element={<GioHang />} />
           </Routes>

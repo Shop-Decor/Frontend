@@ -84,7 +84,7 @@ class NavHome extends React.Component {
                     className={({ isActive }) =>
                       isActive ? "nav-link active" : "nav-link"
                     }
-                    to="/User"
+                    to="/Payment"
                   >
                     Liên hệ
                   </NavLink>
