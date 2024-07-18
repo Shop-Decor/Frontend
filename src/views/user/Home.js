@@ -35,7 +35,7 @@ class Home extends React.Component {
               </p>
             </div>
             <div className="col-md-2 product">
-              <img src={Image2}></img>
+              <img src={'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png'}></img>
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
                 <br></br>
