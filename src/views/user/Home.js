@@ -5,23 +5,49 @@ import Image2 from "../../assets/images/sp2.png";
 import axios from "axios";
 
 class Home extends React.Component {
+
+  state = {
+    products: []
+  }
+
   async componentDidMount() {
     let res = await axios.get('https://localhost:7078/api/Product');
+    console.log("Data fetched", res.data);
+    this.setState({
+      products: res && res.data ? res.data : []
+    })
   }
+
   render() {
+    let { products } = this.state;
     return (
       <>
         <div className="container">
           <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
           <div className="row">
-            <div className="col-md-2 product">
-              <img src={Image} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
-                2.900.000đ
-              </p>
-            </div>
+            {products && products.length > 0 &&
+              products.map((item, index) => {
+                return (
+                  <div className="col-md-2 product" key={item.id}>
+                    <p>
+                      {item.ten}
+                      <br />
+                      {item.trangThai}
+                      <br />
+                      {item.hinhs && item.hinhs.length > 0 &&
+                        item.hinhs.map((img, index) => {
+                          return (
+                            <span key={img.id}>{img.tenHinh}</span>
+                          )
+                        })
+                      }
+                    </p>
+                  </div>
+                )
+              })
+
+            }
+
             <div className="col-md-2 product">
               <img src={Image2} />
               <p>
@@ -42,7 +68,7 @@ class Home extends React.Component {
               <img src="https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png" />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -50,7 +76,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -60,7 +86,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -68,7 +94,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -76,7 +102,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -84,7 +110,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -92,7 +118,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -100,14 +126,14 @@ class Home extends React.Component {
           <div className="botton-xem">
             <button className="align-item-center">Xem thêm</button>
           </div>
-          <br></br>
+          <br />
           <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
           <div className="row">
             <div className="col-md-2 product">
               <img src={Image} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -115,7 +141,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -123,7 +149,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -131,7 +157,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -139,7 +165,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -149,7 +175,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -157,7 +183,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -165,7 +191,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -173,7 +199,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>
@@ -181,7 +207,7 @@ class Home extends React.Component {
               <img src={Image2} />
               <p>
                 Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
+                <br />
                 2.900.000đ
               </p>
             </div>

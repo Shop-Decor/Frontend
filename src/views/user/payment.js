@@ -12,19 +12,19 @@ class Payment extends React.Component {
                         {/* <label htmlFor="name">Họ và tên:</label> */}
                         <input type="text" id="name" name="name" placeholder="Nhập họ và tên" />
 
-                        <div class="inline-fields">
+                        <div className="inline-fields">
                             {/* <label htmlFor="email">Email:</label> */}
-                            <input type="email" id="email" name="email"  placeholder="Nhập email" />
+                            <input type="email" id="email" name="email" placeholder="Nhập email" />
 
                             {/* <label htmlFor="phone">SĐT:</label> */}
-                            <input type="tel" id="phone" name="phone"  placeholder="Nhập số điện thoại" />
+                            <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại" />
                         </div>
                     </form>
                     <br></br>
 
                     <div className="form-container">
                         <form>
-                        <input type="text" id="address" name="address" placeholder="Nhập địa chỉ" />
+                            <input type="text" id="address" name="address" placeholder="Nhập địa chỉ" />
 
                             <div className="form-row">
 
@@ -42,7 +42,7 @@ class Payment extends React.Component {
                                 </select>
                             </div>
 
-                            <div claclassNamess="form-row">
+                            <div className="form-row">
 
                                 <select id="ward" name="ward">
                                     <option value="">Chọn xã/phường</option>
@@ -78,7 +78,7 @@ class Payment extends React.Component {
 
                     <div className="order-summary">
                         <div className="product">
-                        img
+                            img
                             <span>Tên sản phẩm 1</span>
                             <span>Giá: 100,000 VNĐ</span>
                             <span>Size</span>
@@ -86,16 +86,16 @@ class Payment extends React.Component {
                         <div className="discount-input">
 
                             <input type="text" placeholder="Nhập mã giảm giá" />
-                            <button1>Áp dụng</button1>
+                            <button>Áp dụng</button>
                         </div>
 
                         <div className="total">
-                        <span>Tổng tiền: 300,000 VNĐ</span>
-                    </div>
+                            <span>Tổng tiền: 300,000 VNĐ</span>
+                        </div>
                     </div>
 
 
-                   
+
 
 
                 </div>
