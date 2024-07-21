@@ -44,7 +44,9 @@ const LayoutWithNavbarFooterSlide = () => (
   <>
     <Navbar />
     <Slider />
-    <Outlet />
+    <div className="container">
+      <Outlet />
+    </div>
     <Footer />
   </>
 );
