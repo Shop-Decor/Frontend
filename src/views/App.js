@@ -15,13 +15,13 @@ import Slider from "./user/slider/Slider";
 import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
+import ADAddDiscount from "./admin/ADAddDiscount"
 
 class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
         <Routes>
-
           <Route path="" element={<LayoutWithNavbarFooterSlide />}>
             <Route index element={<Home />} />
             <Route path="ProductDetail" element={<ProductDetail />} />
@@ -34,6 +34,7 @@ class App extends React.Component {
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
+            <Route path="discount/AddDiscount" element={<ADAddDiscount />} />
           </Route>
 
         </Routes>
