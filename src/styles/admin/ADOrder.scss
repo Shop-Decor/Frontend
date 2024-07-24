@@ -1,0 +1,102 @@
+.containeOD {
+    margin: 0 auto;
+    width: 95%;
+    margin-top: 60px;
+
+    .Order {
+
+        padding: 10px;
+        border-radius: 20px;
+        position: relative;
+        background-color: #fff;
+
+        border-radius: 5px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+        transform: translateY(-20px);
+        transition: transform 0.3s ease-in-out;
+
+        .taborder {
+            .nav-tabs .nav-link {
+                border: none;
+                background-color: transparent;
+                color: black;
+                font-weight: bold;
+                position: relative;
+
+
+            }
+
+            .nav-tabs .nav-link.active {
+                border: none;
+            }
+
+            .nav-tabs .nav-link.active::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-bottom: 3px solid #EFD4D0;
+            }
+
+
+        }
+
+        h6 {
+            font-weight: bold;
+            margin-bottom: 40px;
+            margin-left: 40px;
+            font-size: 22px;
+        }
+
+        .table {
+            th {
+                font-size: 16px;
+            }
+
+            text-align: center;
+
+            .edit {
+
+                background-color: transparent;
+                width: 10px;
+                height: 10px;
+
+                .iconedit {
+                    color: #00FF00;
+                    font-size: 18px;
+                }
+            }
+
+            .delete {
+                margin-left: 15px;
+                background-color: transparent;
+                width: 10px;
+                height: 10px;
+
+                .icondelete {
+                    color: red;
+                    font-size: 18px;
+                }
+            }
+
+            .detail {
+                margin-left: 15px;
+                background-color: transparent;
+                width: 10px;
+                height: 10px;
+
+                .icondetail {
+                    color: cornflowerblue;
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+
+    // .Order:hover{
+    //     transform: translateY(-25px);
+    //     box-shadow: 0 0 30px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    // }
+
+}
