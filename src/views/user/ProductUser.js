@@ -1,112 +1,162 @@
 import React from "react";
 import '../../styles/user/ProductUser.scss';
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Image2 from "../../assets/images/sp2.png";
-const products = [
-    {
-        id: 1,
-        name: 'Tượng hy lạp phong cách cổ đại',
-        description: 'Description of product 1',
-        price: '2.800.000',
-        image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png'
-    },
-    {
-        id: 2,
-        name: 'Product 2',
-        description: 'Description of product 2',
-        price: '1.200.300',
-        image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png'
-    },
-    {
-        id: 3,
-        name: 'Product 3',
-        description: 'Description of product 3',
-        price: '$39.99',
-        image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-Co-y-nghia-nhu-the-nao.png'
-    },
-    {
-        id: 4,
-        name: 'Product 3',
-        description: 'Description of product 3',
-        price: '$39.99',
-        image: 'https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi.png'
-    },
-    {
-        id: 5,
-        name: 'Product 3',
-        description: 'Description of product 3',
-        price: '$39.99',
-        image: Image2,
-    }
-];
+import axios from "axios";
+
 class ProductUser extends React.Component {
+    state = {
+        products: [],
+        prices: [
+            { label: 'under500', value: false },
+            { label: 'range500to1000', value: false },
+            { label: 'range1000to2500', value: false },
+            { label: 'range2500to3500', value: false },
+            { label: 'over4500', value: false }
+        ],
+        colors: [
+            { label: 'colorRed', value: false },
+            { label: 'colorBlue', value: false },
+            { label: 'colorOrange', value: false },
+            { label: 'colorGreen', value: false },
+            { label: 'colorYellow', value: false },
+            { label: 'colorPurple', value: false },
+            { label: 'colorPink', value: false },
+            { label: 'colorBrown', value: false },
+            { label: 'colorBlack', value: false },
+            { label: 'colorWhite', value: false }
+        ],
+        selectFilter: 'ASC'
+    }
+
+    async componentDidMount() {
+        let res = await axios.get('https://localhost:7078/api/Product/User');
+        this.setState({
+            products: res && res.data ? res.data : []
+        })
+    }
+
+    handleChangeCheckBox = (event) => {
+        const { name, checked } = event.target;
+
+        if (name.startsWith('color')) {
+            const updatedColors = this.state.colors.map(color =>
+                color.label === name ? { ...color, value: checked } : color
+            );
+            this.setState({ colors: updatedColors });
+        } else {
+            const updatedPrices = this.state.prices.map(price =>
+                price.label === name ? { ...price, value: checked } : price
+            );
+            this.setState({ prices: updatedPrices });
+        }
+    }
+
+    getFilter = () => {
+
+        let filteredProducts = [...this.state.products];
+
+        if (this.state.selectFilter === "ASC") {
+            filteredProducts.sort((a, b) => a.gia - b.gia);
+        }
+
+        if (this.state.selectFilter === "DESC") {
+            filteredProducts.sort((a, b) => b.gia - a.gia);
+        }
+
+        const activePrices = this.state.prices.filter(price => price.value);
+        const activeColors = this.state.colors.filter(color => color.value);
+
+        if (activePrices.length === 0 && activeColors.length === 0) {
+            return filteredProducts;
+        }
+
+        return filteredProducts.filter(product => {
+            const priceMatch = activePrices.some(price => {
+                if (price.label === 'under500' && product.gia < 500000) return true;
+                if (price.label === 'range500to1000' && product.gia >= 500000 && product.gia < 1000000) return true;
+                if (price.label === 'range1000to2500' && product.gia >= 1000000 && product.gia < 2500000) return true;
+                if (price.label === 'range2500to3500' && product.gia >= 2500000 && product.gia < 3500000) return true;
+                if (price.label === 'over4500' && product.gia >= 4500000) return true;
+                return false;
+            });
+
+            const colorMatch = activeColors.some(color => {
+                if (color.label === 'colorRed' && product.colorName && product.colorName.includes('Đỏ')) return true;
+                if (color.label === 'colorBlue' && product.colorName && product.colorName.includes('Xanh dương')) return true;
+                if (color.label === 'colorOrange' && product.colorName && product.colorName.includes('Cam')) return true;
+                if (color.label === 'colorGreen' && product.colorName && product.colorName.includes('Xanh lá')) return true;
+                if (color.label === 'colorYellow' && product.colorName && product.colorName.includes('Vàng')) return true;
+                if (color.label === 'colorPurple' && product.colorName && product.colorName.includes('Tím')) return true;
+                if (color.label === 'colorPink' && product.colorName && product.colorName.includes('Hồng')) return true;
+                if (color.label === 'colorBrown' && product.colorName && product.colorName.includes('Nâu')) return true;
+                if (color.label === 'colorBlack' && product.colorName && product.colorName.includes('Đen')) return true;
+                if (color.label === 'colorWhite' && product.colorName && product.colorName.includes('Trắng')) return true;
+                return false;
+            });
+            if (activePrices.length > 0 && activeColors.length > 0) {
+                return priceMatch && colorMatch;
+            }
+            return priceMatch || colorMatch;
+        });
+    }
+
+    getPriceLabel(label) {
+        switch (label) {
+            case 'under500':
+                return 'Dưới 500.000đ';
+            case 'range500to1000':
+                return '500.000đ - 1.000.000đ';
+            case 'range1000to2500':
+                return '1.000.000đ - 2.500.000đ';
+            case 'range2500to3500':
+                return '2.500.000đ - 3.500.000đ';
+            case 'over4500':
+                return '4.500.000đ trở lên';
+            default:
+                return '';
+        }
+    }
+
+    handleSelect = (event) => {
+        this.setState({
+            selectFilter: event.target.value
+        }, () => {
+            this.getFilter();
+        });
+    }
+
     render() {
+        let filter = this.getFilter();
         return (
             <>
                 <div className="row">
                     <div className='col-3 filter mt-5'>
                         <div className="col-9 m-0">
                             <h3>Lọc theo giá -</h3>
-                            <div className="filler-item">
-                                <input type="checkbox"></input>
-                                <label className="m-1"> Dưới 500.000đ</label>
-                            </div>
-                            <div className="filler-item">
-                                <input type="checkbox"></input>
-                                <label className="m-1">500.000đ - 1.000.000đ</label>
-                            </div>
-                            <div className="filler-item">
-                                <input type="checkbox"></input>
-                                <label className="m-1"> 1.000.000đ - 2.500.000đ</label>
-                            </div>
-                            <div className="filler-item">
-                                <input type="checkbox"></input>
-                                <label className="m-1"> 2.500.000đ - 3.500.000đ</label>
-                            </div>
-                            <div className="filler-item">
-                                <input type="checkbox"></input>
-                                <label className="m-1"> 4.500.000đ trở lên</label>
-                            </div>
+                            {this.state.prices.map(price => (
+                                <div className="filler-item" key={price.label}>
+                                    <input
+                                        type="checkbox"
+                                        name={price.label}
+                                        checked={price.value}
+                                        onChange={(event) => this.handleChangeCheckBox(event)}
+                                    />
+                                    <label className="m-1">{this.getPriceLabel(price.label)}</label>
+                                </div>
+                            ))}
                             <div className="filler-item mt-4 ">
                                 <h3>Màu sắc -</h3>
                                 <div className=" row color-Category">
-
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input red" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input blue" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input orange" />
-                                    </div>
-
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input green" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input yellow" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input purple" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input pink" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input brown" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input black" />
-                                    </div>
-                                    <div className="form-check col-1">
-                                        <input type="checkbox" className="form-check-input white" />
-                                    </div>
-
-
-
-
+                                    {this.state.colors.map(color => (
+                                        <div className="form-check col-1" key={color.label}>
+                                            <input
+                                                type="checkbox"
+                                                name={color.label}
+                                                checked={color.value}
+                                                onChange={this.handleChangeCheckBox}
+                                                className={`form-check-input ${color.label.replace('color', '').toLowerCase()}`}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -119,20 +169,21 @@ class ProductUser extends React.Component {
                                 <h1>Tất cả sản phẩm</h1>
                             </div>
                             <div className="col-3">
-                                <p className="text-Under">Mới Nhất</p>
-
+                                <select value={this.state.selectFilter} onChange={(event) => this.handleSelect(event)} className="form-select" aria-label="Default select example">
+                                    <option value="DESC">Giá giảm dần</option>
+                                    <option value="ASC">Giá tăng dần</option>
+                                </select>
                             </div>
 
                         </div>
                         <div className='row '>
-                            {products.map((product) => (
+                            {filter.map((product, index) => (
                                 <div className='col-3' key={product.id}>
                                     <div className='card'>
-                                        <img src={product.image} className='card-img-top' alt={product.name} />
+                                        <img src={product.hinh} className='card-img-top' alt={"img product " + index} />
                                         <div className='card-body'>
-                                            <h5 className='card-title'>{product.name}</h5>
-
-                                            <p className='card-text'>{product.price} đ</p>
+                                            <h5 className='card-title'>{product.ten}</h5>
+                                            <p className='card-text'>{product.gia} đ</p>
                                         </div>
                                     </div>
                                 </div>

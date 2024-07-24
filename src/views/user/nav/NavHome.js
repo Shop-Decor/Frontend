@@ -92,7 +92,7 @@ class NavHome extends React.Component {
               </ul>
               <ul className="navbar-nav icon-btn">
                 <li className="nav-item">
-                  <Link className="nav-link icon" to="/giohang">
+                  <Link className="nav-link icon" to="/Cart">
                     <FontAwesomeIcon icon={faCartShopping} />
                   </Link>
                 </li>
