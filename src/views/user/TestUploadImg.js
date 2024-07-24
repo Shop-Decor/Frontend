@@ -12,7 +12,7 @@ class TestUploadImg extends React.Component {
         product: {
             ten: '',
             moTa: '',
-            maGiamGia: '',
+            
             img: []
         }
     }
@@ -82,14 +82,7 @@ class TestUploadImg extends React.Component {
         }));
     }
 
-    handleChangeDiscount = (event) => {
-        this.setState((x) => ({
-            product: {
-                ...x.product,
-                maGiamGia: event.target.value
-            }
-        }));
-    }
+
 
     handleSubmit = async (event) => {
         event.preventDefault();
@@ -124,10 +117,7 @@ class TestUploadImg extends React.Component {
                             multiple
                         />
                     </div>
-                    <div className="mb-3 mt-3">
-                        <label>Mã giảm giá</label>
-                        <input type="text" value={this.state.product.maGiamGia} onChange={(event) => this.handleChangeDiscount(event)} className="form-control" />
-                    </div>
+                  
                     <div className="mb-3 mt-3">
                         <label>Mô tả</label>
                         <input type="text" value={this.state.product.moTa} onChange={(event) => this.handleChangeDescribe(event)} className="form-control" />
