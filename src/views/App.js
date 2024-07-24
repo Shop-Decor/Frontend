@@ -16,7 +16,6 @@ import Navbar from "./user/nav/NavHome";
 import Slider from "./user/slider/Slider";
 import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
-import ADDiscount from "./admin/ADDiscount";
 import Account from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
 
@@ -37,7 +36,7 @@ class App extends React.Component {
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
-            <Route path="Account" element={<Account/>} />
+            <Route path="Account" element={<Account />} />
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />
