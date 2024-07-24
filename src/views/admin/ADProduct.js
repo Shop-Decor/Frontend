@@ -44,6 +44,8 @@ class ADProduct extends React.Component {
             img: []
         },
         errorMessage: '',  // Thêm state để lưu trữ thông báo lỗi
+        errorMessageName: '',
+        errorMessageDescription: '',
     }
 
     handleChange = (e) => {
@@ -102,6 +104,8 @@ class ADProduct extends React.Component {
         }
     }
 
+
+
     handleChangeName = (event) => {
         this.setState({
             product: {
@@ -122,20 +126,41 @@ class ADProduct extends React.Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-    
-        // Kiểm tra nếu tên và mô tả không được để trống
+
+        let errorMessageName = '';
+        let errorMessageDescription = '';
+        let errorMessageImage = '';
+
+        // Kiểm tra nếu tên sản phẩm không được để trống
         if (!this.state.product.ten.trim()) {
-            this.setState({ errorMessage: 'Tên sản phẩm không được để trống.' });
+            errorMessageName = 'Tên sản phẩm không được để trống.';
+        }
+
+        // Kiểm tra nếu mô tả sản phẩm không được để trống
+        if (!this.state.product.moTa.trim()) {
+            errorMessageDescription = 'Mô tả sản phẩm không được để trống.';
+        }
+
+        // Kiểm tra nếu chưa chọn ít nhất một ảnh
+        if (this.state.imgFiles.length === 0) {
+            errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
+        }
+
+        if (errorMessageName || errorMessageDescription || errorMessageImage) {
+            this.setState({
+                errorMessageName,
+                errorMessageDescription,
+                errorMessageImage
+            });
             return;
         }
-        else if (!this.state.product.moTa.trim()) {
-            this.setState({ errorMessage: 'Mô tả sản phẩm không được để trống.' });
-            return;
-        }
-    
+
         await this.handleClick();
     }
-    
+
+
+
+
 
     formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -217,11 +242,42 @@ class ADProduct extends React.Component {
             alert('Có lỗi xảy ra khi cập nhật');
         }
     }
+    // xoa
 
+    handleDelete = async (productId) => {
+        try {
+            const productToUpdate = this.state.products.find(product => product.id === productId);
+            if (!productToUpdate) {
+                alert('Sản phẩm không tồn tại');
+                return;
+            }
 
+            const updatedProduct = {
+                ...productToUpdate,
+                trangThai: false
+            };
+
+            let res = await axios.put(`https://localhost:7078/api/Product/${productId}`, updatedProduct);
+            if (res.status === 200 || res.status === 204) {
+                // alert('Cập nhật trạng thái thành công');
+                this.componentDidMount();
+            } else {
+                alert('Cập nhật trạng thái không thành công');
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật trạng thái:', error);
+            alert('Có lỗi xảy ra khi cập nhật trạng thái');
+        }
+    }
+    confirmDelete = (productId) => {
+        const isConfirmed = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');
+        if (isConfirmed) {
+            this.handleDelete(productId);
+        }
+    }
     render() {
         const { products, product, imgPreviews, errorMessage } = this.state;
-    
+
         return (
             <>
                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -233,34 +289,34 @@ class ADProduct extends React.Component {
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={this.handleSubmit}>
-                                    {/* {errorMessage && <div className="alert alert-danger">{errorMessage}</div>} */}
-                                    
+
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Tên</label>
                                         <div className="col-sm-8">
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={product.ten}
+                                                value={this.state.product.ten}
                                                 onChange={this.handleChangeName}
                                             />
-                                            {errorMessage && <span className="text-danger">{errorMessage}</span>}
+                                            {this.state.errorMessageName && <span className="text-danger">{this.state.errorMessageName}</span>}
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
                                         <div className="col-sm-8">
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={product.moTa}
+                                                value={this.state.product.moTa}
                                                 onChange={this.handleChangeDescribe}
                                             />
-                                            {errorMessage && <div className="text-danger">{errorMessage}</div>}
+                                            {this.state.errorMessageDescription && <div className="text-danger">{this.state.errorMessageDescription}</div>}
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
                                         <div className="col-sm-8">
@@ -270,9 +326,11 @@ class ADProduct extends React.Component {
                                                 multiple
                                                 onChange={this.handleChange}
                                             />
+                                            {this.state.errorMessageImage && <div className="text-danger">{this.state.errorMessageImage}</div>}
                                         </div>
                                     </div>
-    
+
+
                                     <div className="img-preview">
                                         {imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
@@ -287,7 +345,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-    
+
                 <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -309,7 +367,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
                                         <div className="col-sm-8">
@@ -322,7 +380,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Trạng Thái</label>
                                         <div className="col-sm-8">
@@ -337,7 +395,7 @@ class ADProduct extends React.Component {
                                             </select>
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
                                         <div className="col-sm-8">
@@ -349,13 +407,13 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="img-preview">
                                         {this.state.imgPreviews.length > 0 && this.state.imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
                                         ))}
                                     </div>
-    
+
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" className="btn btn-primary">Lưu</button>
@@ -365,7 +423,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-    
+
                 <div className='container my-4'>
                     <h2 className='text-center mb-4'>Sản Phẩm</h2>
                     <div className='row mb-3'>
@@ -406,9 +464,11 @@ class ADProduct extends React.Component {
                                             }}
                                         />
                                     </td>
-                                    <td style={{ width: "10px", whiteSpace: "nowrap" }}>
-                                        <button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)}>Sửa</button>
-                                        <button type="button" className="btn btn-danger btn-sm">Xóa</button>
+
+
+                                    <td>
+                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)} > Sửa </button>
+                                        <button className="btn btn-danger" onClick={() => this.confirmDelete(product.id)} > Xóa </button>
                                     </td>
                                 </tr>
                             ))}
@@ -418,7 +478,7 @@ class ADProduct extends React.Component {
             </>
         );
     }
-    
+
 }
 
 export default ADProduct;
