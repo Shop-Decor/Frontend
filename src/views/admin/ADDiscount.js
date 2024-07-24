@@ -23,13 +23,7 @@ class ADDiscount extends React.Component {
             hsd: '',
             loaiKM: ''
         },
-        test: {
-            moTa: "Giảm 50,000 VND cho đơn hàng trên 500,000 VND",
-            loaiGiam: true,
-            menhGia: 50000,
-            hsd: "2024-12-31",
-            loaiKM: false
-        }
+        errors: {}
 
     }
 
@@ -68,16 +62,35 @@ class ADDiscount extends React.Component {
         }));
     }
 
-    handleChangeType = (event) => {
-        this.setState((x) => ({
-            discountsCreate: {
-                ...x.discountsCreate,
-                loaiGiam: event.target.value
-            }
-        }))
+    handleChangeValue = (event) => {
+        const value = event.target.value;
+        if (isNaN(value)) {
+            this.setState((prevState) => ({
+                errors: {
+                    ...prevState.errors,
+                    menhGia: 'Mệnh giá phải là số'
+                }
+            }));
+        } else {
+            this.setState((prevState) => ({
+                discountsCreate: {
+                    ...prevState.discountsCreate,
+                    menhGia: value
+                },
+                errors: {
+                    ...prevState.errors,
+                    menhGia: ''
+                }
+            }));
+        }
     }
 
     handleChangeValue = (event) => {
+        const value = event.target.value;
+        let error = '';
+        if (isNaN(value)) {
+            error = 'Mệnh giá phải là số';
+        }
         this.setState((x) => ({
             discountsCreate: {
                 ...x.discountsCreate,
@@ -96,10 +109,11 @@ class ADDiscount extends React.Component {
     }
 
     handleChangeLoaiKM = (event) => {
+        const value = event.target.value === 'true';
         this.setState((x) => ({
             discountsCreate: {
                 ...x.discountsCreate,
-                loaiKM: event.target.value
+                loaiKM: value
             }
         }))
     }
@@ -160,7 +174,29 @@ class ADDiscount extends React.Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
+        const { maGiamGia, moTa, menhGia, HSD } = this.state.discountsCreate;
+        let errors = {};
+
+        if (!maGiamGia.trim()) errors.maGiamGia = 'Mã khuyến mãi không được để trống.';
+        const specialCharPattern = /[^a-zA-Z0-9]/;
+        if (specialCharPattern.test(maGiamGia)) errors.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
+        if (!menhGia.trim()) errors.menhGia = 'Mệnh giá không được để trống.';
+        if (!HSD.trim()) errors.HSD = 'HSD không được để trống.';
+        try {
+            let res = await axios.get(`https://localhost:7078/api/discount/discountExist?maGiamGia=${this.state.discountsCreate.maGiamGia}`);
+            if (res.data.exists) {
+                errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
+            }
+        } catch (error) {
+            console.error('Lỗi khi kiểm tra mã giảm giá:', error);
+            errors.maGiamGia = 'Có lỗi xảy ra khi kiểm tra mã giảm giá.';
+        }
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
+            return;
+        }
         var x = await axios.post('https://localhost:7078/api/discount', this.state.discountsCreate);
+
         if (x.status === 200) {
             alert('OK');
             this.componentDidMount();
@@ -211,6 +247,7 @@ class ADDiscount extends React.Component {
     }
     render() {
         let { discounts } = this.state;
+        const { errors } = this.state;
         return (
 
             <>
@@ -229,7 +266,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">Mã:</label>
                                         <div className="col-sm-10">
                                             <input value={this.state.discountsCreate.maGiamGia} onChange={(event) => this.handleChangeCode(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
+                                            {errors.maGiamGia && <div className="text-danger">{errors.maGiamGia}</div>}
                                         </div>
                                     </div>
 
@@ -237,7 +274,6 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">Mô tả:</label>
                                         <div className="col-sm-10">
                                             <input value={this.state.discountsCreate.moTa} onChange={(event) => this.handleChangeDescribe(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
                                         </div>
                                     </div>
 
@@ -247,7 +283,7 @@ class ADDiscount extends React.Component {
                                             <select value={this.state.discountsCreate.loaiGiam} className="form-select " aria-label="Default select example" onChange={(event) => this.handleChangeType(event)}>
                                                 <option value={true}>%</option>
                                                 <option value={false}>vnđ</option>
-                                            </select >
+                                            </select>
                                             <span className="text-danger"></span>
                                         </div>
                                     </div>
@@ -256,7 +292,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">Mệnh giá:</label>
                                         <div className="col-sm-10">
                                             <input value={this.state.discountsCreate.menhGia} onChange={(event) => this.handleChangeValue(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
+                                            {errors.maGiamGia && <div className="text-danger">{errors.menhGia}</div>}
                                         </div>
                                     </div>
 
@@ -266,7 +302,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">HSD:</label>
                                         <div className="col-sm-10">
                                             <input type='date' value={this.state.discountsCreate.HSD} onChange={(event) => this.handleChangeHSD(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
+                                            {errors.HSD && <div className="text-danger">{errors.HSD}</div>}
                                         </div>
                                     </div>
 
@@ -274,8 +310,8 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">loaiKM:</label>
                                         <div className="col-sm-10">
                                             <select value={this.state.discountsCreate.loaiKM} className="form-select " aria-label="Default select example" onChange={(event) => this.handleChangeLoaiKM(event)}>
-                                                <option value={true}>Khách hàng</option>
-                                                <option value={false}>Sản phẩm</option>
+                                                <option value={true}>Sản phẩm</option>
+                                                <option value={false}>Khách hàng</option>
                                             </select >
                                             <span className="text-danger"></span>
                                         </div>

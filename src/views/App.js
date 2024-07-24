@@ -17,7 +17,6 @@ import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
 import ADProduct from "./admin/ADProduct";
 
-
 class App extends React.Component {
   render() {
     return (
@@ -36,7 +35,7 @@ class App extends React.Component {
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
             <Route path="product" element={<ADProduct />} />
-            
+
           </Route>
 
         </Routes>
