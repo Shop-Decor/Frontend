@@ -16,7 +16,7 @@ import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
 import ADAddDiscount from "./admin/ADAddDiscount"
-
+import Account from './admin/Account/ADAccount';
 class App extends React.Component {
   render() {
     return (
@@ -35,6 +35,7 @@ class App extends React.Component {
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
             <Route path="discount/AddDiscount" element={<ADAddDiscount />} />
+            <Route path="Account" element={<Account/>} />
           </Route>
 
         </Routes>
