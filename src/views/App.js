@@ -23,7 +23,6 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <Routes>
-
           <Route path="" element={<LayoutWithNavbarFooterSlide />}>
             <Route index element={<Home />} />
             <Route path="ProductDetail" element={<ProductDetail />} />
