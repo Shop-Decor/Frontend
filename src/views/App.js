@@ -16,6 +16,7 @@ import Navbar from "./user/nav/NavHome";
 import Slider from "./user/slider/Slider";
 import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
+import ADDiscount from "./admin/ADDiscount";
 import Account from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
 
