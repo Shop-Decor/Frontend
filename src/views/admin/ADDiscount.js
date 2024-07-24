@@ -182,20 +182,26 @@ class ADDiscount extends React.Component {
         if (specialCharPattern.test(maGiamGia)) errors.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
         if (!menhGia.trim()) errors.menhGia = 'Mệnh giá không được để trống.';
         if (!HSD.trim()) errors.HSD = 'HSD không được để trống.';
-        try {
-            let res = await axios.get(`https://localhost:7078/api/discount/discountExist?maGiamGia=${this.state.discountsCreate.maGiamGia}`);
-            if (res.data.exists) {
-                errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
-            }
-        } catch (error) {
-            console.error('Lỗi khi kiểm tra mã giảm giá:', error);
-            errors.maGiamGia = 'Có lỗi xảy ra khi kiểm tra mã giảm giá.';
-        }
+        // try {
+        //     let res = await axios.get(`https://localhost:7078/api/discount/discountExist?maGiamGia=${this.state.discountsCreate.maGiamGia}`);
+        //     if (res.data === true) {
+
+        //         errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
+        //     }
+        // } catch (error) {
+        //     console.error('Lỗi khi kiểm tra mã giảm giá:', error);
+        //     errors.maGiamGia = 'Có lỗi xảy ra khi kiểm tra mã giảm giá.';
+        // }
+
+
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
             return;
         }
+
         var x = await axios.post('https://localhost:7078/api/discount', this.state.discountsCreate);
+
+
 
         if (x.status === 200) {
             alert('OK');
@@ -291,7 +297,7 @@ class ADDiscount extends React.Component {
                                     <div className="row mb-3">
                                         <label className="col-sm-2 col-form-label">Mệnh giá:</label>
                                         <div className="col-sm-10">
-                                            <input value={this.state.discountsCreate.menhGia} onChange={(event) => this.handleChangeValue(event)} className="form-control" name="text" />
+                                            <input type='number' min={1} value={this.state.discountsCreate.menhGia} onChange={(event) => this.handleChangeValue(event)} className="form-control" name="text" />
                                             {errors.maGiamGia && <div className="text-danger">{errors.menhGia}</div>}
                                         </div>
                                     </div>
