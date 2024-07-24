@@ -3,8 +3,7 @@ import '../../styles/admin/ADDiscount.scss';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import { event } from 'jquery';
+
 class ADDiscount extends React.Component {
     state = {
         discounts: [],
@@ -196,6 +195,20 @@ class ADDiscount extends React.Component {
 
     }
 
+    handleDelete = async (maGiamGia) => {
+        try {
+            let res = await axios.delete(`https://localhost:7078/api/discount/${maGiamGia}`);
+            if (res.status === 200 || res.status === 204) {
+                alert('Xóa thành công');
+                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+            } else {
+                alert('Xóa không thành công');
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa khuyến mãi:', error);
+            alert('Có lỗi xảy ra khi xóa', error);
+        }
+    }
     render() {
         let { discounts } = this.state;
         return (
@@ -210,7 +223,7 @@ class ADDiscount extends React.Component {
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
-                                <form>
+                                <form onSubmit={this.handleSubmit}>
 
                                     <div className="row mb-3">
                                         <label className="col-sm-2 col-form-label">Mã:</label>
@@ -392,18 +405,18 @@ class ADDiscount extends React.Component {
                                             {item.maGiamGia}
                                         </td>
                                         <td>{item.moTa}</td>
-                                        <td>{item.loaiGiam == true ? '%' : 'vnđ'}</td>
+                                        <td>{item.loaiGiam === true ? '%' : 'vnđ'}</td>
                                         <td>{item.menhGia}</td>
                                         <td>{this.formatDate(item.ngayTao)}</td>
                                         <td>{this.formatDate(item.hsd)}</td>
-                                        <td>{item.loaiKM == true ? 'Sản phẩm' : 'Khách hàng'}</td>
+                                        <td>{item.loaiKM === true ? 'Sản phẩm' : 'Khách hàng'}</td>
                                         <td>
                                             {
                                                 item.loaiKM ? <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal2" className='btn btn-sm btn-primary me-2' onClick={() => this.handleEdit(item)}>Sửa</button> :
                                                     <button disabled type="button" data-bs-toggle="modal" data-bs-target="#exampleModal2" className='btn btn-sm btn-primary me-2' onClick={() => this.handleEdit(item)}>Sửa</button>
                                             }
 
-                                            <button className='btn btn-sm btn-danger'>Xóa</button>
+                                            <button className='btn btn-sm btn-danger' onClick={() => this.handleDelete(item.maGiamGia)} >Xóa</button>
                                         </td>
                                     </tr>)
                             })}
