@@ -1,0 +1,231 @@
+.containers {
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 15px;
+
+    .contais {
+       
+        .o1 {
+            
+
+            .PdType {
+
+                margin-top: 60px;
+                padding: 10px 10px 0px 10px;
+                border-radius: 10px;
+                background-color: #ffffff;
+
+                position: relative;
+                
+
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+                transform: translateY(-20px);
+                transition: transform 0.3s ease-in-out;
+
+                .pt {
+                    margin-bottom: 10px;
+
+                    .addpt{
+                        margin-left: 105px;
+                    }
+
+                }
+
+                h6 {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                .table {
+                    th {
+                        font-size: 16px;
+                    }
+
+                    text-align: center;
+
+                    .editPT {
+
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .iconedit {
+                            color: cornflowerblue;
+                            font-size: 14px;
+                        }
+                    }
+
+                    .deletePT {
+                        margin-left: 15px;
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .icondelete {
+                            color: red;
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+
+         
+        }
+
+        .o2 {
+            
+
+            .Size {
+                margin-top: 60px;
+                padding: 10px 10px 0px 10px;
+                border-radius: 10px;
+                background-color: #ffffff;
+                position: relative;
+                background-color: #fff;
+
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+                transform: translateY(-20px);
+                transition: transform 0.3s ease-in-out;
+
+                padding: 10px 10px 0px 10px;
+                border-radius: 10px;
+                background-color: #ffffff;
+
+                position: relative;
+                background-color: #fff;
+
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+                transform: translateY(-20px);
+                transition: transform 0.3s ease-in-out;
+
+                .si {
+                    margin-bottom: 10px;
+                    .addsi{
+                        margin-left: 50px;
+                    }
+                   
+                }
+
+                h6 {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                .table {
+                    th {
+                        font-size: 16px;
+                    }
+
+                    text-align: center;
+
+                    .editsize {
+
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .iconeditsize {
+                            color: cornflowerblue;
+                            font-size: 14px;
+                        }
+                    }
+
+                    .deletesize {
+                        margin-left: 15px;
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .icondeletesize {
+                            color: red;
+                            font-size: 14px;
+                        }
+                    }
+                }
+
+            }
+
+            
+        }
+
+        .o3 {
+           
+
+            .Color {
+                margin-top: 60px;
+                padding: 10px 10px 0px 10px;
+                border-radius: 10px;
+                background-color: #ffffff;
+
+                position: relative;
+                background-color: #fff;
+
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+                transform: translateY(-20px);
+                transition: transform 0.3s ease-in-out;
+
+                padding: 10px 10px 0px 10px;
+                border-radius: 10px;
+                background-color: #ffffff;
+
+                position: relative;
+                background-color: #fff;
+
+                border-radius: 5px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+                transform: translateY(-20px);
+                transition: transform 0.3s ease-in-out;
+
+                .co {
+                    margin-bottom: 10px;
+                    .addcl{
+                        margin-left: 105px;
+                    }
+                }
+
+                h6 {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                .table {
+                    th {
+                        font-size: 16px;
+                    }
+
+                    text-align: center;
+
+                    .editcolor {
+
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .iconeditcolor {
+                            color: cornflowerblue;
+                            font-size: 14px;
+                        }
+                    }
+
+                    .deletecolor {
+                        margin-left: 15px;
+                        background-color: transparent;
+                        width: 10px;
+                        height: 10px;
+
+                        .icondeletecolor {
+                            color: red;
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+
+           
+        }
+    }
+}
