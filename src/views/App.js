@@ -15,7 +15,6 @@ import Slider from "./user/slider/Slider";
 import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
-import ADAddDiscount from "./admin/ADAddDiscount"
 
 class App extends React.Component {
   render() {
@@ -34,7 +33,6 @@ class App extends React.Component {
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
-            <Route path="discount/AddDiscount" element={<ADAddDiscount />} />
           </Route>
 
         </Routes>
