@@ -38,7 +38,6 @@ class App extends React.Component {
             <Route path="discount" element={<ADDiscount />} />
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
-            <Route path="discount/AddDiscount" element={<ADAddDiscount />} />
             <Route path="product" element={<ADProduct />} />
           </Route>
 
