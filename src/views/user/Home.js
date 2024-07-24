@@ -37,7 +37,7 @@ class Home extends React.Component {
                       {item.hinhs && item.hinhs.length > 0 &&
                         item.hinhs.map((img, index) => {
                           return (
-                            <span key={img.id}>{img.tenHinh}</span>
+                            <span key={img.id}>{img.link}</span>
                           )
                         })
                       }

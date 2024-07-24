@@ -1,12 +1,12 @@
 
-.container {
+
+.containercart {
     
-    
-    .contai {
-       
-        .qe{
+    .contai-cart {
+     
+        .rowlinks{
             
-            .qq{
+            .rowlines{
                 .vertical-thick-line {
                     width: 5px;
                     height: 30px;
@@ -17,8 +17,8 @@
                     
                 }
             }
-            .ee{
-                .linkgh{
+            .links{
+                .linkcarts{
                     margin-top: 8px;
                     font-size: 16px;
                 }
@@ -33,7 +33,7 @@
        
     }
 
-    .App {
+    .mycart {
         margin-top: 20px;
         text-align: center;
         font-weight: bold;
@@ -49,45 +49,45 @@
         margin: 20px auto;
     }
 
-    .aa {
-        .a1 {
-            .bb {
+    .cart-main {
+        .row-cart {
+            .row-cart-item {
                 
-                .b1 {
+                .cart-item {
                    
-                    .anh {
-
+                    .image-product-cart {
+                        margin-left: 0px;
                         width: 130px;
                         height: 130px;
                         
 
-                        .anhsp {
+                        .image-product {
                             width: 130px;
                             height: 130px;
                         }
                     }
                 }
 
-                .bao {
-                    margin-left: 70px;
+                .cart-product-item {
+                    margin-left: 50px;
                     
-                    .tensp {
+                    .nameproduct {
                         font-weight: bold;
                         font-size: 20px;
                     }
 
-                    .gia {
+                    .price {
                         font-size: 18px;
                         margin-top: 20px;
                     }
 
-                    .giagoc {
+                    .priced {
                         color: darkgrey;
                         position: relative;
                         display: inline-block;
                     }
 
-                    .giagoc::before {
+                    .priced:before {
                         content: "";
                         position: absolute;
                         left: 0;
@@ -102,15 +102,15 @@
                         margin: 0px;
                     }
 
-                    .sl {
+                    .quantity {
                         margin-top: 15px;
-                        .tru {
+                        .apart-from {
                             
                             text-align: center;
                             border: solid 0px;
                         }
 
-                        .valuesl {
+                        .value-quantity {
                             font-size: 14px;
                             font-weight: bold;
                             height: 25px;
@@ -119,7 +119,7 @@
                             border: lightgray solid 2px;
                         }
 
-                        .cong {
+                        .add {
                             
                             text-align: center;
                             border: solid 0px;
@@ -130,8 +130,8 @@
 
         }
 
-        .d1 {
-            .ttin {
+        .infomationtocart {
+            .infomation-cart {
                 border: lightgray solid 2px;
                 height: 300px;
 
@@ -146,29 +146,29 @@
 
                 }
 
-                .ttdh {
+                .infomation {
                     font-weight: bold;
-                    margin-left: 50px;
+                    margin-left: 90px;
                     font-size: 20px;
                 }
 
-                .tongt {
+                .total-amount-name {
                     margin-left: 20px;
                 }
 
-                .tongtien {
-                    margin-left: 80px;
+                .total-amount {
+                    margin-left: 140px;
                     font-weight: bold;
                     color: red;
                     font-size: 18px;
                 }
 
-                .btn-tt {
+                .btn-pay {
                     margin-top: 45px;
-                    margin-left: 25px;
+                    margin-left: 43px;
                    
                     border: solid 0px;
-                    width: 250px;
+                    width: 280px;
                     height: 45px;
                    
 
@@ -185,25 +185,25 @@
                     transition: background-position 0.5s ease;
                     background-size: 200% auto;
 
-                    .thanhtoan {
+                    .pay-name {
                         font-size: 14px;
                         font-weight: bold;
                     }
                 }
-                .btn-tt:hover {
+                .btn-pay:hover {
                     background-position: right center;
                   }
                 .icon {
-                    margin-left: 80px;
+                    margin-left: 120px;
                 }
 
-                .muatiep {
+                .repurchase {
                     color: red;
                     margin-left: 5px;
                     font-size: 13px;
                 }
 
-                .iconmualai {
+                .icon-repurchase {
                     width: 12px;
                     height: 12px;
                 }
@@ -211,13 +211,14 @@
         }
     }
 
-    .e1 {
-        margin-left: 65px ;
-        .gh {
+    .note-cart {
+       margin-bottom: 20px;
+       margin-left: 70px;
+        .note-name {
             font-weight: bold;
         }
 
-        .gcct {
+        .note-write {
             width: 300px;
             height: 120px;
         }
