@@ -180,22 +180,12 @@ class ADDiscount extends React.Component {
         let errors = {};
 
         if (!maGiamGia.trim()) errors.maGiamGia = 'Mã khuyến mãi không được để trống.';
+        const isDuplicate = await this.checkDuplicateCode(maGiamGia);
+        if (isDuplicate) errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
         const specialCharPattern = /[^a-zA-Z0-9]/;
         if (specialCharPattern.test(maGiamGia)) errors.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
         if (!menhGia.trim()) errors.menhGia = 'Mệnh giá không được để trống.';
         if (!HSD.trim()) errors.HSD = 'HSD không được để trống.';
-        // try {
-        //     let res = await axios.get(`https://localhost:7078/api/discount/discountExist?maGiamGia=${this.state.discountsCreate.maGiamGia}`);
-        //     if (res.data === true) {
-
-        //         errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
-        //     }
-        // } catch (error) {
-        //     console.error('Lỗi khi kiểm tra mã giảm giá:', error);
-        //     errors.maGiamGia = 'Có lỗi xảy ra khi kiểm tra mã giảm giá.';
-        // }
-
-
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
             return;
@@ -243,9 +233,43 @@ class ADDiscount extends React.Component {
         this.setState({ discountsEdit: { ...discount } });
     }
 
+    checkDuplicateCode = async (code) => {
+        try {
+            let res = await axios.get(`https://localhost:7078/api/discount/discountExist?maGiamGia=${code}`);
+            return res.data; // Giả sử API trả về true nếu mã giảm giá tồn tại, ngược lại là false
+        } catch (error) {
+            console.error("Error checking duplicate code", error);
+            return false;
+        }
+    }
+
+    checkDuplicateCodeUpdate = async (code, id = null) => {
+        try {
+            let url = `https://localhost:7078/api/discount/discountExist?maGiamGia=${code}`;
+            if (id) {
+                url += `&id=${id}`;
+            }
+            let res = await axios.get(url);
+            return res.data; // Giả sử API trả về true nếu mã giảm giá tồn tại, ngược lại là false
+        } catch (error) {
+            console.error("Error checking duplicate code", error);
+            return false;
+        }
+    }
+
+
     handleUpdate = async (event) => {
         event.preventDefault();
+        const { maGiamGia } = this.state.discountsEdit;
+        let errorsupdate = {};
 
+        if (!maGiamGia.trim()) errorsupdate.maGiamGia = 'Mã khuyến mãi không được để trống.';
+        const specialCharPattern = /[^a-zA-Z0-9]/;
+        if (specialCharPattern.test(maGiamGia)) errorsupdate.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
+        if (Object.keys(errorsupdate).length > 0) {
+            this.setState({ errorsupdate });
+            return;
+        }
 
         try {
             let res = await axios.put(`https://localhost:7078/api/discount?maGiamGia=${this.state.discountsEdit.maGiamGia}`, {
@@ -437,7 +461,7 @@ class ADDiscount extends React.Component {
                                     <div className="row mb-3">
                                         <label className="col-sm-2 col-form-label">Mã:</label>
                                         <div className="col-sm-10">
-                                            <input value={this.state.discountsEdit.maGiamGia} onChange={(event) => this.handleChangeUpdateCode(event)} className="form-control" name="text" />
+                                            <input readOnly value={this.state.discountsEdit.maGiamGia} onChange={(event) => this.handleChangeUpdateCode(event)} className="form-control" name="text" />
                                             {errorsupdate.maGiamGia && <div className="text-danger">{errorsupdate.maGiamGia}</div>}
                                         </div>
                                     </div>
