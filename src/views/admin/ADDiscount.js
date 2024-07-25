@@ -3,6 +3,7 @@ import '../../styles/admin/ADDiscount.scss';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
 
 class ADDiscount extends React.Component {
     state = {
@@ -23,7 +24,8 @@ class ADDiscount extends React.Component {
             hsd: '',
             loaiKM: ''
         },
-        errors: {}
+        errors: {},
+        errorsupdate: {}
 
     }
 
@@ -142,7 +144,7 @@ class ADDiscount extends React.Component {
                 ...x.discountsEdit,
                 loaiGiam: event.target.value
             }
-        }))
+        }));
     }
 
     handleChangeUpdateValue = (event) => {
@@ -151,7 +153,7 @@ class ADDiscount extends React.Component {
                 ...x.discountsEdit,
                 menhGia: event.target.value
             }
-        }))
+        }));
     }
 
     handleChangeUpdateHSD = (event) => {
@@ -160,7 +162,7 @@ class ADDiscount extends React.Component {
                 ...x.discountsEdit,
                 hsd: event.target.value
             }
-        }))
+        }));
     }
 
     handleChangeUpdateLoaiKM = (event) => {
@@ -174,7 +176,7 @@ class ADDiscount extends React.Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        const { maGiamGia, moTa, menhGia, HSD } = this.state.discountsCreate;
+        const { maGiamGia, menhGia, HSD } = this.state.discountsCreate;
         let errors = {};
 
         if (!maGiamGia.trim()) errors.maGiamGia = 'Mã khuyến mãi không được để trống.';
@@ -199,13 +201,40 @@ class ADDiscount extends React.Component {
             return;
         }
 
-        var x = await axios.post('https://localhost:7078/api/discount', this.state.discountsCreate);
+        try {
+            var x = await axios.post('https://localhost:7078/api/discount', this.state.discountsCreate);
 
-
-
-        if (x.status === 200) {
-            alert('OK');
-            this.componentDidMount();
+            if (x.status === 200) {
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Thêm mới thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+                this.componentDidMount();
+                // window.$('#exampleModal').modal('hide');
+                this.setState({
+                    discountsCreate: {
+                        maGiamGia: '',
+                        moTa: '',
+                        loaiGiam: true,
+                        menhGia: '',
+                        HSD: '',
+                        loaiKM: true
+                    }
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -216,6 +245,8 @@ class ADDiscount extends React.Component {
 
     handleUpdate = async (event) => {
         event.preventDefault();
+
+
         try {
             let res = await axios.put(`https://localhost:7078/api/discount?maGiamGia=${this.state.discountsEdit.maGiamGia}`, {
                 moTa: this.state.discountsEdit.moTa,
@@ -224,36 +255,95 @@ class ADDiscount extends React.Component {
                 hsd: this.state.discountsEdit.hsd,
                 loaiKM: this.state.discountsEdit.loaiKM
             });
+
             if (res.status === 200 || res.status === 204) {
-                alert('Cập nhật thành công');
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Cập nhật thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+
+
             } else {
-                alert('Cập nhật không thành công');
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi thêm mới.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            console.error('Lỗi khi cập nhật khuyến mãi:', error);
-            alert('Có lỗi xảy ra khi cập nhật', error);
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
 
-    handleDelete = async (maGiamGia) => {
-        try {
-            let res = await axios.delete(`https://localhost:7078/api/discount/${maGiamGia}`);
-            if (res.status === 200 || res.status === 204) {
-                alert('Xóa thành công');
-                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
-            } else {
-                alert('Xóa không thành công');
+    handleDelete = (maGiamGia) => {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn xóa?',
+            text: 'Sau khi xóa, bạn sẽ không thể khôi phục lại mục này!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    let res = await axios.delete(`https://localhost:7078/api/discount/${maGiamGia}`);
+                    if (res.status === 200 || res.status === 204) {
+                        Swal.fire({
+                            title: 'Đã xóa!',
+                            text: 'Mục đã được xóa.',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                        this.componentDidMount();
+
+                    } else {
+                        Swal.fire({
+                            title: 'Xóa không thành công!',
+                            text: 'Có lỗi xảy ra khi xóa mục này.',
+                            icon: 'error',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi xóa khuyến mãi:', error);
+                    Swal.fire({
+                        title: 'Có lỗi xảy ra!',
+                        text: 'Có lỗi xảy ra khi xóa mục này.',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                }
             }
-        } catch (error) {
-            console.error('Lỗi khi xóa khuyến mãi:', error);
-            alert('Có lỗi xảy ra khi xóa', error);
-        }
+        });
     }
     render() {
         let { discounts } = this.state;
         const { errors } = this.state;
+        const { errorsupdate } = this.state;
         return (
 
             <>
@@ -348,7 +438,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">Mã:</label>
                                         <div className="col-sm-10">
                                             <input value={this.state.discountsEdit.maGiamGia} onChange={(event) => this.handleChangeUpdateCode(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
+                                            {errorsupdate.maGiamGia && <div className="text-danger">{errorsupdate.maGiamGia}</div>}
                                         </div>
                                     </div>
 
@@ -374,7 +464,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">Mệnh giá:</label>
                                         <div className="col-sm-10">
                                             <input value={this.state.discountsEdit.menhGia} onChange={(event) => this.handleChangeUpdateValue(event)} className="form-control" name="text" />
-                                            <span className="text-danger"></span>
+                                            {errorsupdate.menhGia && <div className="text-danger">{errorsupdate.menhGia}</div>}
                                         </div>
                                     </div>
 
@@ -382,7 +472,7 @@ class ADDiscount extends React.Component {
                                         <label className="col-sm-2 col-form-label">HSD:</label>
                                         <div className="col-sm-10">
                                             <input type='date' value={this.state.discountsEdit.hsd} onChange={(event) => this.handleChangeUpdateHSD(event)} className="form-control" name="hsd" />
-                                            <span className="text-danger"></span>
+                                            {errorsupdate.HSD && <div className="text-danger">{errorsupdate.HSD}</div>}
                                         </div>
                                     </div>
 
