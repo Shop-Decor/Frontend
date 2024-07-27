@@ -1,401 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/user/Home.scss";
+import axios from "axios";
 import Image from "../../assets/images/sp1.png";
 import Image2 from "../../assets/images/sp2.png";
-import axios from "axios";
+import { Link } from "react-router-dom";
 
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-//   state = {
-//     products: []
-//   }
+  useEffect(() => {
+    axios.get("https://localhost:7078/api/Product/User")
+      .then(response => {
+        setProducts(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setIsLoading(false);
+      });
+  }, []);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
-//   render() {
-//     return (
-//       <>
-//         <div className="container">
-//           <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
-//           <div className="row">
-//             {products && products.length > 0 &&
-//               products.map((item, index) => {
-//                 return (
-//                   <div className="col-md-2 product">
-//                     <p>
-//                       <br />
-//                       <br />
-
-//                     </p>
-//                   </div>
-//                 )
-//               })
-
-//             }
-
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br></br>
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br></br>
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src="https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png" />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//           </div>
-//           <div className="row">
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//           </div>
-//           <div className="botton-xem">
-//             <button className="align-item-center">Xem thêm</button>
-//           </div>
-//           <br />
-//           <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
-//           <div className="row">
-//             <div className="col-md-2 product">
-//               <img src={Image} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//           </div>
-//           <div className="row">
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//             <div className="col-md-2 product">
-//               <img src={Image2} />
-//               <p>
-//                 Tượng hy lạp phong cách cổ đại bla bla bla
-//                 <br />
-//                 2.900.000đ
-//               </p>
-//             </div>
-//           </div>
-//           <div className="botton-xem">
-//             <button className="align-item-center">Xem thêm</button>
-//           </div>
-//         </div>
-//       </>
-//     );
-//   }
-// }
-
-//export {} MyComponent tra ra nhieu cai cung 1 luc
-const Home = (props) => {
-  //   const {Listuser} = props;
-  // const [isShowHideListUser, setShowHideListUser] = useState();
-  // const handleShowHideListUser = () => {
-  //     alert('click me')
-  // }
   return (
-    <>
-      <div className="container">
-        <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
-        <div className="row">
-
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br></br>
-              2.900.000đ
-            </p>
+    <div className="container">
+      <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
+      <div className="row">
+        {products.map((product, index) => (
+          <div className="col-md-2 product" key={product.id}>
+            <Link to={`/ProductDetail/${product.id}`}>
+              <img src={product.Hinh || Image2} alt={product.Ten} />
+              <p>
+                {product.ten}
+                <br />
+                {product.gia.toLocaleString()}đ
+              </p>
+            </Link>
           </div>
-
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br></br>
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br></br>
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src="https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png" />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-        </div>
-        <div className="botton-xem">
-          <button className="align-item-center">Xem thêm</button>
-        </div>
-        <br />
-        <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
-        <div className="row">
-          <div className="col-md-2 product">
-            <img src={Image} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-          <div className="col-md-2 product">
-            <img src={Image2} />
-            <p>
-              Tượng hy lạp phong cách cổ đại bla bla bla
-              <br />
-              2.900.000đ
-            </p>
-          </div>
-        </div>
-        <div className="botton-xem">
-          <button className="align-item-center">Xem thêm</button>
-        </div>
+        ))}
       </div>
-    </>
+      <div className="botton-xem">
+        <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
+      </div>
+      <br />
+      <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
+      <div className="row">
+        {products.map((product, index) => (
+          <div className="col-md-2 product" key={product.id}>
+            <img src={product.Hinh || Image} alt={product.Ten} />
+            <p>
+              {product.ten}
+              <br />
+              {product.gia.toLocaleString()}đ
+            </p>
+          </div>
+        ))}
+      </div>
+      <div className="botton-xem">
+        <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
+      </div>
+    </div>
   );
-}
+};
 export default Home;
