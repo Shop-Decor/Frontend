@@ -27,7 +27,7 @@ class App extends React.Component {
         <Routes>
           <Route path="" element={<LayoutWithNavbarFooterSlide />}>
             <Route index element={<Home />} />
-            <Route path="ProductDetail" element={<ProductDetail />} />
+            <Route path="ProductDetail/:id" element={<ProductDetail />} />
             <Route path="Payment" element={<Payment />} />
             <Route path="ProductUser" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
