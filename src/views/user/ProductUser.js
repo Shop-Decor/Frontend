@@ -1,6 +1,13 @@
 import React from "react";
-import '../../styles/user/ProductUser.scss';
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faCartPlus,
+    faEye
+} from "@fortawesome/free-solid-svg-icons";
+
+import '../../styles/user/ProductUser.scss';
+import "../../styles/user/hover/hover.scss";
 
 class ProductUser extends React.Component {
     state = {
@@ -128,7 +135,7 @@ class ProductUser extends React.Component {
         let filter = this.getFilter();
         return (
             <>
-                <div className="row">
+                <div className="product-user">
                     <div className='col-3 filter mt-5'>
                         <div className="col-9 m-0">
                             <h3>Lọc theo giá -</h3>
@@ -176,14 +183,25 @@ class ProductUser extends React.Component {
                             </div>
 
                         </div>
-                        <div className='row '>
+                        <div className="row">
                             {filter.map((product, index) => (
-                                <div className='col-3' key={product.id}>
-                                    <div className='card'>
-                                        <img src={product.hinh} className='card-img-top' alt={"img product " + index} />
-                                        <div className='card-body'>
-                                            <h5 className='card-title'>{product.ten}</h5>
-                                            <p className='card-text'>{product.gia} đ</p>
+                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 card" key={product.id}>
+                                    <div className="product-main">
+                                        <div class="hovereffect">
+                                            <img class="img-fluid" src={product.hinh} alt={"img product " + index} />
+                                            <div class="overlay">
+                                                <div className="btn-product">
+                                                    <a class="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                                                    <a class="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="product-content">
+                                        <h5 className="card-title">{product.ten}</h5>
+                                        <div className="product-price">
+                                            <span className="price">{product.loaiGiam ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                                            <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
                                         </div>
                                     </div>
                                 </div>
