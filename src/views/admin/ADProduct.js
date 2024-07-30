@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { imageDb } from "../../services/config";
 import { v4 } from "uuid";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Swal from 'sweetalert2';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const getStatusColor = (status) => {
-    // Giả sử trạng thái là true cho "Có" và false cho "Không"
     return status === true ? 'green' : 'red';
 };
-
 
 const statusIndicatorStyle = {
     display: 'inline-block',
@@ -20,7 +20,7 @@ const statusIndicatorStyle = {
 };
 
 const imageStyle = {
-    width: '100px', // Bạn có thể điều chỉnh kích thước hình ảnh theo nhu cầu
+    width: '100px',
     height: 'auto',
     objectFit: 'cover'
 };
@@ -43,7 +43,8 @@ class ADProduct extends React.Component {
             trangThai: '',
             img: []
         },
-        errorMessage: '',  // Thêm state để lưu trữ thông báo lỗi
+        productDetails: [],
+        errorMessage: '',
         errorMessageName: '',
         errorMessageDescription: '',
     }
@@ -85,8 +86,8 @@ class ADProduct extends React.Component {
                         const response = await axios.post('https://localhost:7078/api/product', this.state.product);
                         if (response.status === 200) {
                             alert('Thêm sản phẩm thành công!');
-                            this.componentDidMount();  // Cập nhật danh sách sản phẩm sau khi thêm
-                            this.setState({ errorMessage: '' });  // Xóa thông báo lỗi
+                            this.componentDidMount();
+                            this.setState({ errorMessage: '' });
                         } else {
                             throw new Error('Có lỗi xảy ra khi thêm sản phẩm.');
                         }
@@ -103,8 +104,6 @@ class ADProduct extends React.Component {
             this.setState({ errorMessage: 'Vui lòng chọn ít nhất một ảnh.' });
         }
     }
-
-
 
     handleChangeName = (event) => {
         this.setState({
@@ -131,17 +130,14 @@ class ADProduct extends React.Component {
         let errorMessageDescription = '';
         let errorMessageImage = '';
 
-        // Kiểm tra nếu tên sản phẩm không được để trống
         if (!this.state.product.ten.trim()) {
             errorMessageName = 'Tên sản phẩm không được để trống.';
         }
 
-        // Kiểm tra nếu mô tả sản phẩm không được để trống
         if (!this.state.product.moTa.trim()) {
             errorMessageDescription = 'Mô tả sản phẩm không được để trống.';
         }
 
-        // Kiểm tra nếu chưa chọn ít nhất một ảnh
         if (this.state.imgFiles.length === 0) {
             errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
         }
@@ -157,10 +153,6 @@ class ADProduct extends React.Component {
 
         await this.handleClick();
     }
-
-
-
-
 
     formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -242,45 +234,81 @@ class ADProduct extends React.Component {
             alert('Có lỗi xảy ra khi cập nhật');
         }
     }
-    // xoa
 
-    handleDelete = async (productId) => {
-        try {
-            const productToUpdate = this.state.products.find(product => product.id === productId);
-            if (!productToUpdate) {
-                alert('Sản phẩm không tồn tại');
-                return;
-            }
-
-            const updatedProduct = {
-                ...productToUpdate,
-                trangThai: false
-            };
-
-            let res = await axios.put(`https://localhost:7078/api/Product/${productId}`, updatedProduct);
-            if (res.status === 200 || res.status === 204) {
-                // alert('Cập nhật trạng thái thành công');
-                this.componentDidMount();
-            } else {
-                alert('Cập nhật trạng thái không thành công');
-            }
-        } catch (error) {
-            console.error('Lỗi khi cập nhật trạng thái:', error);
-            alert('Có lỗi xảy ra khi cập nhật trạng thái');
+    handleDelete = (productId) => {
+        const productToUpdate = this.state.products.find(product => product.id === productId);
+        if (!productToUpdate) {
+            Swal.fire({
+                title: 'Sản phẩm không tồn tại',
+                text: 'Vui lòng kiểm tra lại.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            return;
         }
+
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn cập nhật trạng thái?',
+            text: 'Trạng thái của sản phẩm sẽ được cập nhật.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Cập nhật',
+            cancelButtonText: 'Hủy'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const updatedProduct = {
+                        ...productToUpdate,
+                        trangThai: false
+                    };
+
+                    let res = await axios.put(`https://localhost:7078/api/Product/${productId}`, updatedProduct);
+                    if (res.status === 200 || res.status === 204) {
+                        Swal.fire({
+                            title: 'Đã cập nhật!',
+                            text: 'Trạng thái của sản phẩm đã được cập nhật.',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                        this.componentDidMount();
+                    } else {
+                        Swal.fire({
+                            title: 'Cập nhật không thành công!',
+                            text: 'Có lỗi xảy ra khi cập nhật trạng thái sản phẩm.',
+                            icon: 'error',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi cập nhật trạng thái:', error);
+                    Swal.fire({
+                        title: 'Có lỗi xảy ra!',
+                        text: 'Có lỗi xảy ra khi cập nhật trạng thái sản phẩm.',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                }
+            }
+        });
     }
-    confirmDelete = (productId) => {
-        const isConfirmed = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');
-        if (isConfirmed) {
-            this.handleDelete(productId);
-        }
-    }
+
     render() {
         const { products, product, imgPreviews, errorMessage } = this.state;
 
         return (
             <>
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         {/* THÊM */}
+         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -345,7 +373,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-
+            {/* SỬA */}              
                 <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -464,12 +492,13 @@ class ADProduct extends React.Component {
                                             }}
                                         />
                                     </td>
-
-
-                                    <td>
-                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)} > Sửa </button>
-                                        <button className="btn btn-danger" onClick={() => this.confirmDelete(product.id)} > Xóa </button>
+                                    <td style={{ width: '250px' }}>
+                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)}>Sửa</button>
+                                        <button className="btn btn-danger me-2" onClick={() => this.handleDelete(product.id)}>Xóa</button>
+                                        {/* <button className="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal3" onClick={() => this.handleShowDetails(product)}>Chi tiết</button> */}
+                                        <Link to={`/admin/product/ADProductDetails/${product.id}`}><button className="btn btn-info" >Chi tiết</button></Link>
                                     </td>
+
                                 </tr>
                             ))}
                         </tbody>

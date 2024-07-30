@@ -19,6 +19,7 @@ import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
 import Account from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
+import ADProductDetails from "./admin/ADProductDetails";
 
 class App extends React.Component {
   render() {
@@ -41,6 +42,7 @@ class App extends React.Component {
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />
+            <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
           </Route>
 
         </Routes>
