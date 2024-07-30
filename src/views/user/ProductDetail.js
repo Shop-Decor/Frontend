@@ -13,10 +13,10 @@ const ProductDetail = () => {
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
+  const [quantity, setQuantity] = useState(1);
 
   const allSizes = [...new Set(product.map(detail => detail.size))];
-  const allColors = [...new Set(product.map(detail => detail.color))];
-
   const colorClassMap = {
     'Đỏ': 'red',
     'Xanh dương': 'blue',
@@ -31,18 +31,15 @@ const ProductDetail = () => {
   };
 
   const handleSizeChange = (size) => {
-    setSelectedSizes(prevSelectedSizes => {
-      if (prevSelectedSizes.includes(size)) {
-        if (prevSelectedSizes.length === 1) {
-          return prevSelectedSizes; // Ngăn chặn bỏ chọn kích thước cuối cùng
-        }
-        return prevSelectedSizes.filter(selectedSize => selectedSize !== size);
-      } else {
-        return [...prevSelectedSizes, size];
-      }
-    });
+    setSelectedSizes([size]); // Only allow one size to be selected at a time
+    const filteredColors = product.filter(detail => detail.size === size).map(detail => detail.color);
+    setAvailableColors(filteredColors);
+    if (filteredColors.length > 0) {
+      setSelectedColors([filteredColors[0]]); // Automatically check the first available color
+    } else {
+      setSelectedColors([]); // Reset selected colors if no colors are available
+    }
   };
-
 
   const handleColorChange = (color) => {
     setSelectedColors([color]);
@@ -55,8 +52,12 @@ const ProductDetail = () => {
         if (response.data.length > 0) {
           const firstDetail = response.data[0];
           setSelectedDetail(firstDetail);
-          setSelectedColors([firstDetail.color]);
           setSelectedSizes([firstDetail.size]);
+          const filteredColors = response.data.filter(detail => detail.size === firstDetail.size).map(detail => detail.color);
+          setAvailableColors(filteredColors);
+          if (filteredColors.length > 0) {
+            setSelectedColors([filteredColors[0]]);
+          }
           setIsLoading(false);
         }
       })
@@ -75,25 +76,45 @@ const ProductDetail = () => {
       });
   }, [id]);
 
-  const totalPrice = selectedColors.reduce((total, color) => {
-    const detailsByColor = product.filter(detail => detail.color === color);
-    const priceBySize = detailsByColor.filter(detail => selectedSizes.includes(detail.size))
-      .reduce((sum, detail) => {
-        const discountedPrice = detail.discountType
-          ? detail.price * (1 - detail.discountAmount / 100)
-          : detail.price - detail.discountAmount;
-        return sum + discountedPrice;
-      }, 0);
-    return total + priceBySize;
-  }, 0);
+  const calculatePrice = () => {
+    return selectedColors.reduce((total, color) => {
+      const detailsByColor = product.filter(detail => detail.color === color);
+      const priceBySize = detailsByColor.filter(detail => selectedSizes.includes(detail.size))
+        .reduce((sum, detail) => {
+          const discountedPrice = detail.discountType
+            ? detail.price * (1 - detail.discountAmount / 100)
+            : detail.price - detail.discountAmount;
+          return sum + discountedPrice;
+        }, 0);
+      return total + priceBySize;
+    }, 0) * quantity;
+  };
 
-  const originalPrice = selectedColors.reduce((total, color) => {
-    const detailsByColor = product.filter(detail => detail.color === color);
-    const priceBySize = detailsByColor.filter(detail => selectedSizes.includes(detail.size))
-      .reduce((sum, detail) => sum + detail.price, 0);
-    return total + priceBySize;
-  }, 0);
+  const totalPrice = calculatePrice();
 
+  const calculateOriginalPrice = () => {
+    return selectedColors.reduce((total, color) => {
+      const detailsByColor = product.filter(detail => detail.color === color);
+      const priceBySize = detailsByColor.filter(detail => selectedSizes.includes(detail.size))
+        .reduce((sum, detail) => sum + detail.price, 0);
+      return total + priceBySize;
+    }, 0) * quantity;
+  };
+
+  const originalPrice = calculateOriginalPrice();
+
+  const handleIncrement = () => {
+    setQuantity(prevQuantity => prevQuantity + 1);
+  };
+
+  const handleDecrement = () => {
+    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
+
+  const handleQuantityChange = (event) => {
+    const value = Math.max(1, Number(event.target.value)); // Ensure quantity is at least 1
+    setQuantity(value);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -114,11 +135,35 @@ const ProductDetail = () => {
       <br />
 
       <div className="row">
-        {product2.hinhs.map((item, index) => (
-          <div className="col-md-6 ProductImg" key={index}>
-            <img className="img-fluid" src={item} alt={"img_Product_" + index} />
+        {product2.hinhs && product2.hinhs.length > 0 ? (
+          <div className="col-md-6 ProductImg">
+            <div className="carousel slide slider" id="carouselDemo" data-bs-wrap="true" data-bs-ride="carousel">
+              <div className="carousel-inner">
+                {product2.hinhs.map((item, index) => (
+                  <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
+                    <img className="img-fluid" src={item} alt={"img_Product_" + index} />
+                  </div>
+                ))}
+              </div>
+              <button className="carousel-control-prev" type="button" data-bs-target="#carouselDemo" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon"></span>
+              </button>
+              <button className="carousel-control-next" type="button" data-bs-target="#carouselDemo" data-bs-slide="next">
+                <span className="carousel-control-next-icon"></span>
+              </button>
+              <div className="carousel-indicators">
+                {product2.hinhs.map((item, index) => (
+                  <img className={index === 0 ? "active img-fluid btn-img" : "img-fluid btn-img"}
+                    data-bs-target="#carouselDemo"
+                    data-bs-slide-to={index}
+                    key={index} src={item} alt={"img_Product_" + index} />
+                ))}
+              </div>
+            </div>
           </div>
-        ))}
+        ) : (
+          <p>Không có hình ảnh nào</p>
+        )}
         {selectedDetail && (
           <div className="col-md-6 ProductDetail">
             <p className="ProductName">{product2.ten}</p>
@@ -155,7 +200,7 @@ const ProductDetail = () => {
 
             <hr />
             <div className="row colorLine">
-              {allColors.map((color, index) => (
+              {availableColors.map((color, index) => (
                 <div className="form-check" key={index}>
                   <input
                     name={color}
@@ -170,9 +215,16 @@ const ProductDetail = () => {
 
             <hr />
             <div className="row quantityblock">
-              <div className="add">-</div>
-              <div className="quantity">1</div>
-              <div className="minus">+</div>
+              <button className="add" onClick={handleDecrement}>-</button>
+              <input
+                className="quantity"
+                value={quantity}
+                min={1}
+                type="number"
+                onChange={handleQuantityChange}
+                style={{ textAlign: 'center', MozAppearance: 'textfield' }} // Center align the text
+              />
+              <button className="minus" onClick={handleIncrement}>+</button>
             </div>
             <br />
             <div className="button-them">
