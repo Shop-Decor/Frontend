@@ -185,14 +185,14 @@ class ProductUser extends React.Component {
                         </div>
                         <div className="row">
                             {filter.map((product, index) => (
-                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 card" key={product.id}>
+                                <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12 card" key={product.id}>
                                     <div className="product-main">
-                                        <div class="hovereffect">
-                                            <img class="img-fluid" src={product.hinh} alt={"img product " + index} />
-                                            <div class="overlay">
+                                        <div className="hovereffect">
+                                            <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
+                                            <div className="overlay">
                                                 <div className="btn-product">
-                                                    <a class="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
-                                                    <a class="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                                                    <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                                                    <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
                                                 </div>
                                             </div>
                                         </div>

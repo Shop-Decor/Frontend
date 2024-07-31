@@ -76,7 +76,8 @@ const Cart = (props) => {
                                                     <br />
                                                     <span className="price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span> <span className="priced">{item.gia.toLocaleString('vi-VN') + "đ"} </span>
                                                     <br />
-                                                    <span className="size"> Size: {item.size} </span>
+                                                    <span className="size"> Kích thước: {item.size} </span>
+                                                    <span className="ms-2">Màu: {item.color}</span>
                                                     <br />
                                                     <div className="quantity">
                                                         <button className="apart-from" onClick={() => handleDecreaseQuantity(index)}>

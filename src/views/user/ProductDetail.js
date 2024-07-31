@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import "../../styles/user/ProductDetail.scss";
 import Image from "../../assets/images/sp1.png";
 
-const ProductDetail = () => {
+
+const ProductDetail = (props) => {
+  const { listCart, setListCart } = useOutletContext();
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [product2, setProduct2] = useState({});
@@ -75,6 +77,25 @@ const ProductDetail = () => {
         setIsLoading(false);
       });
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (selectedDetail && selectedSizes.length > 0 && selectedColors.length > 0) {
+      const cartItem = {
+        id: 1,
+        ten: product2.ten,
+        hinh: product2.hinhs[0],
+        gia: originalPrice,
+        loaiGiam: selectedDetail.discountType,
+        menhGia: selectedDetail.discountAmount,
+        size: selectedSizes,
+        quantity: quantity,
+        color: selectedColors
+      };
+      console.log(cartItem)
+      setListCart(prevAll => [...prevAll, cartItem]);
+      alert("Sản phẩm đã được thêm vào giỏ hàng!");
+    }
+  };
 
   const calculatePrice = () => {
     return selectedColors.reduce((total, color) => {
@@ -228,7 +249,7 @@ const ProductDetail = () => {
             </div>
             <br />
             <div className="button-them">
-              <button className="align-item-center">Thêm vào giỏ hàng</button>
+              <button className="align-item-center" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
             </div>
             <br />
             <p className="MoTa">Mô tả</p>
@@ -252,5 +273,4 @@ const ProductDetail = () => {
     </div>
   );
 };
-
 export default ProductDetail;
