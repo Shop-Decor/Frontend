@@ -16,7 +16,10 @@ class AdminLayout extends React.Component {
                             <ul className="menu">
                                 <li className="menu-item active">Trang chủ</li>
                                 <Link className="menu-item" to="/admin/ADCategory">Danh mục</Link>
-                                <li className="menu-item">Thống kê</li>
+
+                                <Link  to="/admin/ADStatistics">
+                                    <li className="menu-item">Thống kê</li>   
+                                </Link>
                                 <Link to="/admin/ADOrder">
                                   <li className="menu-item">Đơn hàng</li>
                                 </Link>                                

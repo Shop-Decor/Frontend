@@ -307,8 +307,8 @@ class ADProduct extends React.Component {
 
         return (
             <>
-         {/* THÊM */}
-         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             {/* //Thêm */}
+             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -317,7 +317,7 @@ class ADProduct extends React.Component {
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={this.handleSubmit}>
-
+                                    {/* {errorMessage && <div className="alert alert-danger">{errorMessage}</div>} */}
 
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Tên</label>
@@ -325,10 +325,10 @@ class ADProduct extends React.Component {
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={this.state.product.ten}
+                                                value={product.ten}
                                                 onChange={this.handleChangeName}
                                             />
-                                            {this.state.errorMessageName && <span className="text-danger">{this.state.errorMessageName}</span>}
+                                            {errorMessage && <span className="text-danger">{errorMessage}</span>}
                                         </div>
                                     </div>
 
@@ -338,10 +338,10 @@ class ADProduct extends React.Component {
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={this.state.product.moTa}
+                                                value={product.moTa}
                                                 onChange={this.handleChangeDescribe}
                                             />
-                                            {this.state.errorMessageDescription && <div className="text-danger">{this.state.errorMessageDescription}</div>}
+                                            {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                         </div>
                                     </div>
 
@@ -354,10 +354,8 @@ class ADProduct extends React.Component {
                                                 multiple
                                                 onChange={this.handleChange}
                                             />
-                                            {this.state.errorMessageImage && <div className="text-danger">{this.state.errorMessageImage}</div>}
                                         </div>
                                     </div>
-
 
                                     <div className="img-preview">
                                         {imgPreviews.map((dataVal, index) => (
@@ -373,7 +371,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-            {/* SỬA */}              
+                {/* //SỬA */}
                 <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -433,6 +431,7 @@ class ADProduct extends React.Component {
                                                 multiple
                                                 onChange={this.handleChangeImage}
                                             />
+
                                         </div>
                                     </div>
 
