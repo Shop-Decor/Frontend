@@ -30,7 +30,21 @@ const LayoutUser = (props) => {
         //     menhGia: 10,
         //     size: "S",
         //     quantity: 10
-        // }];
+        // },
+        // {
+        //     id: 6,
+        //     ten: "test",
+        //     trangThai: true,
+        //     hinh: "https://firebasestorage.googleapis.com/v0/b/seabugdb-5f6f8.appspot.com/o/files%2Ff2485735-3994-407e-8b71-c6d1de5214b3?alt=media&token=e2511e1f-25dc-4638-8d52-b3ffff8c169f",
+        //     gia: 1000000,
+        //     colorName: [],
+        //     maGiamGia: null,
+        //     loaiGiam: false,
+        //     menhGia: 0,
+        //     size: "S",
+        //     quantity: 10
+        // }
+        // ];
         // localStorage.setItem('cart', JSON.stringify(test));
         const loadCart = localStorage.getItem('cart');
         if (loadCart && loadCart !== 'undefined') {
@@ -45,9 +59,11 @@ const LayoutUser = (props) => {
 
     const calculateTotal = () => {
         return listCart.reduce((total, item) => {
-            const subTotal = item.loaiGiam
-                ? item.quantity * (item.gia - (item.gia * item.menhGia / 100))
-                : item.quantity * (item.gia - item.menhGia);
+            const subTotal = item.maGiamGia === null
+                ? item.quantity * item.gia
+                : (item.loaiGiam
+                    ? item.quantity * (item.gia - (item.gia * item.menhGia / 100))
+                    : item.quantity * (item.gia - item.menhGia));
             return total + subTotal;
         }, 0);
     };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../../styles/user/Cart.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -63,7 +63,7 @@ const Cart = (props) => {
                         {listCart && listCart.length > 0 ?
                             listCart.map((item, index) => {
                                 return (
-                                    <React.Fragment key={item.id}>
+                                    <React.Fragment key={index}>
                                         <div className="row row-cart-item">
                                             <div className="col-md-2 cart-item">
                                                 <div className="image-product-cart">
@@ -74,7 +74,8 @@ const Cart = (props) => {
                                                 <div className="cart-product-item">
                                                     <span className="nameproduct">{item.ten}</span>
                                                     <br />
-                                                    <span className="price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span> <span className="priced">{item.gia.toLocaleString('vi-VN') + "đ"} </span>
+                                                    <span className="price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                                                    <span className="priced">{item.maGiamGia === null ? "" : item.gia.toLocaleString('vi-VN') + " đ"} </span>
                                                     <br />
                                                     <span className="size"> Kích thước: {item.size} </span>
                                                     <span className="ms-2">Màu: {item.color}</span>
