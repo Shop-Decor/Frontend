@@ -147,8 +147,8 @@ const NavHome = (props) => {
                       {listCart && listCart.length > 0 ?
                         listCart.map((item, index) => {
                           return (
-                            <>
-                              <li className="product-mini-cart clearfix" key={index.id}>
+                            <React.Fragment key={index}>
+                              <li className="product-mini-cart clearfix">
                                 <FontAwesomeIcon className="delete-icon" icon={faXmark} onClick={(event) => handleDeleteItem(index, event)} />
                                 <div className="col img-mini-cart">
                                   <img className="img-fluid" src={item.hinh} alt={"img product " + index} />
@@ -161,7 +161,7 @@ const NavHome = (props) => {
                                   </div>
                                 </div>
                               </li>
-                            </>
+                            </React.Fragment>
                           )
                         }) :
                         <p>Chưa có sản phẩm</p>

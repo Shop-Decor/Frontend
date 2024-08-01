@@ -68,6 +68,35 @@ const LayoutUser = (props) => {
         }, 0);
     };
 
+    const handleAddCart = (product) => {
+        setListCart(cart => {
+            const cartExisting = cart.findIndex(x => x.id === product.id && x.size === product.size && x.color === product.color);
+            if (cartExisting === -1) {
+                const add = {
+                    id: product.id,
+                    ten: product.ten,
+                    hinh: product.hinh,
+                    gia: product.gia,
+                    loaiGiam: product.loaiGiam,
+                    menhGia: product.menhGia,
+                    size: product.size,
+                    quantity: product.quantity ? product.quantity : 1,
+                    color: product.color
+                };
+                const list = [...cart, add];
+                return list;
+            }
+            else {
+                const listUpdate = cart.map((item, index) =>
+                    index === cartExisting
+                        ? { ...item, quantity: item.quantity += 1 }
+                        : item
+                );
+                return listUpdate;
+            }
+        });
+    };
+
     return (
         <>
             <NavHome
@@ -78,7 +107,7 @@ const LayoutUser = (props) => {
             <Slider />
             <div className="container p-0">
                 <Outlet
-                    context={{ listCart, setListCart, total }}
+                    context={{ listCart, setListCart, total, handleAddCart }}
                 />
             </div>
             <Footer />
