@@ -29,25 +29,7 @@ const ProductUser = (props) => {
     ]);
     const [selectFilter, setSelectFilter] = useState('ASC');
 
-    const { setListCart } = useOutletContext();
-
-    const handleAddCart = (product) => {
-        setListCart(cart => {
-            const add = {
-                id: product.id,
-                ten: product.ten,
-                hinh: product.hinh,
-                gia: product.gia,
-                loaiGiam: product.loaiGiam,
-                menhGia: product.menhGia,
-                size: product.size,
-                quantity: 1,
-                color: product.color
-            };
-            const list = [...cart, add];
-            return list;
-        });
-    };
+    const { setListCart, handleAddCart } = useOutletContext();
 
     const fetchListProducts = async () => {
         try {
@@ -217,7 +199,7 @@ const ProductUser = (props) => {
                                         <div className="overlay">
                                             <div className="btn-product">
                                                 <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
-                                                <a className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                                                <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
                                             </div>
                                         </div>
                                     </div>
