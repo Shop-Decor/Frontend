@@ -1,224 +1,127 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/user/Home.scss";
+import axios from "axios";
 import Image from "../../assets/images/sp1.png";
 import Image2 from "../../assets/images/sp2.png";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import "../../styles/user/hover/hover.scss";
+import {
+  faCartPlus,
+  faEye
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-class Home extends React.Component {
+const Home = () => {
+  const [products, setProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  state = {
-    products: []
+  useEffect(() => {
+    axios.get("https://localhost:7078/api/Product/User")
+      .then(response => {
+        const sortedProducts = response.data
+          .sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
+        const top5Products = sortedProducts.slice(0, 5);
+
+        setProducts(sortedProducts);
+        setFeaturedProducts(top5Products);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (isLoading) {
+    return <div>Đang tải...</div>;
   }
 
-  async componentDidMount() {
-    let res = await axios.get('https://localhost:7078/api/Product');
-    console.log("Data fetched", res.data);
-    this.setState({
-      products: res && res.data ? res.data : []
-    })
+  if (error) {
+    return <div>Lỗi: {error.message}</div>;
   }
 
-  render() {
-    let { products } = this.state;
-    return (
-      <>
-        <div className="container">
-          <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
-          <div className="row">
-            {products && products.length > 0 &&
-              products.map((item, index) => {
-                return (
-                  <div className="col-md-2 product" key={item.id}>
-                    <p>
-                      {item.ten}
-                      <br />
-                      {item.trangThai}
-                      <br />
-                      {item.hinhs && item.hinhs.length > 0 &&
-                        item.hinhs.map((img, index) => {
-                          return (
-                            <span key={img.id}>{img.link}</span>
-                          )
-                        })
-                      }
-                    </p>
+  return (
+    <div className="container">
+      <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
+      <div className="row">
+        {products && products.length > 0 ? (
+          products.map((product, index) => (
+            <div className="col-md-2 product" key={index}>
+              <Link to={`/ProductDetail/${product.id}`} className="link_to">
+                <div className="product-main">
+                  <div className="hovereffect">
+                    <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                    <div className="overlay">
+                      <div className="btn-product">
+                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                      </div>
+                    </div>
                   </div>
-                )
-              })
+                </div>
+                <div className="product-content">
+                  <h5 className="card-title">{product.ten}</h5>
+                  <div className="product-price">
+                    <span className="price">
+                      {product.loaiGiam
+                        ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
+                        : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
+                    </span>
+                    <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>Không có sản phẩm nào</p>
+        )}
+      </div>
+      <div className="botton-xem">
+        <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
+      </div>
+      <br />
+      <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
+      <div className="row">
+        {featuredProducts && featuredProducts.length > 0 ? (
+          featuredProducts.map((product, index) => (
+            <div className="col-md-2 product" key={product.id}>
+              <div className="product-main">
+                <div className="hovereffect">
+                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <div className="overlay">
+                    <div className="btn-product">
+                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="product-content">
+                <h5 className="card-title">{product.ten}</h5>
+                <div className="product-price">
+                  <span className="price">
+                    {product.loaiGiam
+                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
+                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
+                  </span>
+                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Không có sản phẩm nào</p>
+        )}
+      </div>
+      <div className="botton-xem">
+        <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
+      </div>
+      <br />
+    </div>
+  );
+};
 
-            }
-
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br></br>
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src="https://jobsgo.vn/blog/wp-content/uploads/2024/03/Decor-la-gi-7-nguyen-tac-decor-trong-trang-tri-noi-that-1.png" />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-          </div>
-          <div className="botton-xem">
-            <button className="align-item-center">Xem thêm</button>
-          </div>
-          <br />
-          <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
-          <div className="row">
-            <div className="col-md-2 product">
-              <img src={Image} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-            <div className="col-md-2 product">
-              <img src={Image2} />
-              <p>
-                Tượng hy lạp phong cách cổ đại bla bla bla
-                <br />
-                2.900.000đ
-              </p>
-            </div>
-          </div>
-          <div className="botton-xem">
-            <button className="align-item-center">Xem thêm</button>
-          </div>
-        </div>
-      </>
-    );
-  }
-}
-//export {} MyComponent tra ra nhieu cai cung 1 luc
 export default Home;

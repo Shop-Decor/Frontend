@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { imageDb } from "../../services/config";
 import { v4 } from "uuid";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Swal from 'sweetalert2';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const getStatusColor = (status) => {
-    // Giả sử trạng thái là true cho "Có" và false cho "Không"
     return status === true ? 'green' : 'red';
 };
-
 
 const statusIndicatorStyle = {
     display: 'inline-block',
@@ -20,7 +20,7 @@ const statusIndicatorStyle = {
 };
 
 const imageStyle = {
-    width: '100px', // Bạn có thể điều chỉnh kích thước hình ảnh theo nhu cầu
+    width: '100px',
     height: 'auto',
     objectFit: 'cover'
 };
@@ -43,7 +43,10 @@ class ADProduct extends React.Component {
             trangThai: '',
             img: []
         },
-        errorMessage: '',  // Thêm state để lưu trữ thông báo lỗi
+        productDetails: [],
+        errorMessage: '',
+        errorMessageName: '',
+        errorMessageDescription: '',
     }
 
     handleChange = (e) => {
@@ -83,8 +86,8 @@ class ADProduct extends React.Component {
                         const response = await axios.post('https://localhost:7078/api/product', this.state.product);
                         if (response.status === 200) {
                             alert('Thêm sản phẩm thành công!');
-                            this.componentDidMount();  // Cập nhật danh sách sản phẩm sau khi thêm
-                            this.setState({ errorMessage: '' });  // Xóa thông báo lỗi
+                            this.componentDidMount();
+                            this.setState({ errorMessage: '' });
                         } else {
                             throw new Error('Có lỗi xảy ra khi thêm sản phẩm.');
                         }
@@ -122,20 +125,34 @@ class ADProduct extends React.Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-    
-        // Kiểm tra nếu tên và mô tả không được để trống
+
+        let errorMessageName = '';
+        let errorMessageDescription = '';
+        let errorMessageImage = '';
+
         if (!this.state.product.ten.trim()) {
-            this.setState({ errorMessage: 'Tên sản phẩm không được để trống.' });
+            errorMessageName = 'Tên sản phẩm không được để trống.';
+        }
+
+        if (!this.state.product.moTa.trim()) {
+            errorMessageDescription = 'Mô tả sản phẩm không được để trống.';
+        }
+
+        if (this.state.imgFiles.length === 0) {
+            errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
+        }
+
+        if (errorMessageName || errorMessageDescription || errorMessageImage) {
+            this.setState({
+                errorMessageName,
+                errorMessageDescription,
+                errorMessageImage
+            });
             return;
         }
-        else if (!this.state.product.moTa.trim()) {
-            this.setState({ errorMessage: 'Mô tả sản phẩm không được để trống.' });
-            return;
-        }
-    
+
         await this.handleClick();
     }
-    
 
     formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -218,13 +235,80 @@ class ADProduct extends React.Component {
         }
     }
 
+    handleDelete = (productId) => {
+        const productToUpdate = this.state.products.find(product => product.id === productId);
+        if (!productToUpdate) {
+            Swal.fire({
+                title: 'Sản phẩm không tồn tại',
+                text: 'Vui lòng kiểm tra lại.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn cập nhật trạng thái?',
+            text: 'Trạng thái của sản phẩm sẽ được cập nhật.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Cập nhật',
+            cancelButtonText: 'Hủy'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const updatedProduct = {
+                        ...productToUpdate,
+                        trangThai: false
+                    };
+
+                    let res = await axios.put(`https://localhost:7078/api/Product/${productId}`, updatedProduct);
+                    if (res.status === 200 || res.status === 204) {
+                        Swal.fire({
+                            title: 'Đã cập nhật!',
+                            text: 'Trạng thái của sản phẩm đã được cập nhật.',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                        this.componentDidMount();
+                    } else {
+                        Swal.fire({
+                            title: 'Cập nhật không thành công!',
+                            text: 'Có lỗi xảy ra khi cập nhật trạng thái sản phẩm.',
+                            icon: 'error',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi cập nhật trạng thái:', error);
+                    Swal.fire({
+                        title: 'Có lỗi xảy ra!',
+                        text: 'Có lỗi xảy ra khi cập nhật trạng thái sản phẩm.',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                }
+            }
+        });
+    }
 
     render() {
         const { products, product, imgPreviews, errorMessage } = this.state;
-    
+
         return (
             <>
-                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             {/* //Thêm */}
+             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -234,7 +318,7 @@ class ADProduct extends React.Component {
                             <div className="modal-body">
                                 <form onSubmit={this.handleSubmit}>
                                     {/* {errorMessage && <div className="alert alert-danger">{errorMessage}</div>} */}
-                                    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Tên</label>
                                         <div className="col-sm-8">
@@ -247,7 +331,7 @@ class ADProduct extends React.Component {
                                             {errorMessage && <span className="text-danger">{errorMessage}</span>}
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
                                         <div className="col-sm-8">
@@ -260,7 +344,7 @@ class ADProduct extends React.Component {
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
                                         <div className="col-sm-8">
@@ -272,7 +356,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="img-preview">
                                         {imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
@@ -287,7 +371,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-    
+                {/* //SỬA */}
                 <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -309,7 +393,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
                                         <div className="col-sm-8">
@@ -322,7 +406,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Trạng Thái</label>
                                         <div className="col-sm-8">
@@ -337,7 +421,7 @@ class ADProduct extends React.Component {
                                             </select>
                                         </div>
                                     </div>
-    
+
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
                                         <div className="col-sm-8">
@@ -347,15 +431,16 @@ class ADProduct extends React.Component {
                                                 multiple
                                                 onChange={this.handleChangeImage}
                                             />
+
                                         </div>
                                     </div>
-    
+
                                     <div className="img-preview">
                                         {this.state.imgPreviews.length > 0 && this.state.imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
                                         ))}
                                     </div>
-    
+
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" className="btn btn-primary">Lưu</button>
@@ -365,7 +450,7 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
-    
+
                 <div className='container my-4'>
                     <h2 className='text-center mb-4'>Sản Phẩm</h2>
                     <div className='row mb-3'>
@@ -406,10 +491,13 @@ class ADProduct extends React.Component {
                                             }}
                                         />
                                     </td>
-                                    <td style={{ width: "10px", whiteSpace: "nowrap" }}>
-                                        <button type="button" className="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)}>Sửa</button>
-                                        <button type="button" className="btn btn-danger btn-sm">Xóa</button>
+                                    <td style={{ width: '250px' }}>
+                                        <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)}>Sửa</button>
+                                        <button className="btn btn-danger me-2" onClick={() => this.handleDelete(product.id)}>Xóa</button>
+                                        {/* <button className="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal3" onClick={() => this.handleShowDetails(product)}>Chi tiết</button> */}
+                                        <Link to={`/admin/product/ADProductDetails/${product.id}`}><button className="btn btn-info" >Chi tiết</button></Link>
                                     </td>
+
                                 </tr>
                             ))}
                         </tbody>
@@ -418,7 +506,7 @@ class ADProduct extends React.Component {
             </>
         );
     }
-    
+
 }
 
 export default ADProduct;

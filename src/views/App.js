@@ -7,26 +7,27 @@ import ADtest from "./admin/ADtest";
 import ADCategory from "./admin/ADCategory";
 import ADOrder from "./admin/ADOrder";
 import ProductUser from "./user/ProductUser";
-import Cart from "./user/Cart"
-import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
+import Cart from "./user/Cart";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./user/Home";
+import LayoutUser from "./user/LayoutUser";
 import ProductDetail from "./user/ProductDetail";
 import Payment from "./user/payment";
-import Navbar from "./user/nav/NavHome";
-import Slider from "./user/slider/Slider";
-import Footer from "./user/footer/Footer";
 import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
+import Account from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
+import ADProductDetails from "./admin/ADProductDetails";
+import ADStatistics from "./admin/ADStatistics"; // Import ADStatistics component
 
 class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<LayoutWithNavbarFooterSlide />}>
+          <Route path="" element={<LayoutUser />}>
             <Route index element={<Home />} />
-            <Route path="ProductDetail" element={<ProductDetail />} />
+            <Route path="ProductDetail/:id" element={<ProductDetail />} />
             <Route path="Payment" element={<Payment />} />
             <Route path="ProductUser" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
@@ -36,26 +37,20 @@ class App extends React.Component {
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
+            <Route path="Account" element={<Account />} />
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />
-          </Route>
+            <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
+            <Route path="product" element={<ADProduct />} />
+            <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
+            
 
+          </Route>
         </Routes>
       </BrowserRouter>
     );
   }
 }
-
-const LayoutWithNavbarFooterSlide = () => (
-  <>
-    <Navbar />
-    <Slider />
-    <div className="container">
-      <Outlet />
-    </div>
-    <Footer />
-  </>
-);
 
 export default App;
