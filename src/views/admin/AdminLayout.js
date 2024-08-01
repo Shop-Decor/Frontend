@@ -15,13 +15,13 @@ class AdminLayout extends React.Component {
                             </div>
                             <ul className="menu">
                                 <li className="menu-item active">Trang chủ</li>
-                                <Link className="menu-item" to="/admin/ADCategory">Danh mục</Link>
+                                <li className="menu-item"><Link  to="/admin/ADCategory">Danh mục</Link></li>
                                 <li className="menu-item">Thống kê</li>
-                                <Link className="menu-item" to="/admin/ADOrder">Đơn hàng</Link>
+                                <li className="menu-item"><Link  to="/admin/ADOrder">Đơn hàng</Link></li>
                                 <li className="menu-item">  <Link to="/admin/product">SAN PHAM</Link></li>
                                 <li className="menu-item">Người dùng</li>
                                 <Link className="menu-item" to="/admin/test">test</Link>
-                                <Link to="/admin/discount"><li className="menu-item">khuyến mãi</li></Link>
+                                <li className="menu-item"> <Link to="/admin/discount">khuyến mãi</Link></li>
                                 <li className="menu-item">Đăng xuất</li>
                             </ul>
                         </div>
@@ -32,7 +32,7 @@ class AdminLayout extends React.Component {
                                         <div className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         </div>
                                         <ul className="dropdown-menu">
-                                            <li><a href="#" className="dropdown-item-ed" asp-area="">Đăng xuất</a></li>
+                                            <li><Link to="#" className="dropdown-item-ed" asp-area="">Đăng xuất</Link></li>
                                         </ul>
                                     </li>
                                 </ul>

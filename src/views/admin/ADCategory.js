@@ -1,7 +1,7 @@
 import React from "react";
 import '../../styles/admin/ADCategory.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     faPenToSquare,
     faPlus,
@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
 
-    faFacebook
+
 } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 class ADCategory extends React.Component {
@@ -30,31 +30,32 @@ class ADCategory extends React.Component {
 
         updateType: {
             tenLoai: '',
-            id:''
+            id: ''
         },
         updateSize: {
             tenKichThuoc: '',
-            id:''
+            id: ''
         },
         updateColor: {
             tenMauSac: '',
-            id:''
+            id: ''
         },
 
-        deleteType:{
+        deleteType: {
             tenLoai: '',
-            id:''
+            id: ''
         },
 
-        deleteSize:{
+        deleteSize: {
             tenKichThuoc: '',
-            id:''
+            id: ''
         },
 
-        deleteColor:{
+        deleteColor: {
             tenMauSac: '',
-            id:''
+            id: ''
         },
+        errors: {}
 
     }
     // hiện thị dự liệu
@@ -86,6 +87,9 @@ class ADCategory extends React.Component {
         }));
         console.log(event.target.value)
     }
+
+
+
     handleChangecatagorysize = (event) => {
         this.setState((x) => ({
             createcategorysizes: {
@@ -97,97 +101,101 @@ class ADCategory extends React.Component {
         }));
         console.log(event.target.value)
     }
-    handleChangecatagorycolor = (event) => {
-        this.setState((x) => ({
-            createcategorycolors: {
-                ...x.createcategorycolors,
-                tenMauSac: event.target.value
+    // handleChangecatagorycolor = (event) => {
+    //     this.setState((x) => ({
+    //         createcategorycolors: {
+    //             ...x.createcategorycolors,
+    //             tenMauSac: event.target.value
 
-            }
+    //         }
 
-        }));
-        console.log(event.target.value)
-    }
-    handleClickcategory = async () => {
+    //     }));
+    //     console.log(event.target.value)
+    // }
 
-        this.setState(prevState => ({
+    // handleClickcategorycolor = async () => {
 
-            createcategorts: {
-                ...prevState.createcategorts
+    //     this.setState(prevState => ({
 
-            }
-        }), async () => {
-            // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
-            console.log('Product before POST:', this.state.createcategorts);
+    //         createcategorycolors: {
+    //             ...prevState.createcategorycolors
 
-            try {
-                const response = await axios.post('https://localhost:7078/api/Category', this.state.createcategorts);
-                console.log("categorts uploaded successfully:", response.data);
-                alert('Thêm loại sản phẩm thành công');
-                this.componentDidMount();
-            } catch (error) {
-                console.error("There was an error uploading the categorts!", error);
-            }
-        });
-    }
-    handleClickcategorysize = async () => {
+    //         }
+    //     }), async () => {
 
-        this.setState(prevState => ({
+    //         try {
+    //             const response = await axios.post('https://localhost:7078/api/CategoryColor', this.state.createcategorycolors);
+               
+    //             console.log("categorts uploaded successfully:", response.data);
+    //             alert('Thêm màu sắc thành công');
+    //             this.componentDidMount();
+    //         } catch (error) {
+    //             console.error("lỗi", error);
+               
+    //         }
 
-            createcategorysizes: {
-                ...prevState.createcategorysizes
-
-            }
-        }), async () => {
-            // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
-            console.log('Product before POST:', this.state.createcategorysizes);
-
-            try {
-                const response = await axios.post('https://localhost:7078/api/Category_Size', this.state.createcategorysizes);
-                console.log("categorts uploaded successfully:", response.data);
-                alert('Thêm Kích thước thành công');
-                this.componentDidMount();
-            } catch (error) {
-                console.error("There was an error uploading the categorts!", error);
-            }
-        });
-    }
-    handleClickcategorycolor = async () => {
-
-        this.setState(prevState => ({
-
-            createcategorycolors: {
-                ...prevState.createcategorycolors
-
-            }
-        }), async () => {
-            // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
-            console.log('Product before POST:', this.state.createcategorycolors);
-
-            try {
-                const response = await axios.post('https://localhost:7078/api/CategoryColor', this.state.createcategorycolors);
-                console.log("categorts uploaded successfully:", response.data);
-                alert('Thêm màu sắc thành công');
-                this.componentDidMount();
-            } catch (error) {
-                console.error("There was an error uploading the categorts!", error);
-            }
-        });
-    }
+           
+    //     });
+    // }
 
     handleSubmitcategory = async (event) => {
         event.preventDefault();
-        await this.handleClickcategory();
+        const { tenLoai } = this.state.createcategorts;
+        let errors = {};
+
+        if (!tenLoai.trim()) errors.tenLoai = 'Tên loại sản phẩm không được để trống.';
+        if(tenLoai.length>30) errors.tenLoai="Tên loại sản phẩm không được quá 30 ký tự.";
+    
+
+        // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
+        
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
+            return;
+        }
+        try {
+            const response = await axios.post('https://localhost:7078/api/Category', this.state.createcategorts);
+            
+            alert('Thêm loại sản phẩm thành công');
+            this.componentDidMount();
+        } catch (error) {
+            
+            errors.tenLoai = 'Có lỗi xảy ra khi kiểm tra tên loại sản phẩm.';
+        }
+
+        
     }
     handleSubmitcategorysize = async (event) => {
         event.preventDefault();
-        await this.handleClickcategorysize();
+        const { tenKichThuoc } = this.state.createcategorysizes;
+        let errors = {};
+
+        if (!tenKichThuoc.trim()) errors.tenKichThuoc = 'Tên kích thước không được để trống.';
+        if(tenKichThuoc.length>30) errors.tenKichThuoc="Tên kích thước không được quá 30 ký tự.";
+        const specialCharPattern = /[^a-zA-Z0-9\s]/;
+        if (specialCharPattern.test(tenKichThuoc)) errors.tenKichThuoc = 'Tên kích thước không được chứa ký tự đặc biệt.';
+
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
+            return;
+        }
+
+        
+        try {
+            const response = await axios.post('https://localhost:7078/api/Category_Size', this.state.createcategorysizes);
+            console.log("categorts uploaded successfully:", response.data);
+            alert('Thêm Kích thước thành công');
+            this.componentDidMount();
+        } catch (error) {
+            console.error("There was an error uploading the categorts!", error);
+            errors.tenKichThuoc = 'Có lỗi xảy ra khi kiểm tra kích thước.';
+        }
 
     }
-    handleSubmitcategorycolor = async (event) => {
-        event.preventDefault();
-        await this.handleClickcategorycolor();
-    }
+    // handleSubmitcategorycolor = async (event) => {
+    //     event.preventDefault();
+    //     await this.handleClickcategorycolor();
+    // }
 
 
     //hàm sửa..
@@ -206,10 +214,22 @@ class ADCategory extends React.Component {
     }
     handleUpdate = async (event) => {
         event.preventDefault();
+
+        const { tenLoai } = this.state.updateType;
+        let errors = {};
+
+        if (!tenLoai.trim()) errors.tenLoai = 'Tên loại sản phẩm không được để trống.';
+        if(tenLoai.length>30) errors.tenLoai="Tên loại sản phẩm không được quá 30 ký tự.";
+      
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
+            return;
+        }
+
         try {
             let res = await axios.put(`https://localhost:7078/api/Category/${this.state.updateType.id}`, {
                 tenLoai: this.state.updateType.tenLoai
-               
+
             });
             if (res.status === 200 || res.status === 204) {
                 alert('Cập nhật thành công');
@@ -238,10 +258,23 @@ class ADCategory extends React.Component {
     }
     handleUpdateSize = async (event) => {
         event.preventDefault();
+
+        const { tenKichThuoc } = this.state.updateSize;
+        let errors = {};
+
+        if (!tenKichThuoc.trim()) errors.tenKichThuoc = 'Tên kích thước không được để trống.';
+        if(tenKichThuoc.length>30) errors.tenKichThuoc="Tên kích thước không được quá 30 ký tự";
+        const specialCharPattern = /[^a-zA-Z0-9\s]/;
+        if (specialCharPattern.test(tenKichThuoc)) errors.tenKichThuoc = 'Tên kích thước không được chứa ký tự đặc biệt.';
+
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
+            return;
+        }
         try {
             let res = await axios.put(`https://localhost:7078/api/Category_Size/${this.state.updateSize.id}`, {
                 tenKichThuoc: this.state.updateSize.tenKichThuoc
-               
+
             });
             if (res.status === 200 || res.status === 204) {
                 alert('Cập nhật thành công');
@@ -256,38 +289,38 @@ class ADCategory extends React.Component {
 
     }
 
-    handleChangeColor = (event) => {
-        this.setState((x) => ({
-            updateColor: {
-                ...x.updateColor,
-                tenMauSac: event.target.value
-            }
-        }));
-    }
-    handleEditColor = async (Categorycolor) => {
+    // handleChangeColor = (event) => {
+    //     this.setState((x) => ({
+    //         updateColor: {
+    //             ...x.updateColor,
+    //             tenMauSac: event.target.value
+    //         }
+    //     }));
+    // }
+    // handleEditColor = async (Categorycolor) => {
 
-        this.setState({ updateColor: { ...Categorycolor } });
-    }
-    handleUpdateColor = async (event) => {
-        event.preventDefault();
-        try {
-            let res = await axios.put(`https://localhost:7078/api/CategoryColor/${this.state.updateColor.id}`, {
-                tenMauSac: this.state.updateColor.tenMauSac
-               
-            });
-            if (res.status === 200 || res.status === 204) {
-                alert('Cập nhật màu sắc thành công');
-                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
-            } else {
-                alert('Cập nhật không thành công');
-            }
-        } catch (error) {
-            console.error('Lỗi khi cập nhật Loại:', error);
-            alert('Có lỗi xảy ra khi cập nhật', error);
-        }
+    //     this.setState({ updateColor: { ...Categorycolor } });
+    // }
+    // handleUpdateColor = async (event) => {
+    //     event.preventDefault();
+    //     try {
+    //         let res = await axios.put(`https://localhost:7078/api/CategoryColor/${this.state.updateColor.id}`, {
+    //             tenMauSac: this.state.updateColor.tenMauSac
 
-    }
- //hàm xóa
+    //         });
+    //         if (res.status === 200 || res.status === 204) {
+    //             alert('Cập nhật màu sắc thành công');
+    //             this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+    //         } else {
+    //             alert('Cập nhật không thành công');
+    //         }
+    //     } catch (error) {
+    //         console.error('Lỗi khi cập nhật Loại:', error);
+    //         alert('Có lỗi xảy ra khi cập nhật', error);
+    //     }
+
+    // }
+    //hàm xóa
     handleChangeDelateType = (event) => {
         this.setState((x) => ({
             deleteType: {
@@ -301,7 +334,7 @@ class ADCategory extends React.Component {
         this.setState({ deleteType: { ...deletetype } });
     }
 
-   
+
     handleDeleteType = async (event) => {
         event.preventDefault();
         try {
@@ -332,7 +365,7 @@ class ADCategory extends React.Component {
         this.setState({ deleteSize: { ...deletesizes } });
     }
 
-   
+
     handleDeleteSize = async (event) => {
         event.preventDefault();
         try {
@@ -350,39 +383,40 @@ class ADCategory extends React.Component {
 
     }
 
-    handleChangeDelateColor = (event) => {
-        this.setState((x) => ({
-            deleteColor: {
-                ...x.deleteColor,
-                tenMauSac: event.target.value
-            }
-        }));
-    }
-    handleDatleteColor = async (deletecolor) => {
+    // handleChangeDelateColor = (event) => {
+    //     this.setState((x) => ({
+    //         deleteColor: {
+    //             ...x.deleteColor,
+    //             tenMauSac: event.target.value
+    //         }
+    //     }));
+    // }
+    // handleDatleteColor = async (deletecolor) => {
 
-        this.setState({ deleteColor: { ...deletecolor } });
-    }
+    //     this.setState({ deleteColor: { ...deletecolor } });
+    // }
 
-   
-    handleDeleteColor = async (event) => {
-        event.preventDefault();
-        try {
-            let res = await axios.delete(`https://localhost:7078/api/CategoryColor/${this.state.deleteColor.id}`)
-            if (res.status === 200 || res.status === 204) {
-                alert('xóa thành công');
-                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
-            } else {
-                alert('Xóa không thành công');
-            }
-        } catch (error) {
-            console.error('Lỗi khi xóa :', error);
-            alert('Có lỗi xảy ra khi xóa', error);
-        }
 
-    }
+    // handleDeleteColor = async (event) => {
+    //     event.preventDefault();
+    //     try {
+    //         let res = await axios.delete(`https://localhost:7078/api/CategoryColor/${this.state.deleteColor.id}`)
+    //         if (res.status === 200 || res.status === 204) {
+    //             alert('xóa thành công');
+    //             this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+    //         } else {
+    //             alert('Xóa không thành công');
+    //         }
+    //     } catch (error) {
+    //         console.error('Lỗi khi xóa :', error);
+    //         alert('Có lỗi xảy ra khi xóa', error);
+    //     }
+
+    // }
 
     render() {
         let { Category, Categorysize, Categorycolor } = this.state;
+        const { errors } = this.state;
         return (
             <>
                 <div className="containers">
@@ -417,8 +451,8 @@ class ADCategory extends React.Component {
                                                         <td>{item.id}</td>
                                                         <td>{item.tenLoai}</td>
                                                         <td>
-                                                            <Link to="" className="editPT" data-bs-toggle="modal" data-bs-target="#myModal-update-Type"><FontAwesomeIcon icon={faPenToSquare} className="iconedit" onClick={() => this.handleEdit(item)}/></Link>
-                                                            <Link to="" className="deletePT" data-bs-toggle="modal" data-bs-target="#myModal-delete-type" ><FontAwesomeIcon icon={faTrash} className="icondelete" onClick={() => this.handleDatleteType(item)}/></Link>
+                                                            <Link to="" className="editPT" data-bs-toggle="modal" data-bs-target="#myModal-update-Type"><FontAwesomeIcon icon={faPenToSquare} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
+                                                            <Link to="" className="deletePT" data-bs-toggle="modal" data-bs-target="#myModal-delete-type" ><FontAwesomeIcon icon={faTrash} className="icondelete" onClick={() => this.handleDatleteType(item)} /></Link>
                                                         </td>
 
                                                     </tr>
@@ -460,7 +494,7 @@ class ADCategory extends React.Component {
                                                         <td>{item.tenKichThuoc}</td>
                                                         <td>
                                                             <Link className="editsize" data-bs-toggle="modal" data-bs-target="#myModal-update-size"> <FontAwesomeIcon icon={faPenToSquare} className="iconeditsize" onClick={() => this.handleEditSize(item)} /></Link>
-                                                            <Link to="" className="deletesize" data-bs-toggle="modal" data-bs-target="#myModal-delete-size"> <FontAwesomeIcon icon={faTrash} className="icondeletesize" onClick={() => this.handleDatleteSize(item)}/></Link>
+                                                            <Link to="" className="deletesize" data-bs-toggle="modal" data-bs-target="#myModal-delete-size"> <FontAwesomeIcon icon={faTrash} className="icondeletesize" onClick={() => this.handleDatleteSize(item)} /></Link>
                                                         </td>
 
                                                     </tr>
@@ -526,26 +560,28 @@ class ADCategory extends React.Component {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
 
+                                <form onSubmit={this.handleSubmitcategory}>
+                                    <div className="modal-body">
 
-                                <div className="modal-body">
-                                    <form>
                                         <div className="mb-3 mt-3">
                                             <label>Tên Loại sản phẩm</label>
                                             <input type="text" value={this.state.createcategorts.tenLoai} onChange={(event) => this.handleChangecatagory(event)} className="form-control" />
+                                            {errors.tenLoai && <div className="text-danger">{errors.tenLoai}</div>}
                                         </div>
                                         <div className="mb-3">
 
                                         </div>
 
-                                    </form>
-                                </div>
+
+                                    </div>
 
 
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button onClick={(event) => this.handleSubmitcategory(event)} type="button" className="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+                                        <button onClick={(event) => this.handleSubmitcategory(event)} type="submit" className="btn btn-primary" >Thêm</button>
 
-                                </div>
+                                    </div>
+                                </form>
 
                             </div>
                         </div>
@@ -567,6 +603,7 @@ class ADCategory extends React.Component {
                                         <div className="mb-3 mt-3">
                                             <label>Tên kích thước</label>
                                             <input value={this.state.createcategorysizes.tenKichThuoc} onChange={(event) => this.handleChangecatagorysize(event)} className="form-control" />
+                                            {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
                                         </div>
                                         <div className="mb-3">
 
@@ -578,7 +615,7 @@ class ADCategory extends React.Component {
 
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleSubmitcategorysize(event)} className="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
+                                    <button type="button" onClick={(event) => this.handleSubmitcategorysize(event)} className="btn btn-primary">Thêm</button>
 
                                 </div>
 
@@ -639,6 +676,7 @@ class ADCategory extends React.Component {
                                         <div className="mb-3 mt-3">
                                             <label >Tên loại</label>
                                             <input value={this.state.updateType.tenLoai} onChange={(event) => this.handleChangeType(event)} className="form-control" />
+                                            {errors.tenLoai && <div className="text-danger">{errors.tenLoai}</div>}
                                         </div>
                                         <div className="mb-3">
 
@@ -650,7 +688,7 @@ class ADCategory extends React.Component {
 
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdate(event)} className="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
+                                    <button type="button" onClick={(event) => this.handleUpdate(event)} className="btn btn-primary">Lưu</button>
 
                                 </div>
 
@@ -674,6 +712,7 @@ class ADCategory extends React.Component {
                                         <div className="mb-3 mt-3">
                                             <label >Tên kích thước</label>
                                             <input value={this.state.updateSize.tenKichThuoc} onChange={(event) => this.handleChangeSize(event)} className="form-control" />
+                                            {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
                                         </div>
                                         <div className="mb-3">
 
@@ -685,7 +724,7 @@ class ADCategory extends React.Component {
 
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdateSize(event)} className="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
+                                    <button type="button" onClick={(event) => this.handleUpdateSize(event)} className="btn btn-primary">Lưu</button>
 
                                 </div>
 
@@ -739,7 +778,7 @@ class ADCategory extends React.Component {
                                     <form>
                                         <div className="mb-3 mt-3">
                                             <h4 className="modal-title">Bạn có chắc muốn xóa loại này</h4>
-                                            
+
                                         </div>
                                         <div className="mb-3">
 
@@ -769,7 +808,7 @@ class ADCategory extends React.Component {
                                     <form>
                                         <div className="mb-3 mt-3">
                                             <h4 className="modal-title">Bạn có chắc muốn xóa kích thước này</h4>
-                                            
+
                                         </div>
                                         <div className="mb-3">
 

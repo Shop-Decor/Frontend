@@ -1,6 +1,6 @@
 .containeOD {
     margin: 0 auto;
-    width: 95%;
+    width: 98%;
     margin-top: 60px;
 
     .Order {
@@ -50,8 +50,15 @@
         }
 
         .table {
+
+
             th {
                 font-size: 16px;
+            }
+
+            .order-detail {
+                padding: 0px;
+                border: initial;
             }
 
             text-align: center;
@@ -64,7 +71,7 @@
 
                 .iconedit {
                     color: #00FF00;
-                    font-size: 18px;
+                    font-size: 20px;
                 }
             }
 
@@ -76,7 +83,7 @@
 
                 .icondelete {
                     color: red;
-                    font-size: 18px;
+                    font-size: 20px;
                 }
             }
 
@@ -89,6 +96,24 @@
                 .icondetail {
                     color: cornflowerblue;
                     font-size: 18px;
+                }
+            }
+
+            .order-detail{
+                
+                .card{
+                    .collapse{
+                        .card-body{
+                            .kh{
+                               font-weight: bold;
+                               
+                            }
+                            .kk{
+                                font-weight: bold;
+                                margin-left: 80px;
+                             }
+                        }
+                    }
                 }
             }
         }
