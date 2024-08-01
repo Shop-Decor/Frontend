@@ -4,70 +4,93 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { jwtDecode } from 'jwt-decode'; // Fix the import statement
+import { useNavigate } from 'react-router-dom';
+import SignIn from '../../user/SignIn'; // Import SignIn component
+import { useState, useEffect } from 'react';
 
-class ADAccount extends Component {
-    state = {
-        accounts: [],
-        error: null,
-        newUser: {
-            userName: '',
-            password: '',
-            confirmPassword: '',  // Thêm trường này
-            fullName: '',
-            email: '',
-            phoneNumber: '',
-            address: ''
-        },
-        showModal: false
-    };
+const ADAccount = () => {
+    const [newUser, setNewUser] = useState({
+        fullName: '',
+        userName: '',
+        password: '',
+        confirmPassword: '',
+        email: '',
+        phoneNumber: '',
+        address: '',
 
-    async componentDidMount() {
-        this.fetchAccounts();
-    }
+    });
+    const navigate = useNavigate();
+    const [accounts, setAccounts] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [error, setError] = useState(null);
 
-    fetchAccounts = async () => {
-        try {
-            let res = await axios.get('https://localhost:7078/api/Account/Get');
-            const accounts = res.data || [];
-            this.setState({ accounts });
-        } catch (error) {
-            console.error('Error fetching accounts:', error);
-            this.setState({ error });
-        }
-    }
-
-    handleChange = (event) => {
-        const { name, value } = event.target;
-        this.setState(prevState => ({
-            newUser: {
-                ...prevState.newUser,
-                [name]: value
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            console.log("running");
+            const token = localStorage.getItem('token');
+            if (token) {
+                //check time
+                const user = jwtDecode(token);
+                if (((Date.now()/1000) -user.exp ) > 0) {
+                    navigate('/SignIn');
+                }
+                else{
+                    try {
+                        const response = await axios.get('https://localhost:7078/api/Account/Get', {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        });
+    
+                        if (response.status === 200) {
+                            const accounts = response.data || [];
+                            setAccounts(accounts);
+                        } else if (response.status === 401) {
+                            // Handle unauthorized status
+                        }
+                    } catch (error) {
+                         console.error('Error fetching accounts:', error);
+                        if (error.response && error.response.status === 401) {
+                            return;
+                        }
+                    }
+                }
+               
+            } else {
+                return;
             }
+        };
+
+        fetchAccounts();
+    }, [showModal]);
+
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setNewUser((prevNewUser) => ({
+            ...prevNewUser,
+            [name]: value
         }));
     }
-
-    handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const { newUser } = this.state;
+        const newU = { ...newUser };
 
-        console.log('Submitting data:', newUser); // Log dữ liệu
+        // console.log('Submitting data:', newUser); // Log dữ liệu
 
         try {
-            await axios.post('https://localhost:7078/api/Account/Create', newUser);
-            this.setState({ showModal: false });
-            this.fetchAccounts();  // Refresh the list
+            await axios.post('https://localhost:7078/api/Account/Create', newU);
+            setShowModal(!showModal); // Close the modal
         } catch (error) {
-            console.error('Error adding user:', error.response ? error.response.data : error.message);
-            this.setState({
-                error: error.response ? JSON.stringify(error.response.data) : error.message
-            });
+            // console.error('Error adding user:', error.response ? error.response.data : error.message);
+            setError(
+                'Error adding user'
+            );
         }
-    }
-
-    render() {
-        const { accounts, error, newUser } = this.state;
-
-        return (
+    };
+    return (
+        <>
             <div className="account-list container">
                 <h1>Người Dùng <FontAwesomeIcon icon={faUser} /></h1>
                 <button
@@ -122,14 +145,14 @@ class ADAccount extends Component {
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
-                                <form onSubmit={this.handleSubmit}>
+                                <form onSubmit={handleSubmit}>
                                     <div className="row mb-3">
                                         <label className="col-sm-3 col-form-label">Tên Tài Khoản:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="text"
                                                 value={newUser.userName}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="userName"
                                                 required
@@ -142,7 +165,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="password"
                                                 value={newUser.password}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="password"
                                                 required
@@ -155,7 +178,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="password"
                                                 value={newUser.confirmPassword}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="confirmPassword"
                                                 required
@@ -168,7 +191,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="text"
                                                 value={newUser.fullName}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="fullName"
                                                 required
@@ -181,7 +204,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="email"
                                                 value={newUser.email}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="email"
                                                 required
@@ -194,7 +217,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="tel"
                                                 value={newUser.phoneNumber}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="phoneNumber"
                                                 required
@@ -207,7 +230,7 @@ class ADAccount extends Component {
                                             <input
                                                 type="text"
                                                 value={newUser.address}
-                                                onChange={this.handleChange}
+                                                onChange={handleChange}
                                                 className="form-control"
                                                 name="address"
                                                 required
@@ -216,7 +239,7 @@ class ADAccount extends Component {
                                     </div>
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                        <button type="submit" className="btn btn-primary">Lưu</button>
+                                        <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
                                     </div>
                                 </form>
                             </div>
@@ -224,8 +247,10 @@ class ADAccount extends Component {
                     </div>
                 </div>
             </div>
-        );
-    }
-}
+        </>
+    );
+};
+
+
 
 export default ADAccount;

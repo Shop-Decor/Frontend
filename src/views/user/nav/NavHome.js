@@ -102,7 +102,7 @@ class NavHome extends React.Component {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link icon" to="/dangnhap">
+                  <Link className="nav-link icon" to="/SignIn">
                     <FontAwesomeIcon icon={faCircleUser} />
                   </Link>
                 </li>
