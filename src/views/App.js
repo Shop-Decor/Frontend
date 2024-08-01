@@ -7,7 +7,7 @@ import ADtest from "./admin/ADtest";
 import ADCategory from "./admin/ADCategory";
 import ADOrder from "./admin/ADOrder";
 import ProductUser from "./user/ProductUser";
-import Cart from "./user/Cart"
+import Cart from "./user/Cart";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./user/Home";
 import LayoutUser from "./user/LayoutUser";
@@ -18,6 +18,7 @@ import ADDiscount from "./admin/ADDiscount";
 import Account from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
 import ADProductDetails from "./admin/ADProductDetails";
+import ADStatistics from "./admin/ADStatistics"; // Import ADStatistics component
 
 class App extends React.Component {
   render() {
@@ -41,11 +42,14 @@ class App extends React.Component {
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />
             <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
-          </Route>
+            <Route path="product" element={<ADProduct />} />
+            <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
+            
 
+          </Route>
         </Routes>
       </BrowserRouter>
-    )
+    );
   }
 }
 
