@@ -87,7 +87,7 @@ const ADProductDetails = () => {
 
     const handleChange = (e, id) => {
         const { name, value } = e.target;
-    
+
         // Kiểm tra số dương và không cho phép nhập chữ cho giá và số lượng
         if (name === 'gia' || name === 'soLuong') {
             // Sử dụng regex để loại bỏ ký tự không phải số
@@ -109,10 +109,10 @@ const ADProductDetails = () => {
             }));
         }
     };
-    
-    
-    
-    
+
+
+
+
     const handleSave = async (id) => {
         const updatedDetail = editableDetails[id];
         let errorMessages = {
@@ -121,13 +121,13 @@ const ADProductDetails = () => {
             tenMauSac: '',
             tenKichThuoc: ''
         };
-    
+
         // Kiểm tra các điều kiện
         if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương và không được để trống.';
         if (!updatedDetail.soLuong || isNaN(updatedDetail.soLuong) || updatedDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương và không được để trống.';
         if (!updatedDetail.tenMauSac) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!updatedDetail.tenKichThuoc) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
-    
+
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
             if (errorTimeout) {
@@ -144,7 +144,7 @@ const ADProductDetails = () => {
             setErrorMessage('');
             return;
         }
-    
+
         try {
             const response = await axios.put(`https://localhost:7078/api/ProductDetails/${id}`, updatedDetail);
             if (response.status === 200) {
@@ -169,7 +169,7 @@ const ADProductDetails = () => {
             setErrorMessage(`Có lỗi xảy ra khi cập nhật chi tiết sản phẩm: ${error.message}`);
         }
     };
-    
+
 
 
     const handleNewDetailChange = (e) => {
@@ -295,15 +295,15 @@ const ADProductDetails = () => {
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Màu Sắc</label>
                                             <div className="col-md-8">
-                                                <input type="text" className="form-control" name="tenMauSac" value={editableDetails[detail.id].tenMauSac} onChange={(e) => handleChange(e, detail.id)} />
-                                                {errors.tenMauSac && <div className="text-danger">{errors.tenMauSac}</div>}
+                                                <input type="text" className="form-control" name="tenMauSac" value={editableDetails[detail.id].color} onChange={(e) => handleChange(e, detail.id)} />
+                                                {errors.color && <div className="text-danger">{errors.color}</div>}
                                             </div>
                                         </div>
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Kích Thước</label>
                                             <div className="col-md-8">
-                                                <input type="text" className="form-control" name="tenKichThuoc" value={editableDetails[detail.id].tenKichThuoc} onChange={(e) => handleChange(e, detail.id)} />
-                                                {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
+                                                <input type="text" className="form-control" name="tenKichThuoc" value={editableDetails[detail.id].size} onChange={(e) => handleChange(e, detail.id)} />
+                                                {errors.size && <div className="text-danger">{errors.size}</div>}
                                             </div>
                                         </div>
                                         <div className="row">
@@ -344,14 +344,14 @@ const ADProductDetails = () => {
                                             <label className="col-sm-4 col-form-label fw-bold">Màu Sắc</label>
                                             <div className="col-sm-8">
                                                 <p className="form-control-plaintext">
-                                                    {detail.tenMauSac}
+                                                    {detail.color}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="row mb-3">
                                             <label className="col-sm-4 col-form-label fw-bold">Kích Thước</label>
                                             <div className="col-sm-8">
-                                                <p className="form-control-plaintext">{detail.tenKichThuoc}</p>
+                                                <p className="form-control-plaintext">{detail.size}</p>
                                             </div>
                                         </div>
                                         <div className="row mb-3">
@@ -407,12 +407,12 @@ const ADProductDetails = () => {
 
                                 <div className="mb-3">
                                     <label className="form-label">Màu Sắc</label>
-                                    <input type="text" className="form-control" name="tenMauSac" value={newDetail.tenMauSac} onChange={handleNewDetailChange} />
+                                    <input type="text" className="form-control" name="tenMauSac" value={newDetail.color} onChange={handleNewDetailChange} />
                                     {errors.tenMauSac && <div className="text-danger">{errors.tenMauSac}</div>}
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Kích Thước</label>
-                                    <input type="text" className="form-control" name="tenKichThuoc" value={newDetail.tenKichThuoc} onChange={handleNewDetailChange} />
+                                    <input type="text" className="form-control" name="tenKichThuoc" value={newDetail.size} onChange={handleNewDetailChange} />
                                     {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
                                 </div>
                             </div>
