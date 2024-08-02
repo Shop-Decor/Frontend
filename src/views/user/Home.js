@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../../styles/user/Home.scss";
 import axios from "axios";
 import Image from "../../assets/images/sp1.png";
-import Image2 from "../../assets/images/sp2.png";
 import { useOutletContext, Link } from 'react-router-dom';
 import "../../styles/user/hover/hover.scss";
 import {
