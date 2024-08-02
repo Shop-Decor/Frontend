@@ -95,8 +95,8 @@ const Home = () => {
                   <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
                   <div className="overlay">
                     <div className="btn-product">
-                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
-                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                      <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
+                      <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
                     </div>
                   </div>
                 </div>
