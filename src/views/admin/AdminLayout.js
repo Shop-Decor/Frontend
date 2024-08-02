@@ -29,7 +29,7 @@ class AdminLayout extends React.Component {
                                 </Link>
                                 
                                 <li className="menu-item">
-                                  <Link to="/admin/Account">Người Dùng</Link>
+                                  <Link to="/admin/ADAccount">Người Dùng</Link>
                                 </li>
                                 <Link className="menu-item" to="/admin/test">test</Link>
                                 <Link to="/admin/discount">

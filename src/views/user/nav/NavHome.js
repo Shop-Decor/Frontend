@@ -127,9 +127,9 @@ const NavHome = (props) => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link icon" to="/dangnhap">
-                  <FontAwesomeIcon icon={faCircleUser} />
-                </Link>
+                <Link className="nav-link icon" to="/SignIn">
+                    <FontAwesomeIcon icon={faCircleUser} />
+                  </Link>
               </li>
               <li className="nav-item">
                 <div id="cart" className="nav-link icon position-relative" onClick={toggleCart} ref={cartIconRef}>

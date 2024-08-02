@@ -15,12 +15,16 @@ import ProductDetail from "./user/ProductDetail";
 import Payment from "./user/payment";
 import AdminLayout from "./admin/AdminLayout";
 import ADDiscount from "./admin/ADDiscount";
-import Account from './admin/Account/ADAccount';
+import ADAccount from './admin/Account/ADAccount';
 import ADProduct from "./admin/ADProduct";
+import SignIn from "./user/SignIn";
 import ADProductDetails from "./admin/ADProductDetails";
 import ADStatistics from "./admin/ADStatistics"; // Import ADStatistics component
 
 class App extends React.Component {
+  renderSignIn = () => {
+        return <SignIn />;
+    };
   render() {
     return (
       <BrowserRouter>
@@ -31,20 +35,23 @@ class App extends React.Component {
             <Route path="Payment" element={<Payment />} />
             <Route path="ProductUser" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
+            <Route path="SignIn" element={<SignIn />} />
           </Route>
 
           <Route path="admin" element={<AdminLayout />}>
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
-            <Route path="Account" element={<Account />} />
+            <Route path="ADAccount" element={<ADAccount  render = {this.renderSignIn}/>} />
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />
             <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
             <Route path="product" element={<ADProduct />} />
             <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
-            
+          </Route>
+<Route path="SignIn" >
+            <Route index element={<SignIn />} />
 
           </Route>
         </Routes>
