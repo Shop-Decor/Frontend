@@ -4,16 +4,28 @@ import axios from "axios";
 import Image from "../../assets/images/sp1.png";
 import Image2 from "../../assets/images/sp2.png";
 import { Link } from "react-router-dom";
+import "../../styles/user/hover/hover.scss";
+import {
+  faCartPlus,
+  faEye
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     axios.get("https://localhost:7078/api/Product/User")
       .then(response => {
-        setProducts(response.data);
+        const sortedProducts = response.data
+          .sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
+        const top5Products = sortedProducts.slice(0, 5);
+
+        setProducts(sortedProducts);
+        setFeaturedProducts(top5Products);
         setIsLoading(false);
       })
       .catch(error => {
@@ -23,29 +35,49 @@ const Home = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Đang tải...</div>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>Lỗi: {error.message}</div>;
   }
 
   return (
     <div className="container">
       <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
       <div className="row">
-        {products.map((product, index) => (
-          <div className="col-md-2 product" key={product.id}>
-            <Link to={`/ProductDetail/${product.id}`}>
-              <img src={product.Hinh || Image2} alt={product.Ten} />
-              <p>
-                {product.ten}
-                <br />
-                {product.gia.toLocaleString()}đ
-              </p>
-            </Link>
-          </div>
-        ))}
+        {products && products.length > 0 ? (
+          products.map((product, index) => (
+            <div className="col-md-2 product" key={index}>
+              <Link to={`/ProductDetail/${product.id}`} className="link_to">
+                <div className="product-main">
+                  <div className="hovereffect">
+                    <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                    <div className="overlay">
+                      <div className="btn-product">
+                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="product-content">
+                  <h5 className="card-title">{product.ten}</h5>
+                  <div className="product-price">
+                    <span className="price">
+                      {product.loaiGiam
+                        ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
+                        : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
+                    </span>
+                    <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>Không có sản phẩm nào</p>
+        )}
       </div>
       <div className="botton-xem">
         <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
@@ -53,21 +85,43 @@ const Home = () => {
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
       <div className="row">
-        {products.map((product, index) => (
-          <div className="col-md-2 product" key={product.id}>
-            <img src={product.Hinh || Image} alt={product.Ten} />
-            <p>
-              {product.ten}
-              <br />
-              {product.gia.toLocaleString()}đ
-            </p>
-          </div>
-        ))}
+        {featuredProducts && featuredProducts.length > 0 ? (
+          featuredProducts.map((product, index) => (
+            <div className="col-md-2 product" key={product.id}>
+              <div className="product-main">
+                <div className="hovereffect">
+                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <div className="overlay">
+                    <div className="btn-product">
+                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
+                      <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="product-content">
+                <h5 className="card-title">{product.ten}</h5>
+                <div className="product-price">
+                  <span className="price">
+                    {product.loaiGiam
+                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
+                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
+                  </span>
+                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Không có sản phẩm nào</p>
+        )}
       </div>
       <div className="botton-xem">
         <Link to="/ProductUser"><button className="align-item-center">Xem thêm</button></Link>
       </div>
+      <br />
     </div>
   );
 };
+
 export default Home;

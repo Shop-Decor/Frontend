@@ -15,8 +15,12 @@ class AdminLayout extends React.Component {
                             </div>
                             <ul className="menu">
                                 <li className="menu-item active">Trang chủ</li>
+
                                 <Link className="menu-item" to="/admin/ADCategory">Danh mục</Link>
-                                <li className="menu-item">Thống kê</li>
+
+                                <Link  to="/admin/ADStatistics">
+                                    <li className="menu-item">Thống kê</li>   
+                                </Link>
                                 <Link to="/admin/ADOrder">
                                   <li className="menu-item">Đơn hàng</li>
                                 </Link>                                
@@ -41,7 +45,7 @@ class AdminLayout extends React.Component {
                                         <div className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         </div>
                                         <ul className="dropdown-menu">
-                                            <li><a href="#" className="dropdown-item-ed" asp-area="">Đăng xuất</a></li>
+                                            <li><Link to="#" className="dropdown-item-ed" asp-area="">Đăng xuất</Link></li>
                                         </ul>
                                     </li>
                                 </ul>
