@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams, useOutletContext, Link } from "react-router-dom";
 import axios from "axios";
 import "../../styles/user/ProductDetail.scss";
 import Image from "../../assets/images/sp1.png";
+import {
+  faCartPlus,
+  faEye
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 const ProductDetail = (props) => {
-  const { listCart, setListCart } = useOutletContext();
+  const { listCart, setListCart, handleAddCart } = useOutletContext();
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [product2, setProduct2] = useState({});
+  const [relateproduct, setRelateProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDetail, setSelectedDetail] = useState(null);
@@ -46,6 +52,19 @@ const ProductDetail = (props) => {
   const handleColorChange = (color) => {
     setSelectedColors([color]);
   };
+
+  const fetchRelateProducts = async () => {
+    try {
+      let res = await axios.get(`https://localhost:7078/api/Product/GetProductsByTypeId/${id}`);
+      setRelateProduct(res.data || []);
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRelateProducts();
+  }, [id]);
 
   useEffect(() => {
     axios.get(`https://localhost:7078/api/Product/getproductdetail?spid=${id}`)
@@ -273,14 +292,36 @@ const ProductDetail = (props) => {
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm liên quan</h1>
       <div className="row">
-        <div className="col-md-2 product">
-          <img src={Image} alt="related product 1" />
-          <p>
-            Tượng hy lạp phong cách cổ đại bla bla bla
-            <br />
-            2.900.000đ
-          </p>
-        </div>
+        {relateproduct && relateproduct.length > 0 ? (
+          relateproduct.map((product, index) => (
+            <div className="col-md-2 product" key={product.id}>
+              <div className="product-main">
+                <div className="hovereffect">
+                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <div className="overlay">
+                    <div className="btn-product">
+                      <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
+                      <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="product-content">
+                <h5 className="card-title">{product.ten}</h5>
+                <div className="product-price">
+                  <span className="price">
+                    {product.loaiGiam
+                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
+                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
+                  </span>
+                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Không có sản phẩm nào</p>
+        )}
       </div>
     </div>
   );
