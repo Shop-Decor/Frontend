@@ -1,79 +1,85 @@
 /* payment.scss */
 
 .payment-container {
-    display: flex;
+    display        : flex;
     justify-content: space-between;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding        : 20px;
+    border         : 1px solid #ccc;
+    border-radius  : 5px;
 
     .left-side {
-        width: 58%;
+        width           : 58%;
         // padding-right: 20px;
 
         form {
             background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding         : 20px;
+            border          : 1px solid #ddd;
+            border-radius   : 5px;
 
             label {
-                display: block;
+                display      : block;
                 margin-bottom: 10px;
             }
 
-            input, textarea {
-                width: 100%;
-                padding: 10px;
+            input,
+            textarea {
+                width        : 100%;
+                padding      : 10px;
                 margin-bottom: 15px;
-                border: 1px solid #ccc;
+                border       : 1px solid #ccc;
                 border-radius: 3px;
             }
 
-           
+
         }
     }
+
     button {
         background-color: #EE1818;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
+        color           : #fff;
+        padding         : 10px 20px;
+        border          : none;
+        border-radius   : 3px;
+        cursor          : pointer;
     }
 
     .inline-fields {
         display: flex;
-        gap: 10px; /* Khoảng cách giữa các trường */
+        gap    : 10px;
+        /* Khoảng cách giữa các trường */
     }
 
     .inline-fields label {
-        flex: 1; /* Chia đều không gian cho các nhãn */
+        flex: 1;
+        /* Chia đều không gian cho các nhãn */
     }
 
     .inline-fields input {
-        flex: 2; /* Chia đều không gian cho các ô nhập liệu */
+        flex: 2;
+        /* Chia đều không gian cho các ô nhập liệu */
     }
 
 
     .form-container {
         form {
-            display: flex;
+            display  : flex;
             flex-wrap: wrap;
         }
+
         .form-row {
-            display: flex;
-            align-items: center;
+            display      : flex;
+            align-items  : center;
             margin-bottom: 10px;
-    
+            margin-left  : 10px;
+
             label {
-                width: 150px; // Độ rộng của label
+                width       : 150px; // Độ rộng của label
                 margin-right: 10px; // Khoảng cách giữa label và select box
             }
-    
+
             select {
-                flex: 1
-                ; // Chia đều phần còn lại của hàng
+                flex: 1; // Chia đều phần còn lại của hàng
             }
         }
     }
@@ -83,30 +89,46 @@
 
         .order-summary {
             background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding         : 20px;
+            border          : 1px solid #ddd;
+            border-radius   : 5px;
 
             .product {
+                .image-product {
+                    width        : 100px; // Adjust the width as needed
+                    height       : auto; // Maintain aspect ratio
+                    object-fit   : cover; // Ensure the image covers the container without distortion
+                    border-radius: 4px; // Optional: add rounded corners
+                    margin-bottom: 10px; // Optional: add space below the image
+                }
+
                 margin-bottom: 10px;
 
+
                 span {
-                    display: block;
+                    display      : block;
                     margin-bottom: 5px;
 
                     &:first-child {
                         font-weight: bold;
-                        font-size: 1.1em;
+                        font-size  : 1.1em;
                     }
                 }
             }
 
             .total {
-                margin-top: 15px;
+                margin-top : 15px;
                 font-weight: bold;
 
                 span {
                     display: block;
+                }
+            }
+
+            .discount-input {
+                button {
+                    margin-left: 20px;
+                    height     : 40px;
                 }
             }
         }
