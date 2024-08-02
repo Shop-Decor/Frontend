@@ -78,23 +78,35 @@ const ProductDetail = (props) => {
       });
   }, [id]);
 
+
   const handleAddToCart = () => {
-    if (selectedDetail && selectedSizes.length > 0 && selectedColors.length > 0) {
-      const cartItem = {
-        id: 1,
-        ten: product2.ten,
-        hinh: product2.hinhs[0],
-        gia: originalPrice,
-        loaiGiam: selectedDetail.discountType,
-        menhGia: selectedDetail.discountAmount,
-        size: selectedSizes,
-        quantity: quantity,
-        color: selectedColors
-      };
-      console.log(cartItem)
-      setListCart(prevAll => [...prevAll, cartItem]);
-      alert("Sản phẩm đã được thêm vào giỏ hàng!");
-    }
+    console.log(1);
+    setListCart(cart => {
+      const cartExisting = cart.findIndex(x => x.id === id && x.size === selectedSizes.size && x.color === selectedColors.color);
+      if (cartExisting === -1) {
+        const cartItem = {
+          id: id,
+          ten: product2.ten,
+          hinh: product2.hinhs[0],
+          gia: originalPrice,
+          loaiGiam: selectedDetail.discountType,
+          menhGia: selectedDetail.discountAmount,
+          size: selectedSizes,
+          quantity: quantity,
+          color: selectedColors
+        };
+        const list = [...cart, cartItem];
+        return list;
+      }
+      else {
+        const listUpdate = cart.map((item, index) =>
+          index === cartExisting
+            ? { ...item, quantity: item.quantity += quantity }
+            : item
+        );
+        return listUpdate;
+      }
+    });
   };
 
   const calculatePrice = () => {

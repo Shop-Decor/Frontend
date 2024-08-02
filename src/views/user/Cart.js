@@ -4,11 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faRotateLeft
 } from "@fortawesome/free-solid-svg-icons";
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const Cart = (props) => {
 
     const { listCart, setListCart, total } = useOutletContext();
+    const navigate = useNavigate();
+
+    const handleCheckout = () => {
+        navigate('/Payment', { state: { listCart, total } });
+    };
 
     const handleChangeQuantity = (event, index) => {
         setListCart(cart => {
@@ -108,7 +113,7 @@ const Cart = (props) => {
                             <span className="total-amount-name">Tổng tiền: </span> <span className="total-amount">{total.toLocaleString('vi-VN')} đ</span>
                             <br />
                             <div className="cracked-line"></div>
-                            <button className="btn-pay">
+                            <button className="btn-pay" onClick={handleCheckout}>
                                 <span className="pay-name">THANH TOÁN</span>
                             </button>
                             <br />

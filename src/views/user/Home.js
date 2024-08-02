@@ -3,7 +3,7 @@ import "../../styles/user/Home.scss";
 import axios from "axios";
 import Image from "../../assets/images/sp1.png";
 import Image2 from "../../assets/images/sp2.png";
-import { Link } from "react-router-dom";
+import { useOutletContext, Link } from 'react-router-dom';
 import "../../styles/user/hover/hover.scss";
 import {
   faCartPlus,
@@ -12,6 +12,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Home = () => {
+  const { handleAddCart } = useOutletContext();
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +43,7 @@ const Home = () => {
     return <div>Lỗi: {error.message}</div>;
   }
 
+
   return (
     <div className="container">
       <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
@@ -55,8 +57,8 @@ const Home = () => {
                     <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
                     <div className="overlay">
                       <div className="btn-product">
-                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faEye} /></a>
-                        <a className="info" href="#"><FontAwesomeIcon className="icon" icon={faCartPlus} /></a>
+                        <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
+                        <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
                       </div>
                     </div>
                   </div>
