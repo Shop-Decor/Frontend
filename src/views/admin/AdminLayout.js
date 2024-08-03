@@ -5,6 +5,9 @@ import { Link, Outlet } from "react-router-dom";
 
 class AdminLayout extends React.Component {
     render() {
+        if (localStorage.getItem('token') === null) {
+            window.location.href = '/SignIn';
+        }
         return (
             <div className="web-body">
                 <div className="container-fluid admin-board">
@@ -35,7 +38,10 @@ class AdminLayout extends React.Component {
                                 <Link to="/admin/discount">
                                   <li className="menu-item">khuyến mãi</li>
                                 </Link>
-                                <li className="menu-item">Đăng xuất</li>
+                                <Link to="/SignIn">
+                                  <li className="menu-item">Đăng xuất</li>
+                                </Link>
+                               
                             </ul>
                         </div>
                         <div className="col-sm-10 ad-display p-0">
