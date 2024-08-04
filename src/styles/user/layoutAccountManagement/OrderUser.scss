@@ -1,0 +1,113 @@
+.nav-pills {
+    margin-bottom: 20px;
+
+    .nav-item {
+        .nav-link {
+            color: black;
+            border-radius: initial;
+            background-color: #fff;
+
+            &.active {
+                color: #FF7675;
+                border-bottom: 2px solid #FF7675;
+                border-radius: initial;
+            }
+
+            &:hover {
+                color: #FF7675;
+            }
+        }
+    }
+}
+
+.tab-content {
+    .order {
+        padding-bottom: 20px;
+
+        .h-order {
+            display: flex;
+            flex-direction: row-reverse;
+            padding-bottom: 10px;
+            border-bottom: 1px solid grey;
+        }
+
+        .m-order {
+            display: flex;
+            padding: 10px 0;
+
+            .order-img {
+                width: 10%;
+            }
+
+            .order-content {
+                width: 90%;
+                display: flex;
+
+                .content {
+                    width: 80%;
+                    padding: 0 10px;
+
+                    .name {
+                        margin: 0;
+                    }
+
+                    .size-color {
+                        display: flex;
+
+                        p {
+                            margin: 0;
+                        }
+
+                        .size {
+                            margin-right: 10px;
+                        }
+                    }
+
+                    .quantity {
+                        margin: 0;
+                    }
+                }
+
+                .order-price {
+                    width: 20%;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+
+                    .price {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+
+        .f-order {
+
+            .total {
+                display: flex;
+                flex-direction: row-reverse;
+
+                span {
+                    font-size: 25px;
+                    color: red;
+                }
+            }
+
+            .cart-btn {
+                display: flex;
+                flex-direction: row-reverse;
+
+                a {
+                    width: 120px;
+                    height: 50px;
+                    text-decoration: none;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 3px;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
