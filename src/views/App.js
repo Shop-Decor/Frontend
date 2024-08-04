@@ -22,6 +22,7 @@ import ADProductDetails from "./admin/ADProductDetails";
 import ADStatistics from "./admin/ADStatistics"; // Import ADStatistics component
 import OtherUser from "./user/accountUser/OrderUser";
 import LayoutAccountManagement from "./user/accountUser/LayoutAccountManagement";
+import SignUp from "./user/SignUp";
 
 class App extends React.Component {
   renderSignIn = () => {
@@ -55,6 +56,9 @@ class App extends React.Component {
           </Route>
           <Route path="SignIn" >
             <Route index element={<SignIn />} />
+          </Route>
+          <Route path="SignUp" >
+            <Route index element={<SignUp />} />
           </Route>
         </Routes>
       </BrowserRouter>
