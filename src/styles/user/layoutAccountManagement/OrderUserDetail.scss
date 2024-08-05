@@ -1,0 +1,174 @@
+.order-detail {
+    .h-order-detail {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid grey;
+        padding-bottom: 10px;
+
+        .order-id {
+            margin: 0;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: black;
+
+            &:hover {
+                color: #FF7675;
+            }
+        }
+    }
+
+    .m-order-detail {
+        padding: 10px 0;
+
+        .order-cancel {
+            margin-left: 10px;
+
+            .cancel-content {
+                color: #FF7675;
+            }
+        }
+
+        .order-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            position: relative;
+
+            .order-status-icon {
+                border: 5px solid grey;
+                border-radius: 50%;
+                width: 80px;
+                height: 80px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: grey;
+
+                &.active {
+                    color: #2DC258;
+                    border: 5px solid #2DC258;
+                }
+
+                .status-content {
+                    position: absolute;
+                    top: 100%;
+                    color: black;
+                    font-size: 20px;
+                }
+            }
+
+            .order-status-line {
+                width: 200px;
+                height: 5px;
+                background-color: grey;
+
+                &.active {
+                    background-color: #2DC258;
+                }
+            }
+        }
+
+        .cart-btn {
+            display: flex;
+            flex-direction: row-reverse;
+            padding-top: 50px;
+
+            a {
+                width: 120px;
+                height: 50px;
+                text-decoration: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 3px;
+                font-size: 16px;
+            }
+        }
+    }
+
+    .f-order-detail {
+        .order {
+            padding-bottom: 20px;
+
+            .h-order {
+                padding-bottom: 10px;
+                border-bottom: 1px solid grey;
+            }
+
+            .m-order {
+                display: flex;
+                padding: 10px 0;
+                border-bottom: 1px solid grey;
+
+                .order-img {
+                    width: 10%;
+                }
+
+                .order-content {
+                    width: 90%;
+                    display: flex;
+
+                    .content {
+                        width: 80%;
+                        padding: 0 10px;
+
+                        .name {
+                            margin: 0;
+                        }
+
+                        .size-color {
+                            display: flex;
+
+                            p {
+                                margin: 0;
+                            }
+
+                            .size {
+                                margin-right: 10px;
+                            }
+                        }
+
+                        .quantity {
+                            margin: 0;
+                        }
+                    }
+
+                    .order-price {
+                        width: 20%;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+
+                        .price {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }
+
+            .f-order {
+                display: flex;
+                justify-content: space-between;
+                padding-top: 10px;
+
+                .contact {
+                    p {
+                        margin: 5px;
+                    }
+                }
+
+                .total {
+                    text-align: right;
+
+                    .money {
+                        color: red;
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
