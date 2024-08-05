@@ -8,18 +8,25 @@
     align-items    : center;
 
     /* căn giữa theo chiều dọc */
-    button {
+    .link-xem {
       width           : 150px;
       height          : 40px;
       border-radius   : 10%;
       background-color: #efd4d0;
       border          : 0px solid #fff;
+      text-decoration : none;
+      display         : flex;
+      justify-content : center;
+      /* căn giữa theo chiều ngang */
+      align-items     : center;
+      color           : #000;
     }
   }
 
   .dung {
     color: red;
   }
+
 
   .row {
     .product {
