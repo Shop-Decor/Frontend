@@ -1,5 +1,5 @@
 // Login.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../../styles/user/SignIn.scss'; // Nhập file SCSS
@@ -8,12 +8,17 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { jwtDecode } from "jwt-decode"; // Import jwt-decode
+import Swal from 'sweetalert2';
 const SignIn = () => {
     const [userName, setItem] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate(); // Hook để chuyển hướng
 
+    useEffect(() => {
+        // Clear any existing token when the component mounts
+        localStorage.removeItem('token');
+    }, []);
     let token;
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,7 +49,7 @@ const SignIn = () => {
             // Chuyển hướng đến trang Home
             
         } catch (err) {
-        //    console.log(token.token);
+           console.log(token.token);
             if (err.response) {
                 // console.error('Response error:', err.response);
                 setError('Đăng nhập thất bại, Vui lòng kiểm trả tài khoản và mật khẩu');
@@ -57,6 +62,15 @@ const SignIn = () => {
                 }
                 else if(token.token === "1002"){
                     setError('Mật khẩu không đúng');
+                }
+                else if(token.token === "1003"){
+                  
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ôi Không',
+                        text: 'Tai khoản đã bị khóa',
+                    });
+                    setError('Tài khoản đã bị khóa');
                 }
                 else{
                     setError('Có lỗi xảy ra, vui lòng thử lại sau.');
@@ -81,7 +95,7 @@ const SignIn = () => {
                     </button>
                 </form>
                 <form onSubmit={handleSubmit}>
-                    {error && <p>{error}</p>}
+                    {error && <p className='text-'>{error}</p>}
                     <label>User Name:</label>
                     <input
                         type="userName"
@@ -99,7 +113,7 @@ const SignIn = () => {
                     <button type="submit">Đăng Nhập</button>
                 </form>
                 <form>
-                    <p>Bạn chưa có tài khoản? <a href="/register">Đăng Kí</a></p>
+                    <p>Bạn chưa có tài khoản? <a href="/SignUp">Đăng Kí</a></p>
                 </form>
             </div>
         </div>

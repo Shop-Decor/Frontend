@@ -79,7 +79,9 @@ const Home = () => {
         )}
       </div>
       <div className="botton-xem">
+
         <Link to="/ProductUser" className="align-item-center link-xem">Xem thêm</Link>
+
       </div>
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
@@ -116,7 +118,9 @@ const Home = () => {
         )}
       </div>
       <div className="botton-xem">
+
         <Link to="/ProductUser" className="align-item-center link-xem">Xem thêm</Link>
+
       </div>
       <br />
     </div>

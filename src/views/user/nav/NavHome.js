@@ -104,7 +104,7 @@ const NavHome = (props) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/ProductDetail"
+                  to="/otheruser"
                 >
                   Giới thiệu
                 </NavLink>
@@ -128,8 +128,8 @@ const NavHome = (props) => {
               </li>
               <li className="nav-item">
                 <Link className="nav-link icon" to="/SignIn">
-                    <FontAwesomeIcon icon={faCircleUser} />
-                  </Link>
+                  <FontAwesomeIcon icon={faCircleUser} />
+                </Link>
               </li>
               <li className="nav-item">
                 <div id="cart" className="nav-link icon position-relative" onClick={toggleCart} ref={cartIconRef}>

@@ -107,7 +107,12 @@ const LayoutUser = (props) => {
             <Slider />
             <div className="container p-0">
                 <Outlet
-                    context={{ listCart, setListCart, total, handleAddCart }}
+                    context={{
+                        listCart,
+                        setListCart,
+                        total,
+                        handleAddCart
+                    }}
                 />
             </div>
             <Footer />
