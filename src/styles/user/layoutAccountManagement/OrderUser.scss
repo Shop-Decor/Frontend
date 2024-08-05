@@ -29,59 +29,75 @@
             flex-direction: row-reverse;
             padding-bottom: 10px;
             border-bottom: 1px solid grey;
-        }
 
-        .m-order {
-            display: flex;
-            padding: 10px 0;
-
-            .order-img {
-                width: 10%;
+            .order-status-success {
+                color: #26AA99;
             }
 
-            .order-content {
-                width: 90%;
+            .order-status {
+                color: #EE4D2D;
+            }
+        }
+
+        .link-detail {
+            text-decoration: none;
+            color: black;
+
+            .m-order {
                 display: flex;
+                padding: 10px;
+                border-bottom: 1px solid grey;
 
-                .content {
-                    width: 80%;
-                    padding: 0 10px;
+                .order-img {
+                    width: 10%;
+                }
 
-                    .name {
-                        margin: 0;
-                    }
+                .order-content {
+                    width: 90%;
+                    display: flex;
 
-                    .size-color {
-                        display: flex;
+                    .content {
+                        width: 80%;
+                        padding: 0 10px;
 
-                        p {
+                        .name {
                             margin: 0;
                         }
 
-                        .size {
-                            margin-right: 10px;
+                        .size-color {
+                            display: flex;
+
+                            p {
+                                margin: 0;
+                            }
+
+                            .size {
+                                margin-right: 10px;
+                            }
+                        }
+
+                        .quantity {
+                            margin: 0;
                         }
                     }
 
-                    .quantity {
-                        margin: 0;
-                    }
-                }
+                    .order-price {
+                        width: 20%;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
 
-                .order-price {
-                    width: 20%;
-                    display: flex;
-                    justify-content: flex-end;
-                    align-items: center;
-
-                    .price {
-                        font-size: 20px;
+                        .price {
+                            font-size: 20px;
+                        }
                     }
                 }
             }
         }
 
         .f-order {
+            background-color: #fffdf7;
+            padding: 10px;
 
             .total {
                 display: flex;
@@ -107,6 +123,7 @@
                     border-radius: 3px;
                     font-size: 16px;
                 }
+
             }
         }
     }

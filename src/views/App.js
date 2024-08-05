@@ -20,7 +20,8 @@ import ADProduct from "./admin/ADProduct";
 import SignIn from "./user/SignIn";
 import ADProductDetails from "./admin/ADProductDetails";
 import ADStatistics from "./admin/ADStatistics"; // Import ADStatistics component
-import OtherUser from "./user/accountUser/OrderUser";
+import OrderUser from "./user/accountUser/OrderUser";
+import OrderUserDetail from "./user/accountUser/OrderUserDetail";
 import LayoutAccountManagement from "./user/accountUser/LayoutAccountManagement";
 import SignUp from "./user/SignUp";
 
@@ -38,8 +39,9 @@ class App extends React.Component {
             <Route path="Payment" element={<Payment />} />
             <Route path="ProductUser" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
-            <Route path="account" element={<LayoutAccountManagement />}>
-              <Route index element={<OtherUser />} />
+            <Route path="user" element={<LayoutAccountManagement />}>
+              <Route index element={<OrderUser />} />
+              <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
             </Route>
           </Route>
 
