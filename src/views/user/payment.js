@@ -48,6 +48,7 @@ const Payment = () => {
         phone: '',
         address: '',
         paymentMethod: null,
+        totalmoney: ''
     });
 
     const [appliedDiscountCode, setAppliedDiscountCode] = useState('');
@@ -129,8 +130,9 @@ const Payment = () => {
             diaChi: formData.address,
             sdt: formData.phone,
             email: formData.email,
-            paymentMethod: formData.paymentMethod,
+            TTThanhToan: formData.paymentMethod,
             orderDetails: orderDetails,
+            ThanhTien: finalTotal
         };
 
         try {
@@ -149,7 +151,6 @@ const Payment = () => {
 
     return (
         <>
-
             <div className="payment-container my-4">
                 <div className="modal" id="myModal">
                     <div className="modal-dialog modal-dialog-scrollable">
@@ -159,10 +160,10 @@ const Payment = () => {
                                 <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div className="modal-body">
-                                {discountData.filter(item => !item.loaiKM).map((item, index) => {
+                                {discountData.filter(x => !x.loaiKM).map((item, index) => {
                                     return (
-                                        <>
-                                            <div className="card" key={index}>
+                                        <React.Fragment key={index}>
+                                            <div className="card" >
                                                 <div className="main">
                                                     <div className="co-img">
                                                         <img src="https://i.pinimg.com/originals/c7/84/67/c78467db9ff497393cb548a48f02d451.png" alt="" />
@@ -176,7 +177,7 @@ const Payment = () => {
                                                 <CopyButton discountCode={item.maGiamGia} />
                                             </div>
                                             <br />
-                                        </>
+                                        </React.Fragment>
                                     )
 
                                 })}
