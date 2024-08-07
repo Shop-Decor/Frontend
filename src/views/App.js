@@ -38,9 +38,11 @@ class App extends React.Component {
             <Route path="ProductDetail/:id" element={<ProductDetail />} />
             <Route path="Payment" element={<Payment />} />
             <Route path="ProductUser" element={<ProductUser />} />
+            <Route path="ProductUser/:id" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
             <Route path="user" element={<LayoutAccountManagement />}>
               <Route index element={<OrderUser />} />
+              <Route path="order" element={<OrderUser />} />
               <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
             </Route>
           </Route>

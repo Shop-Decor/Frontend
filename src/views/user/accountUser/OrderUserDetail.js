@@ -45,7 +45,7 @@ const OrderUserDetail = (props) => {
         <>
             <div className="order-detail">
                 <div className="h-order-detail">
-                    <Link to='/user' className="btn-back"><FontAwesomeIcon icon={faAngleLeft} />Quay lại</Link>
+                    <Link to='/user/order' className="btn-back"><FontAwesomeIcon icon={faAngleLeft} />Quay lại</Link>
                     <p className="order-id">
                         Mã đơn hàng: {order.id}
                     </p>

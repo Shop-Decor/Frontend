@@ -14,12 +14,21 @@ const LayoutAccountManagement = (props) => {
                     </div>
                 </div>
                 <ul className="menu">
-                    <li className="menu-item active">Tài khoản của tôi</li>
-
-                    <Link to="/admin/ADStatistics">
-                        <li className="menu-item">Đơn mua</li>
-                    </Link>
-                    <li className="menu-item">Đăng xuất</li>
+                    <li className="menu-item active">
+                        <Link to="/user/account" className="user-management">
+                            Tài khoản của tôi
+                        </Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/user/order" className="user-management">
+                            Đơn mua
+                        </Link>
+                    </li>
+                    <li className="menu-item">
+                        <Link to="/" className="user-management">
+                            Đăng xuất
+                        </Link>
+                    </li>
                 </ul>
             </div>
             <div className="display">

@@ -22,29 +22,23 @@
 
         .menu {
             padding: 0;
-            color: gray;
-            font-weight: 500;
 
             .active {
-                border-right: 5px solid #4318FF;
-                color: black;
-            }
-
-            .small-cap {
-                padding: 12px 30px;
-                font-size: 15px;
-                font-weight: bold;
+                border-right: 5px solid #FF7675;
             }
 
             .menu-item {
                 font-size: 18px;
                 list-style: none;
                 padding: 12px 10px;
-                cursor: pointer;
 
-                &:hover {
-                    background-color: #EEF3FF;
-                    color: #2DAAED;
+                .user-management {
+                    text-decoration: none;
+                    color: black;
+
+                    &:hover {
+                        color: #FF7675;
+                    }
                 }
             }
         }
