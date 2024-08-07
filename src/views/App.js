@@ -24,6 +24,8 @@ import OrderUser from "./user/accountUser/OrderUser";
 import OrderUserDetail from "./user/accountUser/OrderUserDetail";
 import LayoutAccountManagement from "./user/accountUser/LayoutAccountManagement";
 import SignUp from "./user/SignUp";
+import ADDetailAccount from "./admin/Account/ADDetailAccount";
+import UserDetail from "./user/accountUser/DetailAccount";
 
 class App extends React.Component {
   renderSignIn = () => {
@@ -42,7 +44,9 @@ class App extends React.Component {
             <Route path="user" element={<LayoutAccountManagement />}>
               <Route index element={<OrderUser />} />
               <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
+              <Route path="UserDetail" element={<UserDetail />} />
             </Route>
+
           </Route>
 
           <Route path="admin" element={<AdminLayout />}>
@@ -55,6 +59,7 @@ class App extends React.Component {
             <Route path="product" element={<ADProduct />} />
             <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
             <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
+            <Route path="ADDetailAccount" element={<ADDetailAccount />} />
           </Route>
           <Route path="SignIn" >
             <Route index element={<SignIn />} />
@@ -62,6 +67,9 @@ class App extends React.Component {
           <Route path="SignUp" >
             <Route index element={<SignUp />} />
           </Route>
+          {/* <Route path="ADDetailAccount" >
+            <Route index element={<ADDetailAccount />} />
+          </Route> */}
         </Routes>
       </BrowserRouter>
     );
