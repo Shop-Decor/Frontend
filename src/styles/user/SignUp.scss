@@ -4,8 +4,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #ffffff;
+    
+    background-color: #c9c9c9;
     p {
         color: #A3AED0;
     }
@@ -13,23 +13,22 @@
     h2 {
         color: #2B3674;
     }
-    .SignInGG{
-        color: #2B3674;
-        button {
-            font-size: 12px;
-            padding: 10px;
-            background-color: #F4F7FE;
-            color: #2B3674;
-
-            
-            label{
-                margin-left: 10px;
-            
-            }
-        }
-        
-        button:hover {
-            background-color: #E0E5F2;
+   
+    .SignUp-Form{
+        margin: 20px;
+        display: flex;
+        flex-direction: row; /* Display row to place image next to form */
+        background-color: #ebcccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(167, 6, 6, 0.1);
+        padding: 20px; /* Add padding to the form */
+        .content{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            padding: 20px;
         }
     }
     
@@ -71,5 +70,18 @@
       
     }
 
+    .image-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+    }
     
 }
