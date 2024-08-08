@@ -43,7 +43,7 @@ const SignIn = () => {
             let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             console.log('Role',userRole);
             console.log('User:', userU);
-            localStorage.setItem('userU', userName);
+            localStorage.setItem('userName', userName);
             // console.log("Time", user.exp);
             // console.log((Date.now() - user.exp )< 0 );
             // console.log(Date.now());

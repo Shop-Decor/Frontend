@@ -22,7 +22,7 @@ const LayoutAccountManagement = (props) => {
                 </div>
                 <ul className="menu">
                     <li className="menu-item active">
-                        <Link to="/UserDetail" className="user-management">
+                        <Link to="UserDetail" className="user-management">
                             Tài khoản của tôi
                         </Link>
                     </li>

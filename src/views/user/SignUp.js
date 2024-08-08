@@ -45,7 +45,8 @@ const SignIn = () => {
         let errors = {};
 
         // Validate fullName (only letters and spaces)
-        if (/[^a-zA-Z\s]/.test(newU.fullName)) {
+       
+        if (/\d/.test(newU.fullName)) {
             errors.fullName = 'Tên người dùng không được chứa số hoặc ký tự đặc biệt';
         }
 
