@@ -149,8 +149,7 @@ const ADAccount = () => {
             await axios.post('https://localhost:7078/api/Account/Create', newUser);
             setShowModal(!showModal); // Close the modal
             // Clear the form
-            useEffect();
-
+            // useEffect();
         } catch (error) {
             setError('Error adding user');
         }

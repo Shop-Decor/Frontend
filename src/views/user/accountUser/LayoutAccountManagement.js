@@ -17,7 +17,7 @@ const LayoutAccountManagement = (props) => {
                 <div className="acc-content mb-3">
                     <img src={logo} alt="img account" />
                     <div className="account-name">
-                       {userName}
+                        {userName}
                     </div>
                 </div>
                 <ul className="menu">

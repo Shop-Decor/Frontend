@@ -51,7 +51,9 @@ const ADDetailAccount = () => {
             const token = localStorage.getItem('token');
             if (token) {
                 const user = jwtDecode(token);
-                if (((Date.now() / 1000) - user.exp) > 0) {
+                console.log(user.exp);
+                console.log(Math.floor(Date.now() / 1000));
+                if ((Math.floor(Date.now() / 1000)) > user.exp) {
                     navigate('/SignIn');
                 } else {
                     try {
