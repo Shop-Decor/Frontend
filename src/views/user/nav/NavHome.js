@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import axios from "axios";
 import logo from "../../../assets/images/shopdecor.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,6 +19,8 @@ const NavHome = (props) => {
   const cartIconRef = useRef(null);
 
   const { listCart, setListCart, total } = props;
+  const [categories, setCategories] = useState();
+  const [isActive, setIsActive] = useState(false);
 
   const toggleCart = (e) => {
     e.stopPropagation();
@@ -41,8 +44,36 @@ const NavHome = (props) => {
     event.stopPropagation();
     setListCart(cart => cart.filter((_, i) => i !== index));
   }
- const userName = localStorage.getItem('userU');
- console.log(userName);
+
+
+
+  const fetchCtegories = async () => {
+    try {
+      let res = await axios.get('https://localhost:7078/api/Category');
+      setCategories(res.data || []);
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api loại sản phẩm:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchCtegories();
+  }, []);
+
+  const handleProductClick = () => {
+    setIsActive(!isActive);
+  };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (categories && categories.some(item => location.pathname.includes(`/ProductUser/${item.id}`))) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [location, categories]);
+
   return (
     <>
       <nav className="navbar navbar-expand-sm">
@@ -70,35 +101,24 @@ const NavHome = (props) => {
                   Trang chủ
                 </NavLink>
               </li>
-              <li className="nav-item dropdown">
+              <li className={`menu-item ${isActive ? 'active' : ''}`}>
                 <NavLink
-                  className={({ isActive }) =>
-                    isActive
-                      ? "nav-link active dropdown-toggle"
-                      : "nav-link dropdown-toggle"
-                  }
-                  to="/ad"
-                  role="button"
-                  data-bs-toggle="dropdown"
+                  className={`menu-link ${isActive ? 'active' : ''}`}
+                  onClick={handleProductClick}
+                  to="/ProductUser"
                 >
                   Sản phẩm
                 </NavLink>
-                <ul className="dropdown-menu">
-                  <li>
-                    <NavLink className="dropdown-item" to="/ProductUser">
-                      Link
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink className="dropdown-item" to="/ad/link2">
-                      Another link
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink className="dropdown-item" to="/ad/link3">
-                      A third link
-                    </NavLink>
-                  </li>
+                <ul className="submenu">
+                  {categories && categories.length > 0 &&
+                    categories.map((item) => (
+                      <li key={`category${item.id}`}>
+                        <NavLink className="submenu-item" to={`/ProductUser/${item.id}`}>
+                          {item.tenLoai}
+                        </NavLink>
+                      </li>
+                    ))
+                  }
                 </ul>
               </li>
               <li className="nav-item">
