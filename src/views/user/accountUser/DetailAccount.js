@@ -53,7 +53,7 @@ const ADDetailAccount = () => {
                 const user = jwtDecode(token);
                 console.log(user.exp);
                 console.log(Math.floor(Date.now() / 1000));
-                if ((Math.floor(Date.now() / 1000)) > user.exp) {
+                if (((Date.now() / 1000) - user.exp) > 0) {
                     navigate('/SignIn');
                 } else {
                     try {

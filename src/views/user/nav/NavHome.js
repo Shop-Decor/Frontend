@@ -151,8 +151,7 @@ const NavHome = (props) => {
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </li>
-              <li className="nav-item">
-                
+              <li className="nav-item">                
                 <Link className="nav-link icon" to="/User ">
                 {userName}
                   <FontAwesomeIcon icon={faCircleUser} />
