@@ -149,9 +149,9 @@ const NavHome = (props) => {
                 </Link>
               </li>
               <li className="nav-item">
-                
+
                 <Link className="nav-link icon" to="/user">
-                 {userName}
+                  {/* {userName} */}
                   <FontAwesomeIcon icon={faCircleUser} />
                 </Link>
               </li>
