@@ -11,6 +11,7 @@ import {
 import "../../../styles/user/nav/Nav.scss";
 import "../../../styles/user/btn/btn.scss";
 
+
 const NavHome = (props) => {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const cartRef = useRef(null);
@@ -40,7 +41,8 @@ const NavHome = (props) => {
     event.stopPropagation();
     setListCart(cart => cart.filter((_, i) => i !== index));
   }
-
+ const userName = localStorage.getItem('userU');
+ console.log(userName);
   return (
     <>
       <nav className="navbar navbar-expand-sm">
@@ -127,7 +129,9 @@ const NavHome = (props) => {
                 </Link>
               </li>
               <li className="nav-item">
+                
                 <Link className="nav-link icon" to="/user">
+                 {userName}
                   <FontAwesomeIcon icon={faCircleUser} />
                 </Link>
               </li>
