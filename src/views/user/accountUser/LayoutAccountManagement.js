@@ -17,12 +17,12 @@ const LayoutAccountManagement = (props) => {
                 <div className="acc-content mb-3">
                     <img src={logo} alt="img account" />
                     <div className="account-name">
-                       {userName}
+                        {userName}
                     </div>
                 </div>
                 <ul className="menu">
                     <li className="menu-item active">
-                        <Link to="/UserDetail" className="user-management">
+                        <Link to="/user/UserDetail" className="user-management">
                             Tài khoản của tôi
                         </Link>
                     </li>
