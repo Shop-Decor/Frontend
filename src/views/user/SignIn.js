@@ -34,14 +34,20 @@ const SignIn = () => {
             // Lưu token vào localStorage
             localStorage.setItem('token', token.token); // string "abcedkfsdk"
             localStorage.setItem('user', JSON.stringify(token));
+        
+            
             // console.log('Token:', token.token);
             // Lấy thông tin user từ token
             const user = jwtDecode(token.token);
+            let userU = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+            let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            console.log('Role',userRole);
+            console.log('User:', userU);
+            localStorage.setItem('userU', userName);
             // console.log("Time", user.exp);
             // console.log((Date.now() - user.exp )< 0 );
             // console.log(Date.now());
-            console.log(user.iss);
-            if (user.aud === "Admin") {
+            if (userRole === "Admin") {
                 navigate('/admin');
             }
             else {
@@ -51,7 +57,7 @@ const SignIn = () => {
             // Chuyển hướng đến trang Home
 
         } catch (err) {
-            console.log(token.token);
+           
             if (err.response) {
                 // console.error('Response error:', err.response);
                 setError('Đăng nhập thất bại, Vui lòng kiểm trả tài khoản và mật khẩu');
