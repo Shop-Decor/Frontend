@@ -39,20 +39,37 @@ const SignIn = () => {
             // console.log('Token:', token.token);
             // Lấy thông tin user từ token
             const user = jwtDecode(token.token);
+            let userID = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
             let userU = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
             let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            localStorage.setItem('userID', userID);
+            console.log('User ID:', userID);
             console.log('Role',userRole);
             console.log('User:', userU);
             localStorage.setItem('userName', userName);
             // console.log("Time", user.exp);
             // console.log((Date.now() - user.exp )< 0 );
             // console.log(Date.now());
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng nhập thành công',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+            }
             if (userRole === "Admin") {
+                
                 navigate('/admin');
             }
             else {
                 navigate('/');
             }
+            
+            
+
+
 
             // Chuyển hướng đến trang Home
 

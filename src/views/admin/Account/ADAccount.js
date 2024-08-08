@@ -114,7 +114,8 @@ const ADAccount = () => {
             errors.userName = 'Tên tài khoản tối đa 20 kí tự';
         }
         // kiểm tra tên người dùng chỉ chứa kí tự chữ và dấu cách
-        if (/[^a-zA-Z\s]/.test(newU.fullName)) {
+        
+        if (/\d/.test(newU.fullName) || /[!@#$&*]/.test(newU.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
 
@@ -142,9 +143,9 @@ const ADAccount = () => {
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-        console.log("Sắp thử", newU);
+        
         try {
-            console.log("vô nè");
+            // console.log("vô nè");
             await axios.post('https://localhost:7078/api/Account/Create', newUser);
             setShowModal(!showModal); // Close the modal
             // Clear the form
@@ -163,7 +164,8 @@ const ADAccount = () => {
 
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-        if (/[^a-zA-Z\s]/.test(updatedUser.fullName)) {
+        
+        if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
         // kiểm tra tên người dùng ít nhất 6 kí tự

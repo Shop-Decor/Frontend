@@ -86,7 +86,7 @@ const ADDetailAccount = () => {
         };
 
         fetchAccounts();
-    }, [navigate]);
+    }, [showModal]);
 
     const handleEditChange = (event) => {
         const { name, value } = event.target;
@@ -112,7 +112,8 @@ const ADDetailAccount = () => {
 
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-        if (/[^a-zA-Z\s]/.test(updatedUser.fullName)) {
+       
+        if ( /\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
         // kiểm tra tên người dùng ít nhất 6 kí tự
@@ -136,11 +137,13 @@ const ADDetailAccount = () => {
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-
+        
+        editUser.id = localStorage.getItem('userID');
         try {
             const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
             setShowModal(!showModal); // Close the modal
-            if (response.status === 200) {
+            console.log(response.data);
+            if (response.data === true) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Thành công',
@@ -150,6 +153,23 @@ const ADDetailAccount = () => {
                     showConfirmButton: false,
                 });
             }
+            if(response.data === 2002){
+               
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Email đã tồn tại',
+                });
+            }
+            if(response.data === 2003){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Số điện thoại đã tồn tại',
+                });
+            }
+           //reload form bởi useeffect
+           fetchAccounts();
         } catch (error) {
             setError('Error updating user');
         }
@@ -159,8 +179,8 @@ const ADDetailAccount = () => {
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             Swal.fire({
                 icon: 'error',
-                title: 'Password Mismatch',
-                text: 'New password and confirmation do not match.',
+                title: 'Lỗi',
+                text: 'Mật khẩu không khớp',
             });
             return;
         }
@@ -179,8 +199,8 @@ const ADDetailAccount = () => {
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Success',
-                    text: 'Password changed successfully!',
+                    title: 'Thảnh công',
+                    text: 'Đổi mật khẩu không thành công',
                 });
                 setPasswordData({
                     currentPassword: '',
@@ -191,8 +211,8 @@ const ADDetailAccount = () => {
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Failed to change password. Please try again.',
+                title: 'Lỗi',
+                text: 'Đổi mật khẩu thất bại.',
             });
         }
     };
@@ -333,7 +353,7 @@ const ADDetailAccount = () => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" className="btn btn-primary" onClick={handlePasswordSubmit}>Change Password</button>
+                            <button type="button" className="btn btn-primary" onClick={handlePasswordSubmit}>Đổi mật khẩu</button>
                         </div>
                     </div>
                 </div>
