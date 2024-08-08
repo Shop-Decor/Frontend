@@ -45,7 +45,8 @@ const SignIn = () => {
         let errors = {};
 
         // Validate fullName (only letters and spaces)
-        if (/[^a-zA-Z\s]/.test(newU.fullName)) {
+       
+        if (/\d/.test(newU.fullName) || /[!@#$&*]/.test(newU.fullName)) {
             errors.fullName = 'Tên người dùng không được chứa số hoặc ký tự đặc biệt';
         }
 
@@ -69,7 +70,8 @@ const SignIn = () => {
 
         try {
             const response = await axios.post('https://localhost:7078/api/Account/SignUp', newU);
-            if (response.status === 200) {
+           
+            if (response.data === true) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Đăng ký thành công',
@@ -77,8 +79,27 @@ const SignIn = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
-                navigate('/SignIn'); // Redirect to sign in page after successful sign up
+                navigate('/SignIn');
             }
+
+            if(response.data === 2001){
+               
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Tên tài khoản đã tồn tại',
+                });
+            }
+            if(response.data === 2002){
+               
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Email đã tồn tại',
+                });
+            }
+            
+           
         } catch (error) {
             setError('Lỗi khi đăng ký người dùng');
         }

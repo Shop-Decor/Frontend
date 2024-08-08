@@ -74,6 +74,9 @@ const NavHome = (props) => {
     }
   }, [location, categories]);
 
+
+  //get user 
+  const userName = localStorage.getItem('userName');
   return (
     <>
       <nav className="navbar navbar-expand-sm">
@@ -148,11 +151,11 @@ const NavHome = (props) => {
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </li>
-              <li className="nav-item">
-
-                <Link className="nav-link icon" to="/user">
-                  {/* {userName} */}
+              <li className="nav-item">                
+                <Link className="nav-link icon" to="/User ">
+                {userName}
                   <FontAwesomeIcon icon={faCircleUser} />
+                
                 </Link>
               </li>
               <li className="nav-item">
