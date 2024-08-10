@@ -21,13 +21,14 @@ class ADOrder extends React.Component {
         updatestatus: {
             id: '',
             ttDonHang: '',
+            ttThanhToan: '',
             lyDoHuy: '',
 
         },
 
         orderdetail: [],
         errors: {}
-        
+
 
     }
     async componentDidMount() {
@@ -54,17 +55,17 @@ class ADOrder extends React.Component {
     }
 
     formatDates = (dateString) => {
-        const options = { 
-          day: '2-digit', 
-          month: '2-digit', 
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          timeZone: 'Asia/Ho_Chi_Minh'
+        const options = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZone: 'Asia/Ho_Chi_Minh'
         };
         return new Date(dateString).toLocaleString('vi-VN', options);
-      }
+    }
 
     formatPrice = (price) => {
         return price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -90,16 +91,58 @@ class ADOrder extends React.Component {
         let errors = {};
 
         if (!lyDoHuy.trim()) errors.lyDoHuy = 'Vui lòng nhập lý do hủy.';
-       
+
 
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
             return;
         }
-     
+
         try {
             let res = await axios.put(`https://localhost:7078/api/Order/${this.state.updatestatus.id}?status=${status}&un=${this.state.updatestatus.lyDoHuy}`, {
                 ttDonHang: this.state.updatestatus.ttDonHang
+            });
+            if (res.status === 200 || res.status === 204) {
+                alert('Thành công');
+                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+            } else {
+                alert('không thành công');
+            }
+        } catch (error) {
+            console.error('Lỗi:', error);
+            alert('Có lỗi xảy ra', error);
+        }
+
+    }
+
+    handleUpdatee = async (status) => {
+       
+
+        try {
+            let res = await axios.put(`https://localhost:7078/api/Order/${this.state.updatestatus.id}?status=${status}&un=${this.state.updatestatus.lyDoHuy}`, {
+                ttDonHang: this.state.updatestatus.ttDonHang
+            });
+            if (res.status === 200 || res.status === 204) {
+                alert('Thành công');
+                this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
+            } else {
+                alert('không thành công');
+            }
+        } catch (error) {
+            console.error('Lỗi:', error);
+            alert('Có lỗi xảy ra', error);
+        }
+
+    }
+
+    handleUpdates = async (status, statuspays) => {
+
+
+        try {
+
+            let res = await axios.put(`https://localhost:7078/api/Order?id=${this.state.updatestatus.id}&status=${status}&statuspay=${statuspays}`, {
+                ttDonHang: this.state.updatestatus.ttDonHang,
+                ttThanhToan: this.state.updatestatus.ttThanhToan
             });
             if (res.status === 200 || res.status === 204) {
                 alert('Thành công');
@@ -170,7 +213,7 @@ class ADOrder extends React.Component {
 
                                                 <th>Giảm giá</th>
                                                 <th>Thành tiền</th>
-
+                                                
                                                 <th>Trạng thái thanh toán</th>
                                                 <th>Trạng thái đơn hàng</th>
                                                 <th></th>
@@ -187,10 +230,11 @@ class ADOrder extends React.Component {
 
                                                             <tr key={item.id}>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.taiKhoan.hoTen}</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
+                                                               
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
@@ -248,8 +292,23 @@ class ADOrder extends React.Component {
                                                                 </td>
                                                                 <td>
                                                                     <Link to="" data-bs-toggle="modal" data-bs-target="#myModal-updatestatus0" className="edit"><FontAwesomeIcon icon={faCheck} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
-                                                                    <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
+                                                                    {(() => {
+                                                                        switch (item.ttThanhToan) {
+                                                                            case true:
+                                                                                return (
+                                                                                    <span>
 
+                                                                                    </span>
+                                                                                );
+                                                                            case false:
+                                                                                return (
+                                                                                    <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
+                                                                                );
+
+                                                                            default:
+                                                                                return <span>{item.ttDonHang}</span>;
+                                                                        }
+                                                                    })()}
                                                                 </td>
 
                                                             </tr>
@@ -304,13 +363,35 @@ class ADOrder extends React.Component {
                                                                                         <span>Tên người nhận hàng:</span><br />
                                                                                         <span>Số điện thoại:</span><br />
                                                                                         <span>địa chỉ:</span><br />
+                                                                                        <span>Phương thức thanh toán:</span><br />
                                                                                         <span>Ghi chú:</span>
+                                                                                        
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        <span className="kh"> {item.taiKhoan.hoTen}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.sdt}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.diaChi}</span>
+                                                                                        <span className="kh"> {item.hoTen}</span><br />
+                                                                                        <span className="kh"> {item.sdt}</span><br />
+                                                                                        <span className="kh"> {item.diaChi}</span><br />
+                                                                                        <span className="kh"> {item.ptThanhToan}
+                                                                                            {(() => {
+                                                                                                switch (item.ptThanhToan) {
+                                                                                                    case true:
+                                                                                                        return (
+                                                                                                            <span>Thanh toán bằng ngân hàng</span>
+                                                                                                        );
+                                                                                                    case false:
+                                                                                                        return (
+                                                                                                            <span >
+                                                                                                                COD (Trả tiền mặt khi nhận hàng)
+                                                                                                            </span>
+                                                                                                        );
+
+                                                                                                    default:
+                                                                                                        return <span>{item.ptThanhToan}</span>;
+                                                                                                }
+                                                                                            })()}
+
+                                                                                        </span>
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
@@ -326,7 +407,7 @@ class ADOrder extends React.Component {
                                                                         </div>
                                                                     </div>
                                                                 </td>
-                                                            </tr>
+                                                            </tr >
                                                         </>
                                                     )
                                                 })
@@ -362,7 +443,7 @@ class ADOrder extends React.Component {
 
                                                             <tr key={item.id}>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.taiKhoan.hoTen}</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
@@ -422,9 +503,25 @@ class ADOrder extends React.Component {
                                                                     })()}
                                                                 </td>
                                                                 <td>
-                                                                    <Link to="" className="edit" data-bs-toggle="modal" data-bs-target="#myModal-updatestatus1"><FontAwesomeIcon icon={faCheck} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
-                                                                    <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
 
+                                                                    <Link to="" className="edit" data-bs-toggle="modal" data-bs-target="#myModal-updatestatus1"><FontAwesomeIcon icon={faCheck} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
+                                                                    {(() => {
+                                                                        switch (item.ttThanhToan) {
+                                                                            case true:
+                                                                                return (
+                                                                                    <span>
+
+                                                                                    </span>
+                                                                                );
+                                                                            case false:
+                                                                                return (
+                                                                                    <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
+                                                                                );
+
+                                                                            default:
+                                                                                return <span>{item.ttDonHang}</span>;
+                                                                        }
+                                                                    })()}
                                                                 </td>
 
                                                             </tr>
@@ -479,13 +576,34 @@ class ADOrder extends React.Component {
                                                                                         <span>Tên người nhận hàng:</span><br />
                                                                                         <span>Số điện thoại:</span><br />
                                                                                         <span>địa chỉ:</span><br />
+                                                                                        <span>Phương thức thanh toán:</span><br />
                                                                                         <span>Ghi chú:</span>
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        <span className="kh"> {item.taiKhoan.hoTen}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.sdt}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.diaChi}</span>
+                                                                                        <span className="kh"> {item.hoTen}</span><br />
+                                                                                        <span className="kh"> {item.sdt}</span><br />
+                                                                                        <span className="kh"> {item.diaChi}</span><br />
+                                                                                        <span className="kh"> {item.ptThanhToan}
+                                                                                            {(() => {
+                                                                                                switch (item.ptThanhToan) {
+                                                                                                    case true:
+                                                                                                        return (
+                                                                                                            <span>Thanh toán bằng ngân hàng</span>
+                                                                                                        );
+                                                                                                    case false:
+                                                                                                        return (
+                                                                                                            <span >
+                                                                                                                COD (Trả tiền mặt khi nhận hàng)
+                                                                                                            </span>
+                                                                                                        );
+
+                                                                                                    default:
+                                                                                                        return <span>{item.ptThanhToan}</span>;
+                                                                                                }
+                                                                                            })()}
+
+                                                                                        </span>
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
@@ -541,7 +659,7 @@ class ADOrder extends React.Component {
 
                                                             <tr key={item.id}>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.taiKhoan.hoTen} </td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen} </td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
@@ -654,13 +772,34 @@ class ADOrder extends React.Component {
                                                                                         <span>Tên người nhận hàng:</span><br />
                                                                                         <span>Số điện thoại:</span><br />
                                                                                         <span>địa chỉ:</span><br />
+                                                                                        <span>Phương thức thanh toán:</span><br />
                                                                                         <span>Ghi chú:</span>
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        <span className="kh"> {item.taiKhoan.hoTen}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.sdt}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.diaChi}</span>
+                                                                                        <span className="kh"> {item.hoTen}</span><br />
+                                                                                        <span className="kh"> {item.sdt}</span><br />
+                                                                                        <span className="kh"> {item.diaChi}</span><br/>
+                                                                                        <span className="kh"> {item.ptThanhToan}
+                                                                                            {(() => {
+                                                                                                switch (item.ptThanhToan) {
+                                                                                                    case true:
+                                                                                                        return (
+                                                                                                            <span>Thanh toán bằng ngân hàng</span>
+                                                                                                        );
+                                                                                                    case false:
+                                                                                                        return (
+                                                                                                            <span >
+                                                                                                                COD (Trả tiền mặt khi nhận hàng)
+                                                                                                            </span>
+                                                                                                        );
+
+                                                                                                    default:
+                                                                                                        return <span>{item.ptThanhToan}</span>;
+                                                                                                }
+                                                                                            })()}
+
+                                                                                        </span>
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
@@ -711,7 +850,7 @@ class ADOrder extends React.Component {
                                                         <>
                                                             <tr key={item.id}>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.taiKhoan.hoTen}</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatDate(item.ngayHuy)}</td>
@@ -822,17 +961,40 @@ class ADOrder extends React.Component {
                                                                                         <span>Tên người nhận hàng:</span><br />
                                                                                         <span>Số điện thoại:</span><br />
                                                                                         <span>địa chỉ:</span><br />
+                                                                                        <span>Phương thức thanh toán:</span><br />
+                                                                                        
                                                                                         <span>Ghi chú:</span><br />
                                                                                         <span>Lý do hủy đơn:</span>
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        <span className="kh"> {item.taiKhoan.hoTen}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.sdt}</span><br />
-                                                                                        <span className="kh"> {item.taiKhoan.diaChi}</span><br />
+                                                                                        <span className="kh"> {item.hoTen}</span><br />
+                                                                                        <span className="kh"> {item.sdt}</span><br />
+                                                                                        <span className="kh"> {item.diaChi}</span><br />
+                                                                                        <span className="kh"> {item.ptThanhToan}
+                                                                                            {(() => {
+                                                                                                switch (item.ptThanhToan) {
+                                                                                                    case true:
+                                                                                                        return (
+                                                                                                            <span>Thanh toán bằng ngân hàng</span>
+                                                                                                        );
+                                                                                                    case false:
+                                                                                                        return (
+                                                                                                            <span >
+                                                                                                                COD (Trả tiền mặt khi nhận hàng)
+                                                                                                            </span>
+                                                                                                        );
+
+                                                                                                    default:
+                                                                                                        return <span>{item.ptThanhToan}</span>;
+                                                                                                }
+                                                                                            })()}
+
+                                                                                        </span><br/>
                                                                                         <span className="kh"> </span><br />
                                                                                         <span className="kh">{item.lyDoHuy}</span>
+                                                                                        
 
 
 
@@ -883,7 +1045,7 @@ class ADOrder extends React.Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdate(1, event)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
+                                    <button type="button" onClick={(event) => this.handleUpdatee(1)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
                                 </div>
                             </div>
                         </div>
@@ -903,7 +1065,7 @@ class ADOrder extends React.Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdate(2, event)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
+                                    <button type="button" onClick={(event) => this.handleUpdates(2,true)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
                                 </div>
                             </div>
                         </div>
@@ -922,7 +1084,7 @@ class ADOrder extends React.Component {
                                             <label className="modal-title">Nhập lý do hủy đơn (đuôi admin)</label>
                                             <input value={this.state.updatestatus.lyDoHuy} onChange={(event) => this.handleChangeupdatestatus(event)} className="form-control" />
                                             {errors.lyDoHuy && <div className="text-danger">{errors.lyDoHuy}</div>}
-                                            
+
                                         </div>
                                         <div className="mb-3">
                                         </div>
@@ -937,7 +1099,7 @@ class ADOrder extends React.Component {
                     </div>
 
 
-                </div>
+                </div >
             </>
         )
     }
