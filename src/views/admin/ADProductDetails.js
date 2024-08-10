@@ -9,13 +9,15 @@ const ADProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [productDetails, setProductDetails] = useState([]);
+    const [sizes, setSizes] = useState([]);
+    const [colors, setColors] = useState([]);
     const [editableDetails, setEditableDetails] = useState({});
     const [newDetail, setNewDetail] = useState({
-        SpId: id,
-        gia: '',
-        soLuong: '',
-        tenMauSac: '',
-        tenKichThuoc: '',
+        sanPhamId: parseInt(id),
+        gia: 0,
+        soLuong: 0,
+        kichThuocId: 0,
+        mauSacId: 0,
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -24,8 +26,8 @@ const ADProductDetails = () => {
     const [errors, setErrors] = useState({
         gia: '',
         soLuong: '',
-        tenMauSac: '',
-        tenKichThuoc: ''
+        kichThuocId: '',
+        mauSacId: ''
     });
     const [errorTimeout, setErrorTimeout] = useState(null);
 
@@ -46,6 +48,20 @@ const ADProductDetails = () => {
         };
         fetchProductDetails();
     }, [id]);
+
+    useEffect(() => {
+        const LoadData = async () => {
+            let [resColors, resSizes] = await Promise.all([
+                axios.get('https://localhost:7078/api/CategoryColor'),
+                axios.get('https://localhost:7078/api/Category_Size'),
+            ]);
+
+            setColors(resColors && resColors.data ? resColors.data : []);
+            setSizes(resSizes && resSizes.data ? resSizes.data : []);
+        }
+        LoadData();
+    }, [])
+
 
     const handleDelete = async (productDetailId) => {
         Swal.fire({
@@ -85,9 +101,10 @@ const ADProductDetails = () => {
         }));
     };
 
+
     const handleChange = (e, id) => {
         const { name, value } = e.target;
-    
+
         // Kiểm tra số dương và không cho phép nhập chữ cho giá và số lượng
         if (name === 'gia' || name === 'soLuong') {
             // Sử dụng regex để loại bỏ ký tự không phải số
@@ -99,7 +116,28 @@ const ADProductDetails = () => {
                     [name]: numericValue
                 }
             }));
-        } else {
+        }
+        else if (name === 'colorId') {
+            setEditableDetails(prevDetails => ({
+                ...prevDetails,
+                [id]: {
+                    ...prevDetails[id],
+                    [name]: value,
+                    ['color']: colors.find(color => color.id == value).tenMauSac,
+                }
+            }));
+        }
+        else if (name === 'sizeId') {
+            setEditableDetails(prevDetails => ({
+                ...prevDetails,
+                [id]: {
+                    ...prevDetails[id],
+                    [name]: value,
+                    ['size']: sizes.find(size => size.id == value).tenKichThuoc,
+                }
+            }));
+        }
+        else {
             setEditableDetails(prevDetails => ({
                 ...prevDetails,
                 [id]: {
@@ -109,25 +147,23 @@ const ADProductDetails = () => {
             }));
         }
     };
-    
-    
-    
-    
-    const handleSave = async (id) => {
-        const updatedDetail = editableDetails[id];
+
+
+    const handleSave = async (productDetailId) => {
+        const updatedDetail = editableDetails[productDetailId];
         let errorMessages = {
             gia: '',
             soLuong: '',
             tenMauSac: '',
             tenKichThuoc: ''
         };
-    
+
         // Kiểm tra các điều kiện
         if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương và không được để trống.';
         if (!updatedDetail.soLuong || isNaN(updatedDetail.soLuong) || updatedDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương và không được để trống.';
-        if (!updatedDetail.tenMauSac) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
-        if (!updatedDetail.tenKichThuoc) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
-    
+        if (!updatedDetail.colorId || updatedDetail.colorId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
+        if (!updatedDetail.sizeId || updatedDetail.sizeId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
+
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
             if (errorTimeout) {
@@ -144,18 +180,25 @@ const ADProductDetails = () => {
             setErrorMessage('');
             return;
         }
-    
+
         try {
-            const response = await axios.put(`https://localhost:7078/api/ProductDetails/${id}`, updatedDetail);
+            const response = await axios.put(`https://localhost:7078/api/ProductDetails`, {
+                id: updatedDetail.id,
+                gia: parseInt(updatedDetail.gia),
+                soLuong: parseInt(updatedDetail.soLuong),
+                mauSacId: parseInt(updatedDetail.colorId),
+                kichThuocId: parseInt(updatedDetail.sizeId),
+                sanPhamId: parseInt(id),
+            });
             if (response.status === 200) {
                 setProductDetails(prevDetails =>
                     prevDetails.map(detail =>
-                        detail.id === id ? updatedDetail : detail
+                        detail.id === productDetailId ? updatedDetail : detail
                     )
                 );
                 setEditableDetails(prevDetails => {
                     const updatedDetails = { ...prevDetails };
-                    delete updatedDetails[id];
+                    delete updatedDetails[productDetailId];
                     return updatedDetails;
                 });
                 setSuccessMessage('Cập nhật chi tiết sản phẩm thành công!');
@@ -169,7 +212,6 @@ const ADProductDetails = () => {
             setErrorMessage(`Có lỗi xảy ra khi cập nhật chi tiết sản phẩm: ${error.message}`);
         }
     };
-    
 
 
     const handleNewDetailChange = (e) => {
@@ -180,11 +222,10 @@ const ADProductDetails = () => {
         if (!isNaN(numericValue) && numericValue >= 0) {
             setNewDetail(prevDetail => ({
                 ...prevDetail,
-                [name]: value
+                [name]: parseInt(value)
             }));
         }
     };
-
 
 
     const handleAddNewDetail = async () => {
@@ -198,8 +239,8 @@ const ADProductDetails = () => {
         // Kiểm tra các điều kiện
         if (!newDetail.gia || isNaN(newDetail.gia) || newDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương.';
         if (!newDetail.soLuong || isNaN(newDetail.soLuong) || newDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương.';
-        if (!newDetail.tenMauSac) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
-        if (!newDetail.tenKichThuoc) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
+        if (!newDetail.mauSacId || newDetail.mauSacId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
+        if (!newDetail.kichThuocId || newDetail.kichThuocId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
 
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
@@ -217,16 +258,17 @@ const ADProductDetails = () => {
             setErrorMessage('');
             return;
         }
+
         try {
             const response = await axios.post('https://localhost:7078/api/ProductDetails', newDetail);
             if (response.status === 201) {
                 setProductDetails(prevDetails => [...prevDetails, response.data]);
                 setNewDetail({
-                    SpId: id,
-                    gia: '',
-                    soLuong: '',
-                    tenMauSac: '',
-                    tenKichThuoc: '',
+                    sanPhamId: id,
+                    gia: 0,
+                    soLuong: 0,
+                    kichThuocId: 0,
+                    mauSacId: 0,
                 });
                 setShowModal(false);
                 setSuccessMessage('Thêm chi tiết sản phẩm thành công!');
@@ -295,15 +337,39 @@ const ADProductDetails = () => {
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Màu Sắc</label>
                                             <div className="col-md-8">
-                                                <input type="text" className="form-control" name="tenMauSac" value={editableDetails[detail.id].tenMauSac} onChange={(e) => handleChange(e, detail.id)} />
-                                                {errors.tenMauSac && <div className="text-danger">{errors.tenMauSac}</div>}
+                                                <select
+                                                    className="form-control"
+                                                    name="colorId"
+                                                    value={editableDetails[detail.id].colorId}
+                                                    onChange={(e) => handleChange(e, detail.id)}
+                                                >
+                                                    <option value="">Chọn màu sắc</option>
+                                                    {colors.map(color => (
+                                                        <option key={color.id} value={color.id}>
+                                                            {color.tenMauSac}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {errors.color && <div className="text-danger">{errors.color}</div>}
                                             </div>
                                         </div>
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Kích Thước</label>
                                             <div className="col-md-8">
-                                                <input type="text" className="form-control" name="tenKichThuoc" value={editableDetails[detail.id].tenKichThuoc} onChange={(e) => handleChange(e, detail.id)} />
-                                                {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
+                                                <select
+                                                    className="form-control"
+                                                    name="sizeId"
+                                                    value={editableDetails[detail.id].sizeId}
+                                                    onChange={(e) => handleChange(e, detail.id)}
+                                                >
+                                                    <option value="">Chọn kích thước</option>
+                                                    {sizes.map(size => (
+                                                        <option key={size.id} value={size.id}>
+                                                            {size.tenKichThuoc}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {errors.size && <div className="text-danger">{errors.size}</div>}
                                             </div>
                                         </div>
                                         <div className="row">
@@ -344,14 +410,14 @@ const ADProductDetails = () => {
                                             <label className="col-sm-4 col-form-label fw-bold">Màu Sắc</label>
                                             <div className="col-sm-8">
                                                 <p className="form-control-plaintext">
-                                                    {detail.tenMauSac}
+                                                    {detail.color}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="row mb-3">
                                             <label className="col-sm-4 col-form-label fw-bold">Kích Thước</label>
                                             <div className="col-sm-8">
-                                                <p className="form-control-plaintext">{detail.tenKichThuoc}</p>
+                                                <p className="form-control-plaintext">{detail.size}</p>
                                             </div>
                                         </div>
                                         <div className="row mb-3">
@@ -392,6 +458,7 @@ const ADProductDetails = () => {
                                     />
                                     {errors.gia && <div className="text-danger">{errors.gia}</div>}
                                 </div>
+
                                 <div className="mb-3">
                                     <label className="form-label">Số Lượng</label>
                                     <input
@@ -406,15 +473,44 @@ const ADProductDetails = () => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label">Màu Sắc</label>
-                                    <input type="text" className="form-control" name="tenMauSac" value={newDetail.tenMauSac} onChange={handleNewDetailChange} />
-                                    {errors.tenMauSac && <div className="text-danger">{errors.tenMauSac}</div>}
+                                    <label className="form-label">Màu sắc</label>
+                                    <div>
+                                        <select
+                                            className="form-control"
+                                            name="mauSacId"
+                                            onChange={handleNewDetailChange}
+                                        >
+                                            <option value="">Chọn màu sắc</option>
+                                            {colors.map(color => (
+                                                <option key={color.id} value={color.id}>
+                                                    {color.tenMauSac}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
+                                {errors.mauSacId && <div className="text-danger">{errors.mauSacId}</div>}
+
                                 <div className="mb-3">
-                                    <label className="form-label">Kích Thước</label>
-                                    <input type="text" className="form-control" name="tenKichThuoc" value={newDetail.tenKichThuoc} onChange={handleNewDetailChange} />
-                                    {errors.tenKichThuoc && <div className="text-danger">{errors.tenKichThuoc}</div>}
+                                    <label className="form-label">Kích thước</label>
+                                    <div>
+                                        <select
+                                            className="form-control"
+                                            name="kichThuocId"
+                                            onChange={handleNewDetailChange}
+                                        >
+                                            <option value="">Chọn kích thước</option>
+                                            {sizes.map(size => (
+                                                <option key={size.id} value={size.id}>
+                                                    {size.tenKichThuoc}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
+                                {errors.kichThuocId && <div className="text-danger">{errors.kichThuocId}</div>}
+
+
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Đóng</button>

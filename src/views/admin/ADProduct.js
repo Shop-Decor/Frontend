@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import { imageDb } from "../../services/config";
@@ -25,6 +25,7 @@ const imageStyle = {
     objectFit: 'cover'
 };
 
+
 class ADProduct extends React.Component {
     state = {
         products: [],
@@ -34,19 +35,32 @@ class ADProduct extends React.Component {
         product: {
             ten: '',
             moTa: '',
-            img: []
+            hinhs: [],
+            chiTietSanPham: [
+                {
+                    gia: 0,
+                    soLuong: 0,
+                    mauSacId: 0,
+                    kichThuocId: 0,
+                }
+            ],
+
         },
         productEdit: {
             id: '',
             ten: '',
             moTa: '',
             trangThai: '',
-            img: []
+            Imgs: []
         },
         productDetails: [],
         errorMessage: '',
         errorMessageName: '',
         errorMessageDescription: '',
+        colors: [],
+        sizes: [],
+        searchKeyword: "",
+        paging: { index: 1, size: 5, totalPage: 0 },
     }
 
     handleChange = (e) => {
@@ -71,39 +85,175 @@ class ADProduct extends React.Component {
         return urls;
     }
 
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+
+        // Kiểm tra lỗi
+        let errorMessageName = '';
+        let errorMessageDescription = '';
+        let errorMessageImage = '';
+        let errorMessagePrice = '';
+        let errorMessageQuantity = '';
+        let errorMessageColor = '';
+        let errorMessageSize = '';
+
+        if (!this.state.product.ten.trim()) {
+            errorMessageName = 'Tên sản phẩm không được để trống.';
+        }
+
+        if (!this.state.product.moTa.trim()) {
+            errorMessageDescription = 'Mô tả sản phẩm không được để trống.';
+        }
+
+        if (this.state.imgFiles.length === 0) {
+            errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
+        }
+
+        if (isNaN(this.state.product.chiTietSanPham[0]?.gia) || this.state.product.chiTietSanPham[0]?.gia <= 0) {
+            errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
+        }
+
+        if (isNaN(this.state.product.chiTietSanPham[0]?.soLuong) || this.state.product.chiTietSanPham[0]?.soLuong <= 0) {
+            errorMessageQuantity = 'Số lượng sản phẩm phải là một số không âm.';
+        }
+
+        if (!this.state.product.chiTietSanPham[0]?.mauSacId) {
+            errorMessageColor = 'Vui lòng chọn màu sắc.';
+        }
+
+        if (!this.state.product.chiTietSanPham[0]?.kichThuocId) {
+            errorMessageSize = 'Vui lòng chọn kích thước.';
+        }
+
+        if (errorMessageName || errorMessageDescription || errorMessageImage || errorMessagePrice || errorMessageQuantity || errorMessageColor || errorMessageSize) {
+            this.setState({
+                errorMessageName,
+                errorMessageDescription,
+                errorMessageImage,
+                errorMessagePrice,
+                errorMessageQuantity,
+                errorMessageColor,
+                errorMessageSize
+            });
+
+            setTimeout(() => {
+                this.setState({
+                    errorMessageName: '',
+                    errorMessageDescription: '',
+                    errorMessageImage: '',
+                    errorMessagePrice: '',
+                    errorMessageQuantity: '',
+                    errorMessageColor: '',
+                    errorMessageSize: ''
+                });
+            }, 2000);
+
+            return;
+        }
+
+        // Gọi hàm handleClick
+        await this.handleClick();
+    }
+
+    async componentDidMount() {
+        try {
+            let [resColors, resSizes] = await Promise.all([
+                axios.get('https://localhost:7078/api/CategoryColor'),
+                axios.get('https://localhost:7078/api/Category_Size'),
+            ]);
+
+            this.setState({
+                colors: resColors && resColors.data ? resColors.data : [],
+                sizes: resSizes && resSizes.data ? resSizes.data : [],
+            });
+
+            await this.handleLoadListProduct();
+
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu:", error);
+            this.setState({ errorMessage: 'Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại!' });
+        }
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.paging.index !== this.state.paging.index ||
+            prevState.paging.size !== this.state.paging.size ||
+            prevState.paging.totalPage !== this.state.paging.totalPage
+        ) {
+            await this.handleLoadListProduct();
+        }
+    }
+
+
     handleClick = async () => {
         if (this.state.imgFiles.length > 0) {
             try {
                 const urls = await this.uploadImages();
+                console.log("URLs:", urls);
+
                 this.setState(prevState => ({
                     imgUrl: urls,
                     product: {
                         ...prevState.product,
-                        img: urls
+                        hinhs: urls,
+                        chiTietSanPham: prevState.product.chiTietSanPham.map(detail => ({
+                            gia: Number(detail.gia),
+                            soLuong: Number(detail.soLuong),
+                            mauSacId: Number(detail.mauSacId),
+                            kichThuocId: Number(detail.kichThuocId),
+                        }))
                     }
                 }), async () => {
                     try {
-                        const response = await axios.post('https://localhost:7078/api/product', this.state.product);
-                        if (response.status === 200) {
-                            alert('Thêm sản phẩm thành công!');
+                        console.log("Product data before API call:", this.state.product);
+                        const response = await axios.post('https://localhost:7078/api/Product', this.state.product);
+                        console.log("Response:", response);
+
+                        if (response.status === 200 || response.status === 201) {
+                            Swal.fire({
+                                title: 'Thêm sản phẩm thành công!',
+                                icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: false
+                            });
                             this.componentDidMount();
+                            console.log("Updated products:", this.state.products);
                             this.setState({ errorMessage: '' });
                         } else {
+                            console.error("Unexpected status code:", response.status);
                             throw new Error('Có lỗi xảy ra khi thêm sản phẩm.');
                         }
                     } catch (error) {
-                        console.error("Lỗi khi thêm sản phẩm:", error);
-                        this.setState({ errorMessage: 'Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại!' });
+                        console.error("Lỗi khi thêm sản phẩm:", error.response?.data || error.message);
+                        Swal.fire({
+                            title: 'Có lỗi xảy ra!',
+                            text: error.response?.data?.message || 'Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại!',
+                            icon: 'error',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
                     }
                 });
             } catch (error) {
-                console.error("Lỗi khi tải ảnh:", error);
-                this.setState({ errorMessage: 'Có lỗi xảy ra khi tải ảnh. Vui lòng thử lại!' });
+                console.error("Lỗi khi tải ảnh:", error.message);
+                Swal.fire({
+                    title: 'Có lỗi xảy ra!',
+                    text: 'Có lỗi xảy ra khi tải ảnh. Vui lòng thử lại!',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } else {
             this.setState({ errorMessage: 'Vui lòng chọn ít nhất một ảnh.' });
         }
     }
+
 
     handleChangeName = (event) => {
         this.setState({
@@ -123,56 +273,15 @@ class ADProduct extends React.Component {
         });
     }
 
-    handleSubmit = async (event) => {
-        event.preventDefault();
-
-        let errorMessageName = '';
-        let errorMessageDescription = '';
-        let errorMessageImage = '';
-
-        if (!this.state.product.ten.trim()) {
-            errorMessageName = 'Tên sản phẩm không được để trống.';
-        }
-
-        if (!this.state.product.moTa.trim()) {
-            errorMessageDescription = 'Mô tả sản phẩm không được để trống.';
-        }
-
-        if (this.state.imgFiles.length === 0) {
-            errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
-        }
-
-        if (errorMessageName || errorMessageDescription || errorMessageImage) {
-            this.setState({
-                errorMessageName,
-                errorMessageDescription,
-                errorMessageImage
-            });
-            return;
-        }
-
-        await this.handleClick();
-    }
 
     formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     }
 
-    async componentDidMount() {
-        try {
-            let res = await axios.get('https://localhost:7078/api/Product');
-            this.setState({
-                products: res && res.data ? res.data : []
-            });
-        } catch (error) {
-            console.error("Lỗi khi lấy sản phẩm:", error);
-            this.setState({ errorMessage: 'Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại!' });
-        }
-    }
-
     handleEdit = async (product) => {
-        this.setState({ productEdit: { ...product } });
+
+        this.setState({ productEdit: { ...product }, imgFiles: [], imgPreviews: [] });
     }
 
     handleChangeUpdateName = (event) => {
@@ -214,26 +323,47 @@ class ADProduct extends React.Component {
         });
     }
 
+
     handleUpdate = async (event) => {
         event.preventDefault();
         try {
-            let res = await axios.put(`https://localhost:7078/api/Product/${this.state.productEdit.id}`, {
+            const urls = await this.uploadImages();
+
+            const updatedProduct = {
                 ten: this.state.productEdit.ten,
                 moTa: this.state.productEdit.moTa,
                 trangThai: this.state.productEdit.trangThai,
-                img: this.state.productEdit.img
-            });
+                imgs: urls
+            };
+
+            let res = await axios.put(`https://localhost:7078/api/Product/${this.state.productEdit.id}`, updatedProduct);
+
             if (res.status === 200 || res.status === 204) {
-                alert('Cập nhật thành công');
+                Swal.fire({
+                    title: 'Cập nhật sản phẩm thành công!',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount();
+
             } else {
-                alert('Cập nhật không thành công');
+                throw new Error('Cập nhật không thành công');
             }
         } catch (error) {
             console.error('Lỗi khi cập nhật:', error);
-            alert('Có lỗi xảy ra khi cập nhật');
+            Swal.fire({
+                title: 'Có lỗi xảy ra!',
+                text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
     }
+
 
     handleDelete = (productId) => {
         const productToUpdate = this.state.products.find(product => product.id === productId);
@@ -250,13 +380,13 @@ class ADProduct extends React.Component {
         }
 
         Swal.fire({
-            title: 'Bạn có chắc chắn muốn cập nhật trạng thái?',
-            text: 'Trạng thái của sản phẩm sẽ được cập nhật.',
+            title: 'Bạn có chắc chắn muốn xóa sản phẩm này?',
+            text: 'Sản phẩm sẽ bị ẩn đi!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Cập nhật',
+            confirmButtonText: 'ẨN',
             cancelButtonText: 'Hủy'
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -270,7 +400,7 @@ class ADProduct extends React.Component {
                     if (res.status === 200 || res.status === 204) {
                         Swal.fire({
                             title: 'Đã cập nhật!',
-                            text: 'Trạng thái của sản phẩm đã được cập nhật.',
+                            text: 'Trạng thái của sản phẩm đã được ẩn.',
                             icon: 'success',
                             timer: 2000,
                             timerProgressBar: true,
@@ -302,13 +432,106 @@ class ADProduct extends React.Component {
         });
     }
 
+    handleChangePrice = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    gia: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleChangeQuantity = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    soLuong: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleSelectColor = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    mauSacId: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleSelectSize = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    kichThuocId: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleLoadListProduct = async () => {
+        let resProducts = await axios.get(`https://localhost:7078/api/Product?keyword=${this.state.searchKeyword ?? ""}&index=${this.state.paging.index ?? 1}&size=${this.state.paging.size ?? 16}`);
+
+        this.setState({
+            products: resProducts && resProducts.data.list ? resProducts.data.list : [],
+            paging: resProducts && resProducts.data.paging ? resProducts.data.paging : this.state.paging,
+        });
+    }
+
+    getPaginationItems = () => {
+        const paginationItems = [];
+        const { index, totalPage } = this.state.paging;
+
+        // Trang đầu tiên luôn được hiển thị
+        paginationItems.push(1);
+
+        // Nếu trang hiện tại lớn hơn 4, thêm dấu ba chấm sau trang đầu tiên
+        if (index > 4) {
+            paginationItems.push('...');
+        }
+
+        // Hiển thị các trang xung quanh trang hiện tại
+        for (let i = Math.max(2, index - 2); i <= Math.min(totalPage - 1, index + 2); i++) {
+            paginationItems.push(i);
+        }
+
+        // Nếu trang hiện tại nhỏ hơn `totalPage - 3`, thêm dấu ba chấm trước trang cuối cùng
+        if (index < totalPage - 3) {
+            paginationItems.push('...');
+        }
+
+        // Trang cuối cùng luôn được hiển thị
+        if (totalPage > 1) {
+            paginationItems.push(totalPage);
+        }
+
+        return paginationItems;
+    };
+
+    handlePageChange = (pageIndex) => {
+        this.setState({
+            paging: { ...this.state.paging, index: pageIndex }
+        })
+    };
+
     render() {
-        const { products, product, imgPreviews, errorMessage } = this.state;
+        const { products, product, imgPreviews, errorMessage, colors, sizes } = this.state;
 
         return (
             <>
-             {/* //Thêm */}
-             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                {/* //Thêm */}
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -317,20 +540,18 @@ class ADProduct extends React.Component {
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={this.handleSubmit}>
-                                    {/* {errorMessage && <div className="alert alert-danger">{errorMessage}</div>} */}
-
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Tên</label>
                                         <div className="col-sm-8">
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={product.ten}
+                                                value={this.state.product.ten}
                                                 onChange={this.handleChangeName}
                                             />
-                                            {errorMessage && <span className="text-danger">{errorMessage}</span>}
                                         </div>
                                     </div>
+                                    {this.state.errorMessageName && <div className="alert alert-danger">{this.state.errorMessageName}</div>}
 
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
@@ -338,12 +559,77 @@ class ADProduct extends React.Component {
                                             <input
                                                 className="form-control"
                                                 type="text"
-                                                value={product.moTa}
+                                                value={this.state.product.moTa}
                                                 onChange={this.handleChangeDescribe}
                                             />
-                                            {errorMessage && <div className="text-danger">{errorMessage}</div>}
                                         </div>
                                     </div>
+                                    {this.state.errorMessageDescription && <div className="alert alert-danger">{this.state.errorMessageDescription}</div>}
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Giá</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={this.state.product.chiTietSanPham[0]?.gia || ''}
+                                                onChange={this.handleChangePrice}
+                                            />
+                                        </div>
+                                    </div>
+                                    {this.state.errorMessagePrice && <div className="alert alert-danger">{this.state.errorMessagePrice}</div>}
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Số lượng</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={this.state.product.chiTietSanPham[0]?.soLuong || ''}
+                                                onChange={this.handleChangeQuantity}
+                                            />
+                                        </div>
+                                    </div>
+                                    {this.state.errorMessageQuantity && <div className="alert alert-danger">{this.state.errorMessageQuantity}</div>}
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Màu sắc</label>
+                                        <div className="col-sm-8">
+                                            <select
+                                                className="form-control"
+                                                id="color"
+                                                value={this.state.product.chiTietSanPham[0]?.mauSacId || ''}
+                                                onChange={this.handleSelectColor}
+                                            >
+                                                <option value="">Chọn màu sắc</option>
+                                                {this.state.colors.map(color => (
+                                                    <option key={color.id} value={color.id}>
+                                                        {color.tenMauSac}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {this.state.errorMessageColor && <div className="alert alert-danger">{this.state.errorMessageColor}</div>}
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Kích thước</label>
+                                        <div className="col-sm-8">
+                                            <select
+                                                className="form-control"
+                                                id="size"
+                                                value={this.state.product.chiTietSanPham[0]?.kichThuocId || ''}
+                                                onChange={this.handleSelectSize}
+                                            >
+                                                <option value="">Chọn kích thước</option>
+                                                {this.state.sizes.map(size => (
+                                                    <option key={size.id} value={size.id}>
+                                                        {size.tenKichThuoc}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {this.state.errorMessageSize && <div className="alert alert-danger">{this.state.errorMessageSize}</div>}
 
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
@@ -356,12 +642,13 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
-
+                                    {this.state.errorMessageImage && <div className="alert alert-danger">{this.state.errorMessageImage}</div>}
                                     <div className="img-preview">
                                         {imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
                                         ))}
                                     </div>
+
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                                         <button type="submit" className="btn btn-primary">Lưu</button>
@@ -371,6 +658,8 @@ class ADProduct extends React.Component {
                         </div>
                     </div>
                 </div>
+
+
                 {/* //SỬA */}
                 <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
@@ -451,11 +740,26 @@ class ADProduct extends React.Component {
                     </div>
                 </div>
 
+
                 <div className='container my-4'>
                     <h2 className='text-center mb-4'>Sản Phẩm</h2>
                     <div className='row mb-3'>
                         <div className='col'>
                             <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Thêm SP</button>
+                        </div>
+                        <div className='col'>
+                            <div className="input-group mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    value={this.state.searchKeyword}
+                                    onChange={(e) => this.setState({ searchKeyword: e.target.value })}
+                                />
+                                <button className="btn btn-primary" onClick={this.handleLoadListProduct}>
+                                    Search
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <table className='table'>
@@ -502,7 +806,37 @@ class ADProduct extends React.Component {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                    <nav className='pb-5'>
+                        <ul className="pagination">
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Previous" onClick={() => this.handlePageChange(this.state.paging.index - 1)}>
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {this.getPaginationItems().map((page, index) =>
+                                page === '...' ? (
+                                    <li key={index} className="page-item disabled">
+                                        <span className="page-link">...</span>
+                                    </li>
+                                ) : (
+                                    <li
+                                        key={index}
+                                        className={`page-item ${this.state.paging.index === page ? 'active' : ''}`}
+                                    >
+                                        <a className="page-link" onClick={() => this.handlePageChange(page)}>
+                                            {page}
+                                        </a>
+                                    </li>
+                                )
+                            )}
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Next" onClick={() => this.handlePageChange(this.state.paging.index + 1)}>
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div >
             </>
         );
     }
