@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import axios from "axios";
 import logo from "../../../assets/images/shopdecor.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,12 +12,15 @@ import {
 import "../../../styles/user/nav/Nav.scss";
 import "../../../styles/user/btn/btn.scss";
 
+
 const NavHome = (props) => {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const cartRef = useRef(null);
   const cartIconRef = useRef(null);
 
   const { listCart, setListCart, total } = props;
+  const [categories, setCategories] = useState();
+  const [isActive, setIsActive] = useState(false);
 
   const toggleCart = (e) => {
     e.stopPropagation();
@@ -41,6 +45,38 @@ const NavHome = (props) => {
     setListCart(cart => cart.filter((_, i) => i !== index));
   }
 
+
+
+  const fetchCtegories = async () => {
+    try {
+      let res = await axios.get('https://localhost:7078/api/Category');
+      setCategories(res.data || []);
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api loại sản phẩm:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchCtegories();
+  }, []);
+
+  const handleProductClick = () => {
+    setIsActive(!isActive);
+  };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (categories && categories.some(item => location.pathname.includes(`/ProductUser/${item.id}`))) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [location, categories]);
+
+
+  //get user 
+  const userName = localStorage.getItem('userName');
   return (
     <>
       <nav className="navbar navbar-expand-sm">
@@ -68,35 +104,24 @@ const NavHome = (props) => {
                   Trang chủ
                 </NavLink>
               </li>
-              <li className="nav-item dropdown">
+              <li className={`menu-item ${isActive ? 'active' : ''}`}>
                 <NavLink
-                  className={({ isActive }) =>
-                    isActive
-                      ? "nav-link active dropdown-toggle"
-                      : "nav-link dropdown-toggle"
-                  }
-                  to="/ad"
-                  role="button"
-                  data-bs-toggle="dropdown"
+                  className={`menu-link ${isActive ? 'active' : ''}`}
+                  onClick={handleProductClick}
+                  to="/ProductUser"
                 >
                   Sản phẩm
                 </NavLink>
-                <ul className="dropdown-menu">
-                  <li>
-                    <NavLink className="dropdown-item" to="/ProductUser">
-                      Link
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink className="dropdown-item" to="/ad/link2">
-                      Another link
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink className="dropdown-item" to="/ad/link3">
-                      A third link
-                    </NavLink>
-                  </li>
+                <ul className="submenu">
+                  {categories && categories.length > 0 &&
+                    categories.map((item) => (
+                      <li key={`category${item.id}`}>
+                        <NavLink className="submenu-item" to={`/ProductUser/${item.id}`}>
+                          {item.tenLoai}
+                        </NavLink>
+                      </li>
+                    ))
+                  }
                 </ul>
               </li>
               <li className="nav-item">
@@ -104,7 +129,7 @@ const NavHome = (props) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/ProductDetail"
+                  to="/otheruser"
                 >
                   Giới thiệu
                 </NavLink>
@@ -126,9 +151,11 @@ const NavHome = (props) => {
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link icon" to="/dangnhap">
+              <li className="nav-item">                
+                <Link className="nav-link icon" to="/User ">
+                {userName}
                   <FontAwesomeIcon icon={faCircleUser} />
+                
                 </Link>
               </li>
               <li className="nav-item">
@@ -147,7 +174,7 @@ const NavHome = (props) => {
                       {listCart && listCart.length > 0 ?
                         listCart.map((item, index) => {
                           return (
-                            <React.Fragment key={item.id}>
+                            <React.Fragment key={index}>
                               <li className="product-mini-cart clearfix">
                                 <FontAwesomeIcon className="delete-icon" icon={faXmark} onClick={(event) => handleDeleteItem(index, event)} />
                                 <div className="col img-mini-cart">

@@ -1,133 +1,84 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import QRCode from 'qrcode.react';
+import jsQR from 'jsqr';
 import "../../styles/admin/ADTest.scss";
 
 const ADtest = () => {
-    const [isCartVisible, setIsCartVisible] = useState(false);
-    const cartRef = useRef(null);
-    const cartIconRef = useRef(null);
+    const qrRef = useRef(null);
+    const [decodedText, setDecodedText] = useState('');
 
-    const [listCart, setListCart] = useState([]);
-    const [total, setTotal] = useState(0);
-
-    useEffect(() => {
-        const test = [{
-            id: 1,
-            ten: "Bình hoa trang trí",
-            trangThai: true,
-            hinh: "https://firebasestorage.googleapis.com/v0/b/seabugdb-5f6f8.appspot.com/o/files%2Ff2485735-3994-407e-8b71-c6d1de5214b3?alt=media&token=e2511e1f-25dc-4638-8d52-b3ffff8c169f",
-            gia: 150000,
-            loaiGiam: true,
-            menhGia: 10,
-            size: "S",
-            quantity: 10
-        },
-        {
-            id: 2,
-            ten: "Bình hoa trang trí",
-            trangThai: true,
-            hinh: "https://firebasestorage.googleapis.com/v0/b/seabugdb-5f6f8.appspot.com/o/files%2Ff2485735-3994-407e-8b71-c6d1de5214b3?alt=media&token=e2511e1f-25dc-4638-8d52-b3ffff8c169f",
-            gia: 150000,
-            loaiGiam: true,
-            menhGia: 10,
-            size: "S",
-            quantity: 10
-        }];
-        localStorage.setItem('cart', JSON.stringify(test));
-        const loadCart = localStorage.getItem('cart');
-        if (loadCart && loadCart !== 'undefined') {
-            setListCart(JSON.parse(loadCart));
-        }
-    }, []);
-
-    const calculateTotal = () => {
-        return listCart.reduce((total, item) => {
-            const subTotal = item.loaiGiam
-                ? item.quantity * (item.gia - (item.gia * item.menhGia / 100))
-                : item.quantity * (item.gia - item.menhGia);
-            return total + subTotal;
-        }, 0);
+    const order = {
+        id: 1,
+        ten: "Product 1",
+        hinh: "url_to_image",
+        gia: 100,
+        loaiGiam: "none",
+        menhGia: 100,
+        size: "M",
+        quantity: 1,
+        color: "Red"
     };
 
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(listCart));
-        setTotal(calculateTotal());
-    }, [listCart]);
-
-    const toggleCart = (e) => {
-        e.stopPropagation();
-        setIsCartVisible((prev) => !prev);
+    const formatOrderData = (order) => {
+        return `Mã đơn hàng: ${order.id}\nTên sản phẩm: ${order.ten}\nGiá: ${order.gia} đ\nSố lượng: ${order.quantity}\nMàu sắc: ${order.color}\nKích thước: ${order.size}`;
     };
 
-    const handleClickOutside = (e) => {
-        if (isCartVisible && cartRef.current && !cartRef.current.contains(e.target) && !cartIconRef.current.contains(e.target)) {
-            setIsCartVisible(false);
+    const orderData = formatOrderData(order);
+
+    const downloadQRCode = () => {
+        const canvas = qrRef.current.querySelector('canvas');
+        if (canvas) {
+            const pngUrl = canvas.toDataURL("image/png");
+            const downloadLink = document.createElement("a");
+            downloadLink.href = pngUrl;
+            downloadLink.download = "qrcode.png";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        } else {
+            console.error("Canvas không tìm thấy");
         }
     };
 
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
+    const readQRCodeFromFile = (file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0, img.width, img.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+                if (code) {
+                    setDecodedText(code.data);
+                } else {
+                    console.error("Không thể đọc mã QR");
+                }
+            };
+            img.src = event.target.result;
         };
-    }, [isCartVisible]);
+        reader.readAsDataURL(file);
+    };
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            readQRCodeFromFile(file);
+        }
+    };
 
     return (
-        <>
-            <nav>
-                <div className="container">
-                    <ul className="navbar-left">
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#about">Giới thiệu</a></li>
-                    </ul>
-
-                    <ul className="navbar-right">
-                        <li>
-                            <a href="#" id="cart" onClick={toggleCart} ref={cartIconRef}>
-                                <i className="fa fa-shopping-cart"></i> Giỏ hàng {listCart.length > 0 && <span className="badge">{listCart.length}</span>}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            {isCartVisible && (
-                <div className="container" ref={cartRef}>
-                    <div className="shopping-cart">
-                        <ul className="shopping-cart-items">
-                            {listCart && listCart.length > 0 ?
-                                listCart.map((item, index) => {
-                                    return (
-                                        <React.Fragment key={item.id}>
-                                            <li className="product-mini-cart">
-                                                <div className="col img-mini-cart">
-                                                    <img className="img-fluid" src={item.hinh} alt={"img product " + index} />
-                                                </div>
-                                                <div className="col content-mini-cart">
-                                                    <div className="item-name">{item.ten}</div>
-                                                    <div className="item-number d-flex justify-content-between">
-                                                        <span className="item-quantity">{item.quantity}</span>
-                                                        <span className="item-price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </React.Fragment>
-                                    )
-                                }) :
-                                <p>Chưa có sản phẩm</p>
-                            }
-                            <li className="shopping-cart-footer d-flex justify-content-between">
-                                <div className="lighter-text">Tổng cộng: </div>
-                                <div className="main-color-text">{total.toLocaleString('vi-VN')} đ</div>
-                            </li>
-                        </ul>
-                        <div className="cart-btn">
-                            <a href="#" className="button">Xem giỏ hàng</a>
-                            <a href="#" className="button">Thanh toán</a>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </>
+        <div className="ad-test-container">
+            <div ref={qrRef}>
+                <QRCode value={orderData} />
+            </div>
+            <button onClick={downloadQRCode} className="download-button">Lưu mã QR</button>
+            <input type="file" accept="image/*" onChange={handleFileUpload} className="upload-input" />
+            {decodedText && <pre className="qr-data">{decodedText}</pre>}
+        </div>
     );
 };
 

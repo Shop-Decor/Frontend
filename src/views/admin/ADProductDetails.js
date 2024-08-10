@@ -149,8 +149,10 @@ const ADProductDetails = () => {
     };
 
 
+
     const handleSave = async (productDetailId) => {
         const updatedDetail = editableDetails[productDetailId];
+
         let errorMessages = {
             gia: '',
             soLuong: '',
@@ -161,8 +163,10 @@ const ADProductDetails = () => {
         // Kiểm tra các điều kiện
         if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương và không được để trống.';
         if (!updatedDetail.soLuong || isNaN(updatedDetail.soLuong) || updatedDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương và không được để trống.';
+
         if (!updatedDetail.colorId || updatedDetail.colorId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!updatedDetail.sizeId || updatedDetail.sizeId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
+
 
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
@@ -212,7 +216,6 @@ const ADProductDetails = () => {
             setErrorMessage(`Có lỗi xảy ra khi cập nhật chi tiết sản phẩm: ${error.message}`);
         }
     };
-
 
     const handleNewDetailChange = (e) => {
         const { name, value } = e.target;
@@ -337,6 +340,7 @@ const ADProductDetails = () => {
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Màu Sắc</label>
                                             <div className="col-md-8">
+
                                                 <select
                                                     className="form-control"
                                                     name="colorId"
@@ -350,6 +354,7 @@ const ADProductDetails = () => {
                                                         </option>
                                                     ))}
                                                 </select>
+
                                                 {errors.color && <div className="text-danger">{errors.color}</div>}
                                             </div>
                                         </div>
@@ -507,6 +512,7 @@ const ADProductDetails = () => {
                                             ))}
                                         </select>
                                     </div>
+
                                 </div>
                                 {errors.kichThuocId && <div className="text-danger">{errors.kichThuocId}</div>}
 
