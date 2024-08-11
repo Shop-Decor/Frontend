@@ -1,79 +1,210 @@
 /* payment.scss */
 
 .payment-container {
-    display: flex;
+    .card {
+        width           : 460px;
+        border-radius   : 5px;
+        box-shadow      : 0 4px 6px 0 rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+        padding         : 10px 10px;
+
+        // &::after {
+        //     position        : absolute;
+        //     content         : "";
+        //     height          : 40px;
+        //     right           : -20px;
+        //     border-radius   : 40px;
+        //     z-index         : 1;
+        //     top             : 70px;
+        //     background-color: white;
+        //     width           : 40px;
+        // }
+
+        // &::before {
+        //     position        : absolute;
+        //     content         : "";
+        //     height          : 40px;
+        //     left            : -20px;
+        //     border-radius   : 40px;
+        //     z-index         : 1;
+        //     top             : 70px;
+        //     background-color: white;
+        //     width           : 40px;
+        // }
+
+        .main {
+            .co-img {
+                img {
+                    width : 100px;
+                    height: 100px;
+                }
+
+            }
+
+            .vertical {
+                border-left: 5px dotted black;
+                height     : 100px;
+                position   : absolute;
+                left       : 40%;
+            }
+
+            .content {
+                margin-left: 20px;
+
+                h1 {
+                    font-size: 35px;
+                    color    : #565656;
+
+                    span {
+                        font-size: 18px;
+                    }
+                }
+
+                h2 {
+                    font-size     : 18px;
+                    color         : #565656;
+                    text-transform: uppercase;
+                }
+
+                p {
+                    font-size: 16px;
+                    color    : #696969;
+                }
+
+            }
+
+            display        : flex;
+            justify-content: space-between;
+            padding        : 0 10px;
+            align-items    : center;
+        }
+
+        .copy-button {
+            display        : flex;
+            justify-content: space-between;
+            padding        : 0 10px;
+            align-items    : center;
+            margin         : 12px 0 -5px 0;
+            height         : 45px;
+            border-radius  : 4px;
+            padding        : 0 5px;
+            border         : 1px solid #e1e1e1;
+
+            input {
+                width    : 100%;
+                height   : 100%;
+                border   : none;
+                outline  : none;
+                font-size: 15px;
+            }
+
+            button {
+                padding         : 5px 20px;
+                background-color: #dc143c;
+                color           : #fff;
+                border          : 1px solid transparent;
+            }
+
+        }
+    }
+
+    display        : flex;
     justify-content: space-between;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding        : 20px;
+    border         : 1px solid #ccc;
+    border-radius  : 5px;
 
     .left-side {
-        width: 58%;
+        width           : 58%;
         // padding-right: 20px;
 
         form {
             background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding         : 20px;
+            border          : 1px solid #ddd;
+            border-radius   : 5px;
+
+            .submit-form {
+                background-color: #EE1818;
+                color           : #fff;
+                padding         : 10px 20px;
+                border          : none;
+                border-radius   : 3px;
+                cursor          : pointer;
+            }
 
             label {
-                display: block;
+                display      : block;
                 margin-bottom: 10px;
             }
 
-            input, textarea {
-                width: 100%;
-                padding: 10px;
+            input,
+            textarea {
+                width        : 100%;
+                padding      : 10px;
                 margin-bottom: 15px;
-                border: 1px solid #ccc;
+                border       : 1px solid #ccc;
                 border-radius: 3px;
             }
 
-           
+            .payment-methods {
+                display        : flex;
+                justify-content: space-evenly;
+
+                .input_payment {
+                    margin-bottom: 10px;
+                    display      : flex;
+                    align-items  : center;
+
+                    input {
+                        width       : auto;
+                        margin-right: 20px;
+                    }
+                }
+            }
+
+            .inline-fields {
+                display: flex;
+                gap    : 10px;
+
+                /* Khoảng cách giữa các trường */
+                label {
+                    flex: 1;
+                    /* Chia đều không gian cho các nhãn */
+                }
+
+                input {
+                    flex: 2;
+                    /* Chia đều không gian cho các ô nhập liệu */
+                }
+
+            }
         }
     }
-    button {
-        background-color: #EE1818;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
 
-    .inline-fields {
-        display: flex;
-        gap: 10px; /* Khoảng cách giữa các trường */
-    }
 
-    .inline-fields label {
-        flex: 1; /* Chia đều không gian cho các nhãn */
-    }
 
-    .inline-fields input {
-        flex: 2; /* Chia đều không gian cho các ô nhập liệu */
-    }
 
 
     .form-container {
         form {
-            display: flex;
+            display  : flex;
             flex-wrap: wrap;
         }
+
         .form-row {
-            display: flex;
-            align-items: center;
+            display      : flex;
+            align-items  : center;
             margin-bottom: 10px;
-    
+            margin-left  : 10px;
+
             label {
-                width: 150px; // Độ rộng của label
+                width       : 150px; // Độ rộng của label
                 margin-right: 10px; // Khoảng cách giữa label và select box
             }
-    
+
             select {
-                flex: 1
-                ; // Chia đều phần còn lại của hàng
+                flex: 1; // Chia đều phần còn lại của hàng
             }
         }
     }
@@ -83,30 +214,72 @@
 
         .order-summary {
             background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding         : 20px;
+            border          : 1px solid #ddd;
+            border-radius   : 5px;
 
             .product {
+                .image-product {
+                    width        : 100px; // Adjust the width as needed
+                    height       : auto; // Maintain aspect ratio
+                    object-fit   : cover; // Ensure the image covers the container without distortion
+                    border-radius: 4px; // Optional: add rounded corners
+                    margin-bottom: 10px; // Optional: add space below the image
+                }
+
                 margin-bottom: 10px;
 
+
                 span {
-                    display: block;
+                    display      : block;
                     margin-bottom: 5px;
 
                     &:first-child {
                         font-weight: bold;
-                        font-size: 1.1em;
+                        font-size  : 1.1em;
                     }
                 }
             }
 
             .total {
-                margin-top: 15px;
+                margin-top : 15px;
                 font-weight: bold;
 
                 span {
                     display: block;
+                }
+            }
+
+            .getdiscountText {
+                background-color: #efd4d0;
+                color           : #fff;
+                padding         : 10px 20px;
+                border          : none;
+                border-radius   : 3px;
+                cursor          : pointer;
+            }
+
+            .discount-input {
+                input {
+                    height: 40px;
+                    width : 68%;
+                }
+
+                button {
+                    margin-left     : 20px;
+                    height          : 40px;
+                    background-color: #EE1818;
+                    color           : #fff;
+                    padding         : 10px 20px;
+                    border          : none;
+                    border-radius   : 3px;
+                    cursor          : pointer;
+
+                    .discount-text {
+                        display        : flex;
+                        justify-content: center;
+                        align-items    : center;
+                    }
                 }
             }
         }

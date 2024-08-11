@@ -104,7 +104,7 @@ const ADProductDetails = () => {
 
     const handleChange = (e, id) => {
         const { name, value } = e.target;
-    
+
         if (name === 'gia' || name === 'soLuong') {
             // Chỉ xử lý số nguyên và loại bỏ ký tự không phải số
             const numericValue = value.replace(/[^0-9.]/g, '');
@@ -147,12 +147,14 @@ const ADProductDetails = () => {
             }));
         }
     };
-    
+
+
 
 
 
     const handleSave = async (productDetailId) => {
         const updatedDetail = editableDetails[productDetailId];
+
         let errorMessages = {
             gia: '',
             soLuong: '',
@@ -163,8 +165,10 @@ const ADProductDetails = () => {
         // Kiểm tra giá sản phẩm
         if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 20000) errorMessages.gia = 'Giá phải từ 20,000 VNĐ trở lên.';
         if (!updatedDetail.soLuong || isNaN(updatedDetail.soLuong) || updatedDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương và không được để trống.';
+
         if (!updatedDetail.colorId || updatedDetail.colorId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!updatedDetail.sizeId || updatedDetail.sizeId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
+
 
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
@@ -216,13 +220,12 @@ const ADProductDetails = () => {
     };
 
 
-
     const handleNewDetailChange = (e) => {
         const { name, value } = e.target;
         const numericValue = parseFloat(value);
-    
+
         if (name === 'gia') {
-            if (!isNaN(numericValue) && numericValue >= 0) { 
+            if (!isNaN(numericValue) && numericValue >= 0) {
                 setNewDetail(prevDetail => ({
                     ...prevDetail,
                     [name]: numericValue
@@ -255,8 +258,8 @@ const ADProductDetails = () => {
             }
         }
     };
-    
-    
+
+
 
 
 
@@ -267,13 +270,13 @@ const ADProductDetails = () => {
             tenMauSac: '',
             tenKichThuoc: ''
         };
-    
+
         if (!newDetail.gia || isNaN(newDetail.gia) || newDetail.gia < 0) errorMessages.gia = 'Giá không hợp lệ.'; // Loại bỏ kiểm tra giá nhập tối thiểu
-        if(newDetail.gia < 20000) errorMessages.gia = 'Giá không được dưới 20000.';
+        if (newDetail.gia < 20000) errorMessages.gia = 'Giá không được dưới 20000.';
         if (!newDetail.soLuong || isNaN(newDetail.soLuong) || newDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương.';
         if (!newDetail.mauSacId || newDetail.mauSacId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!newDetail.kichThuocId || newDetail.kichThuocId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
-    
+
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
             if (errorTimeout) {
@@ -290,7 +293,7 @@ const ADProductDetails = () => {
             setErrorMessage('');
             return;
         }
-    
+
         try {
             const response = await axios.post('https://localhost:7078/api/ProductDetails', newDetail);
             if (response.status === 201) {
@@ -314,8 +317,8 @@ const ADProductDetails = () => {
             setErrorMessage(`Có lỗi xảy ra khi thêm chi tiết sản phẩm: ${error.message}`);
         }
     };
-    
-    
+
+
 
 
     if (loading) {
@@ -378,19 +381,21 @@ const ADProductDetails = () => {
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Màu Sắc</label>
                                             <div className="col-md-8">
+
                                                 <select
                                                     className="form-control"
                                                     name="colorId"
                                                     value={editableDetails[detail.id].colorId}
                                                     onChange={(e) => handleChange(e, detail.id)}
                                                 >
-                                                   
+
                                                     {colors.map(color => (
                                                         <option key={color.id} value={color.id}>
                                                             {color.tenMauSac}
                                                         </option>
                                                     ))}
                                                 </select>
+
                                                 {errors.color && <div className="text-danger">{errors.color}</div>}
                                             </div>
                                         </div>
@@ -403,7 +408,7 @@ const ADProductDetails = () => {
                                                     value={editableDetails[detail.id].sizeId}
                                                     onChange={(e) => handleChange(e, detail.id)}
                                                 >
-                                                   
+
                                                     {sizes.map(size => (
                                                         <option key={size.id} value={size.id}>
                                                             {size.tenKichThuoc}
@@ -549,6 +554,7 @@ const ADProductDetails = () => {
                                             ))}
                                         </select>
                                     </div>
+
                                 </div>
                                 {errors.kichThuocId && <div className="text-danger">{errors.kichThuocId}</div>}
 

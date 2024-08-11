@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../../styles/user/Cart.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faRotateLeft
 } from "@fortawesome/free-solid-svg-icons";
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const Cart = (props) => {
 
     const { listCart, setListCart, total } = useOutletContext();
+    const navigate = useNavigate();
+
+    const handleCheckout = () => {
+        navigate('/Payment', { state: { listCart, total } });
+    };
 
     const handleChangeQuantity = (event, index) => {
         setListCart(cart => {
@@ -63,7 +68,7 @@ const Cart = (props) => {
                         {listCart && listCart.length > 0 ?
                             listCart.map((item, index) => {
                                 return (
-                                    <React.Fragment key={item.id}>
+                                    <React.Fragment key={index}>
                                         <div className="row row-cart-item">
                                             <div className="col-md-2 cart-item">
                                                 <div className="image-product-cart">
@@ -74,9 +79,11 @@ const Cart = (props) => {
                                                 <div className="cart-product-item">
                                                     <span className="nameproduct">{item.ten}</span>
                                                     <br />
-                                                    <span className="price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span> <span className="priced">{item.gia.toLocaleString('vi-VN') + "đ"} </span>
+                                                    <span className="price">{item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                                                    <span className="priced">{item.maGiamGia === null ? "" : item.gia.toLocaleString('vi-VN') + " đ"} </span>
                                                     <br />
-                                                    <span className="size"> Size: {item.size} </span>
+                                                    <span className="size"> Kích thước: {item.size} </span>
+                                                    <span className="ms-2">Màu: {item.color}</span>
                                                     <br />
                                                     <div className="quantity">
                                                         <button className="apart-from" onClick={() => handleDecreaseQuantity(index)}>
@@ -106,7 +113,7 @@ const Cart = (props) => {
                             <span className="total-amount-name">Tổng tiền: </span> <span className="total-amount">{total.toLocaleString('vi-VN')} đ</span>
                             <br />
                             <div className="cracked-line"></div>
-                            <button className="btn-pay">
+                            <button className="btn-pay" onClick={handleCheckout}>
                                 <span className="pay-name">THANH TOÁN</span>
                             </button>
                             <br />

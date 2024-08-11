@@ -13,36 +13,33 @@
             .logo {
                 display: flex;
                 justify-content: center;
-                img{
-                    width:100px;
+
+                img {
+                    width: 100px;
                 }
             }
 
             .menu {
                 padding: 0;
-                color: gray;
                 font-weight: 500;
 
                 .active {
                     border-right: 5px solid #4318FF;
-                    color: black;
-                }
-
-                .small-cap {
-                    padding: 12px 30px;
-                    font-size: 15px;
-                    font-weight: bold;
                 }
 
                 .menu-item {
                     font-size: 18px;
-                    list-style: none;
-                    padding: 12px 30px;
-                    cursor:pointer;
 
-                    &:hover {
-                        background-color: #EEF3FF;
-                        color: #2DAAED;
+                    .admin-management {
+                        color: black;
+                        display: block;
+                        padding: 12px 30px;
+                        text-decoration: none;
+
+                        &:hover {
+                            background-color: #EEF3FF;
+                            color: #2DAAED;
+                        }
                     }
                 }
             }
@@ -70,11 +67,13 @@
 
                     .nav-menu-item {
                         font-size: 20px;
-                        .nav-link{
-                            height:50px;
-                            img{
-                                height:100%;
-                                border-radius:50%;
+
+                        .nav-link {
+                            height: 50px;
+
+                            img {
+                                height: 100%;
+                                border-radius: 50%;
                             }
                         }
 

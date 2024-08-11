@@ -8,12 +8,18 @@
     align-items    : center;
 
     /* căn giữa theo chiều dọc */
-    button {
+    .link-xem {
       width           : 150px;
       height          : 40px;
       border-radius   : 10%;
       background-color: #efd4d0;
       border          : 0px solid #fff;
+      text-decoration : none;
+      display         : flex;
+      justify-content : center;
+      /* căn giữa theo chiều ngang */
+      align-items     : center;
+      color           : #000;
     }
   }
 
@@ -21,8 +27,35 @@
     color: red;
   }
 
+
   .row {
     .product {
+      .product-content {
+        margin-bottom: 20px;
+
+        // .card-title {
+        //   white-space  : nowrap;
+        //   overflow     : hidden;
+        //   text-overflow: ellipsis;
+        //   max-width    : 100%;
+        // }
+
+        .product-price {
+          display        : flex;
+          justify-content: space-between;
+          font-weight    : 500;
+          font-size      : 17px;
+
+          .price {
+            color: red;
+          }
+
+          .priced {
+            text-decoration: line-through;
+          }
+        }
+      }
+
       .link_to {
         text-decoration: none;
         color          : black;

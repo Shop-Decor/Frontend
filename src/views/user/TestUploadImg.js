@@ -13,7 +13,7 @@ class TestUploadImg extends React.Component {
             ten: '',
             moTa: '',
             maGiamGia: '',
-            img: []
+            hinhs: []
         }
     }
 
@@ -48,7 +48,7 @@ class TestUploadImg extends React.Component {
                 imgUrl: urls,
                 product: {
                     ...prevState.product,
-                    img: urls
+                    hinhs: urls
                 }
             }), async () => {
                 // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
