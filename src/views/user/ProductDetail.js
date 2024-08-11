@@ -99,10 +99,26 @@ const ProductDetail = (props) => {
 
 
   const handleAddToCart = () => {
-    console.log(1);
-    setListCart(cart => {
-      const cartExisting = cart.findIndex(x => x.id === id && x.size === selectedSizes.size && x.color === selectedColors.color);
-      if (cartExisting === -1) {
+    setListCart((cart) => {
+      // Tìm chỉ số của sản phẩm trong giỏ hàng với cùng ID, kích thước, và màu sắc
+      const cartExistingIndex = cart.findIndex(
+        (item) =>
+          item.id === id &&
+          item.size === selectedSizes[0] &&
+          item.color === selectedColors[0]
+      );
+
+      // Nếu sản phẩm đã tồn tại trong giỏ hàng
+      if (cartExistingIndex !== -1) {
+        // Cập nhật số lượng của sản phẩm đã tồn tại
+        const updatedCart = cart.map((item, index) =>
+          index === cartExistingIndex
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+        return updatedCart;
+      } else {
+        // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
         const cartItem = {
           id: id,
           ten: product2.ten,
@@ -110,23 +126,15 @@ const ProductDetail = (props) => {
           gia: originalPrice,
           loaiGiam: selectedDetail.discountType,
           menhGia: selectedDetail.discountAmount,
-          size: selectedSizes,
+          size: selectedSizes[0], // Sửa để lấy kích thước đầu tiên
           quantity: quantity,
-          color: selectedColors
+          color: selectedColors[0] // Sửa để lấy màu sắc đầu tiên
         };
-        const list = [...cart, cartItem];
-        return list;
-      }
-      else {
-        const listUpdate = cart.map((item, index) =>
-          index === cartExisting
-            ? { ...item, quantity: item.quantity += quantity }
-            : item
-        );
-        return listUpdate;
+        return [...cart, cartItem];
       }
     });
   };
+
 
   const calculatePrice = () => {
     return selectedColors.reduce((total, color) => {

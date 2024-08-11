@@ -34,19 +34,29 @@ class ADProduct extends React.Component {
         product: {
             ten: '',
             moTa: '',
-            img: []
+            Hinhs: [],
+            chiTietSanPham: [
+                {
+                    gia: '',
+                    soLuong: '',
+                    idMauSac: '',
+                    idKichThuoc: '',
+                }
+            ],
         },
         productEdit: {
             id: '',
             ten: '',
             moTa: '',
             trangThai: '',
-            img: []
+            hinhs: []
         },
         productDetails: [],
         errorMessage: '',
         errorMessageName: '',
         errorMessageDescription: '',
+        colors: [],
+        sizes: []
     }
 
     handleChange = (e) => {
@@ -68,6 +78,7 @@ class ADProduct extends React.Component {
         });
 
         const urls = await Promise.all(uploadPromises);
+        console.log('Uploaded image URLs:', urls); // Thêm nhật ký gỡ lỗi để kiểm tra URL hình ảnh đã tải lên
         return urls;
     }
 
@@ -79,9 +90,15 @@ class ADProduct extends React.Component {
                     imgUrl: urls,
                     product: {
                         ...prevState.product,
-                        img: urls
+                        hinhs: urls,
+                        chiTietSanPham: prevState.product.chiTietSanPham.map(detail => ({
+                            ...detail,
+                            gia: Number(detail.gia),
+                            soLuong: Number(detail.soLuong),
+                        }))
                     }
                 }), async () => {
+                    console.log('Product data before sending to API:', this.state.product); // Thêm nhật ký gỡ lỗi để kiểm tra dữ liệu sản phẩm trước khi gửi
                     try {
                         const response = await axios.post('https://localhost:7078/api/product', this.state.product);
                         if (response.status === 200) {
@@ -162,8 +179,14 @@ class ADProduct extends React.Component {
     async componentDidMount() {
         try {
             let res = await axios.get('https://localhost:7078/api/Product');
+            let resColors = await axios.get('https://localhost:7078/api/CategoryColor');
+            let resSizes = await axios.get('https://localhost:7078/api/Category_Size');
+
             this.setState({
-                products: res && res.data ? res.data : []
+                products: res && res.data ? res.data : [],
+                colors: resColors && resColors.data ? resColors.data : [],
+                sizes: resSizes && resSizes.data ? resSizes.data : [],
+
             });
         } catch (error) {
             console.error("Lỗi khi lấy sản phẩm:", error);
@@ -221,7 +244,7 @@ class ADProduct extends React.Component {
                 ten: this.state.productEdit.ten,
                 moTa: this.state.productEdit.moTa,
                 trangThai: this.state.productEdit.trangThai,
-                img: this.state.productEdit.img
+                img: this.state.productEdit.hinhs
             });
             if (res.status === 200 || res.status === 204) {
                 alert('Cập nhật thành công');
@@ -302,13 +325,61 @@ class ADProduct extends React.Component {
         });
     }
 
+    handleChangePrice = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    gia: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleChangeQuantity = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    soLuong: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleSelectColor = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    idMauSac: event.target.value
+                }))
+            }
+        });
+    }
+
+    handleSelectSize = (event) => {
+        this.setState({
+            product: {
+                ...this.state.product,
+                chiTietSanPham: this.state.product.chiTietSanPham.map(detail => ({
+                    ...detail,
+                    idKichThuoc: event.target.value
+                }))
+            }
+        });
+    }
+
     render() {
         const { products, product, imgPreviews, errorMessage } = this.state;
 
         return (
             <>
-             {/* //Thêm */}
-             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                {/* //Thêm */}
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -342,6 +413,67 @@ class ADProduct extends React.Component {
                                                 onChange={this.handleChangeDescribe}
                                             />
                                             {errorMessage && <div className="text-danger">{errorMessage}</div>}
+                                        </div>
+                                    </div>
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Giá</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={this.state.product.chiTietSanPham[0]?.gia || ''}
+                                                onChange={this.handleChangePrice}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Số lượng</label>
+                                        <div className="col-sm-8">
+                                            <input
+                                                className="form-control"
+                                                type="number"
+                                                value={this.state.product.chiTietSanPham[0]?.soLuong || ''}
+                                                onChange={this.handleChangeQuantity}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Màu sắc</label>
+                                        <div className="col-sm-8">
+                                            <select
+                                                className="form-control"
+                                                id="color"
+                                                value={this.state.product.chiTietSanPham[0]?.idMauSac || ''}
+                                                onChange={this.handleSelectColor}
+                                            >
+                                                <option value="">Chọn màu sắc</option>
+                                                {this.state.colors.map(color => (
+                                                    <option key={color.id} value={color.id}>
+                                                        {color.tenMauSac}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="row mb-3">
+                                        <label className="col-sm-4 col-form-label">Kích thước</label>
+                                        <div className="col-sm-8">
+                                            <select
+                                                className="form-control"
+                                                id="size"
+                                                value={this.state.product.chiTietSanPham[0]?.idKichThuoc || ''}
+                                                onChange={this.handleSelectSize}
+                                            >
+                                                <option value="">Chọn kích thước</option>
+                                                {this.state.sizes.map(size => (
+                                                    <option key={size.id} value={size.id}>
+                                                        {size.tenKichThuoc}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
 

@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import NavHome from "./nav/NavHome";
 import Slider from "./slider/Slider";
 import Footer from "./footer/Footer";
-
 const LayoutUser = (props) => {
     const [listCart, setListCart] = useState([]);
     const [total, setTotal] = useState(0);
@@ -99,23 +98,27 @@ const LayoutUser = (props) => {
 
     return (
         <>
-            <NavHome
-                listCart={listCart}
-                setListCart={setListCart}
-                total={total}
-            />
-            <Slider />
-            <div className="container p-0">
-                <Outlet
-                    context={{
-                        listCart,
-                        setListCart,
-                        total,
-                        handleAddCart
-                    }}
+                <NavHome
+                    listCart={listCart}
+                    setListCart={setListCart}
+                    total={total}
                 />
-            </div>
-            <Footer />
+                <Slider />
+
+                <div className="container p-0">
+                    <Outlet
+                        context={{
+                            listCart,
+                            setListCart,
+                            total,
+                            handleAddCart
+                        }}
+
+                    />
+                </div>
+
+                <Footer />
+
         </>
     )
 }
