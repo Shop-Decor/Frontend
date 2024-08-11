@@ -60,7 +60,9 @@ class ADProduct extends React.Component {
         colors: [],
         sizes: [],
         searchKeyword: "",
-        paging: { index: 1, size: 10, totalPage: 0 },
+
+        paging: { index: 1, size: 5, totalPage: 0 },
+
     }
 
     handleChange = (e) => {
@@ -110,9 +112,12 @@ class ADProduct extends React.Component {
             errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
         }
 
-        if (isNaN(this.state.product.chiTietSanPham[0]?.gia) || this.state.product.chiTietSanPham[0]?.gia <= 0) {
-            errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
-        }
+        const price = Number(this.state.product.chiTietSanPham[0]?.gia);
+    if (isNaN(price) || price <= 0) {
+        errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
+    } else if (price < 20000) {
+        errorMessagePrice = 'Giá sản phẩm phải từ 20,000 VNĐ trở lên.';
+    }
 
         if (isNaN(this.state.product.chiTietSanPham[0]?.soLuong) || this.state.product.chiTietSanPham[0]?.soLuong <= 0) {
             errorMessageQuantity = 'Số lượng sản phẩm phải là một số không âm.';
@@ -326,23 +331,23 @@ class ADProduct extends React.Component {
 
     handleUpdate = async (event) => {
         event.preventDefault();
-        if (this.state.imgFiles.length > 0) {
-            try {
-                const urls = await this.uploadImages();
+        try {
+            const urls = await this.uploadImages();
 
-                const updatedProduct = {
-                    ten: this.state.productEdit.ten,
-                    moTa: this.state.productEdit.moTa,
-                    trangThai: this.state.productEdit.trangThai,
-                    imgs: urls
-                };
+            const updatedProduct = {
+                ten: this.state.productEdit.ten,
+                moTa: this.state.productEdit.moTa,
+                trangThai: this.state.productEdit.trangThai,
+                imgs: urls
+            };
 
-                let res = await axios.put(`https://localhost:7078/api/Product/${this.state.productEdit.id}`, updatedProduct);
+            let res = await axios.put(`https://localhost:7078/api/Product/${this.state.productEdit.id}`, updatedProduct);
 
-                if (res.status === 200 || res.status === 204) {
-                    Swal.fire({
-                        title: 'Cập nhật sản phẩm thành công!',
-                        icon: 'success',
+            if (res.status === 200 || res.status === 204) {
+                Swal.fire({
+                    title: 'Cập nhật sản phẩm thành công!',
+                    icon: 'success',
+
                         timer: 2000,
                         timerProgressBar: true,
                         showConfirmButton: false
@@ -358,15 +363,14 @@ class ADProduct extends React.Component {
                     title: 'Có lỗi xảy ra!',
                     text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
                     icon: 'error',
+
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 });
-            }
-        }
-        else {
-            this.setState({ errorMessage: 'Vui lòng chọn ít nhất một ảnh.' });
-        }
+                this.componentDidMount();
+
+            } 
     }
 
 
@@ -842,7 +846,7 @@ class ADProduct extends React.Component {
                             </li>
                         </ul>
                     </nav>
-                </div >
+                </div>
             </>
         );
     }
