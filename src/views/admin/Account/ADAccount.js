@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
+import '../../../styles/admin/ADAccount.scss';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -105,11 +106,27 @@ const ADAccount = () => {
         console.log("asdasd", newU);
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
         let errors = {};
-        if (/[^a-zA-Z\s]/.test(newU.fullName)) {
+        // kiểm tra tên người dùng ít nhất 6 kí tự
+        if (newU.userName.length < 6) {
+            errors.userName = 'Tên tài khoản phải ít nhất 6 kí tự';
+        }
+        else if (newU.userName.length > 20) {
+            errors.userName = 'Tên tài khoản tối đa 20 kí tự';
+        }
+        // kiểm tra tên người dùng chỉ chứa kí tự chữ và dấu cách
+        
+        if (/\d/.test(newU.fullName) || /[!@#$&*]/.test(newU.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
+
+        if (newU.fullName.length < 6) {
+            errors.fullName = 'Tên người dùng phải ít nhất 6 kí tự';
+        }
+        else if (newU.fullName.length > 30) {
+            errors.fullName = 'Tên người dùng tối đa 30 kí tự';
+        }
         // Check phone number 10 kí tự
-        if (!/^\d{10}$/.test(newU.phoneNumber)) {
+        if (!/^\d{10}$/.test(newU.phoneNumber) && newU.phoneNumber !== '') {
             errors.phoneNumber = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
         }
         // Check password chứa 1 in hoa, 1 in thường, 1 số, 1 kí tự đặc biệt
@@ -126,12 +143,13 @@ const ADAccount = () => {
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-        console.log("newU", newU);
+        
         try {
-            await axios.post('https://localhost:7078/api/Account/Create', newU);
+            // console.log("vô nè");
+            await axios.post('https://localhost:7078/api/Account/Create', newUser);
             setShowModal(!showModal); // Close the modal
             // Clear the form
-
+            // useEffect();
         } catch (error) {
             setError('Error adding user');
         }
@@ -142,13 +160,24 @@ const ADAccount = () => {
         const updatedUser = { ...editUser };
         let errors = {};
 
+
+
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-        if (/[^a-zA-Z\s]/.test(updatedUser.fullName)) {
+        
+        if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
+        // kiểm tra tên người dùng ít nhất 6 kí tự
+        if (updatedUser.fullName.length < 6) {
+            errors.fullName = 'Tên người dùng phải ít nhất 6 kí tự';
+        }
 
-        // Check phone number 10 kí tự
-        if (!/^\d{10}$/.test(updatedUser.phoneNumber)) {
+        else if (updatedUser.fullName.length > 30) {
+            errors.fullName = 'Tên người dùng tối đa 30 kí tự';
+        }
+
+        // Check phone number có dữ liệu và chỉ chứa 10 kí tự 
+        if (!/^\d{10}$/.test(updatedUser.phoneNumber) && updatedUser.phoneNumber !== '') {
             errors.phoneNumber = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
         }
 
@@ -219,63 +248,66 @@ const ADAccount = () => {
     return (
         <>
             <div className="account-list container">
-                <h1>Người Dùng <FontAwesomeIcon icon={faUser} /></h1>
-                <button
-                    type="button"
-                    className="btn btn-primary mb-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addUserModal"
-                >
-                    Thêm Người Dùng
-                </button>
+                <div className="content-container">
+                    <h2>Người Dùng <FontAwesomeIcon icon={faUser} /></h2>
+                    <button
+                        type="button"
+                        className="btn btn-primary mb-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addUserModal"
+                    >
+                        Thêm Người Dùng
+                    </button>
 
-                {error && (
-                    <div className="alert alert-danger">
-                        {error}
-                    </div>
-                )}
+                    {error && (
+                        <div className="alert alert-danger">
+                            {error}
+                        </div>
+                    )}
 
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Tên tài khoản</th>
-                            <th>Tên người dùng</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                            <th>Địa chỉ</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {accounts.map((account) => (
-                            <tr key={account.id}>
-                                <td>{account.userName}</td>
-                                <td>{account.fullName}</td>
-                                <td>{account.email}</td>
-                                <td>{account.phoneNumber}</td>
-                                <td>{account.address}</td>
-                                <td>
-                                    <button
-                                        className="btn btn-sm m-2 btn-primary"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editUserModal"
-                                        onClick={() => handleEditClick(account)}
-                                    >
-                                        Sửa
-                                    </button>
-                                    <button className="btn btn-sm btn-danger"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteUserModal"
-                                        onClick={() => handleDeleteClick(account)}
-
-                                    >Xóa</button>
-                                </td>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Tên tài khoản</th>
+                                <th>Tên người dùng</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th>Thao tác</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {accounts.map((account) => (
+                                <tr key={account.id}>
+                                    <td>{account.userName}</td>
+                                    <td>{account.fullName}</td>
+                                    <td>{account.email}</td>
+                                    <td>{account.phoneNumber}</td>
+                                    <td>{account.address}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-sm m-2 btn-primary"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editUserModal"
+                                            onClick={() => handleEditClick(account)}
+                                        >
+                                            Sửa
+                                        </button>
+                                        <button className="btn btn-sm btn-danger"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteUserModal"
+                                            onClick={() => handleDeleteClick(account)}
+
+                                        >Xóa</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
 
                 {/* Modal thêm người dùng */}
 
@@ -289,25 +321,25 @@ const ADAccount = () => {
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit}>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Tên Tài Khoản:</label>
+                                        <label className="col-sm-3 col-form-label">Tên Tài Khoản *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="text"
                                                 value={newUser.userName}
                                                 onChange={handleChange}
-                                                className="form-control"
+                                                className={`form-control ${errorMessage.userName ? 'is-invalid' : ''}`}
                                                 name="userName"
                                                 required
                                             />
-                                            {/* {errorMessage.fullName && (
+                                            {errorMessage.userName && (
                                                 <div className="invalid-feedback">
-                                                    {errorMessage.fullName}
+                                                    {errorMessage.userName}
                                                 </div>
-                                            )} */}
+                                            )}
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Mật khẩu:</label>
+                                        <label className="col-sm-3 col-form-label">Mật khẩu *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="password"
@@ -325,7 +357,7 @@ const ADAccount = () => {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Xác nhận Mật khẩu:</label>
+                                        <label className="col-sm-3 col-form-label">Xác nhận Mật khẩu *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="password"
@@ -343,7 +375,7 @@ const ADAccount = () => {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Tên Người Dùng:</label>
+                                        <label className="col-sm-3 col-form-label">Tên Người Dùng *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="text"
@@ -353,13 +385,15 @@ const ADAccount = () => {
                                                 name="fullName"
                                                 required
                                             />
-                                            <div className="invalid-feedback">
-                                                {errorMessage.fullName}
-                                            </div>
+                                            {errorMessage.fullName && (
+                                                <div className="invalid-feedback">
+                                                    {errorMessage.fullName}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Email:</label>
+                                        <label className="col-sm-3 col-form-label">Email *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="email"
@@ -380,9 +414,9 @@ const ADAccount = () => {
                                                 onChange={handleChange}
                                                 className={`form-control ${errorMessage.phoneNumber ? 'is-invalid' : ''}`}
                                                 name="phoneNumber"
-                                                required
+                                            // required
                                             />
-                                             {errorMessage.phoneNumber && (
+                                            {errorMessage.phoneNumber && (
                                                 <div className="invalid-feedback">
                                                     {errorMessage.phoneNumber}
                                                 </div>
@@ -398,7 +432,7 @@ const ADAccount = () => {
                                                 onChange={handleChange}
                                                 className={`form-control ${errorMessage.address ? 'is-invalid' : ''}`}
                                                 name="address"
-                                                required
+                                            // required
                                             />
                                         </div>
                                     </div>
@@ -434,6 +468,7 @@ const ADAccount = () => {
                                                 required
                                                 disabled
                                             />
+
                                         </div>
                                     </div>
                                     <div className="row mb-3">
@@ -476,7 +511,7 @@ const ADAccount = () => {
                                                 onChange={handleEditChange}
                                                 className={`form-control ${errorMessage.phoneNumber ? 'is-invalid' : ''}`}
                                                 name="phoneNumber"
-                                                required
+                                            // required
                                             />
                                             {errorMessage.phoneNumber && (
                                                 <div className="invalid-feedback">
@@ -494,7 +529,7 @@ const ADAccount = () => {
                                                 onChange={handleEditChange}
                                                 className="form-control"
                                                 name="address"
-                                                required
+                                            // required
                                             />
                                         </div>
                                     </div>

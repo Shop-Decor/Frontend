@@ -132,9 +132,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 40px; // Adjust the size as needed
-            height: 40px; // Adjust the size as needed
-            line-height: 40px; // Match the height for vertical centering
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
             border-radius: 50%;
             text-align: center;
             border: 1px solid #ddd;
@@ -143,8 +143,8 @@
             text-decoration: none;
 
             &:hover {
-                background-color: #EFD4D0;
-                color: #000000;
+                background-color: #FF7675;
+                color: #fff;
             }
 
             &:focus {
@@ -154,9 +154,8 @@
         }
 
         &.active .page-link {
-            background-color: #007bff;
+            background-color: #FF7675;
             color: #fff;
-            border-color: #007bff;
         }
 
         &.disabled .page-link {

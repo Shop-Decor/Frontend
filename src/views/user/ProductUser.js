@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext, Link, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faEye } from "@fortawesome/free-solid-svg-icons";
 import '../../styles/user/ProductUser.scss';
 import "../../styles/user/hover/hover.scss";
 
 const ProductUser = (props) => {
+    const { id, pageNumber, pageSize } = useParams();
     const [products, setProducts] = useState([]);
+    const [currentPage, setCurrentPage] = useState();
+    const [totalPages, settoTalPages] = useState();
     const [prices, setPrices] = useState([
         { label: 'under500', value: false },
         { label: 'range500to1000', value: false },
@@ -29,20 +32,28 @@ const ProductUser = (props) => {
     ]);
     const [selectFilter, setSelectFilter] = useState('ASC');
 
-    const { setListCart, handleAddCart } = useOutletContext();
+    const { handleAddCart } = useOutletContext();
 
-    const fetchListProducts = async () => {
+    const fetchListProducts = async (loaiId, pageNumber, pageSize) => {
+        const params = {};
+        if (loaiId) params.LoaiId = loaiId;
+        if (pageNumber) params.PageNumber = pageNumber;
+        if (pageSize) params.PageSize = pageSize;
+
         try {
-            let res = await axios.get('https://localhost:7078/api/Product/User');
-            setProducts(res.data || []);
+            let res = await axios.get('https://localhost:7078/api/Product/user/category', { params });
+            console.log(res);
+            setProducts(res.data.items || []);
+            setCurrentPage(res.data.currentPage);
+            settoTalPages(res.data.totalPages);
         } catch (error) {
             console.error('Lỗi lấy dữ liệu api:', error);
         }
     };
 
     useEffect(() => {
-        fetchListProducts();
-    }, []);
+        fetchListProducts(id, pageNumber, pageSize);
+    }, [id, pageNumber, pageSize]);
 
     const handleChangeCheckBox = (event) => {
         const { name, checked } = event.target;
@@ -142,6 +153,14 @@ const ProductUser = (props) => {
         getFilter();
     };
 
+    const handlePageChange = (event, newPage) => {
+        event.preventDefault();
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+            fetchListProducts(id, newPage, pageSize);
+        }
+    };
+
     return (
         <>
             <div className="product-user">
@@ -217,11 +236,19 @@ const ProductUser = (props) => {
                     <div className='row'>
                         <nav aria-label="Page navigation example">
                             <ul className="pagination">
-                                <li className="page-item"><a className="page-link" href="#"> &lt; </a></li>
-                                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                <li className="page-item"><a className="page-link" href="#">&gt;</a></li>
+                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                    <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage - 1)}> &lt; </a>
+                                </li>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                                        <a className="page-link" href="#" onClick={(e) => handlePageChange(e, page)}>
+                                            {page}
+                                        </a>
+                                    </li>
+                                ))}
+                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                    <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage + 1)}> &gt; </a>
+                                </li>
                             </ul>
                         </nav>
                     </div>

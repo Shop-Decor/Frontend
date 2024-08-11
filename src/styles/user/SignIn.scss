@@ -1,31 +1,48 @@
-// src/Login.scss
-
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #ffffff;
-    p {
-        color: #A3AED0;
+    background-color: #c9c9c9;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
+    .login-form {
+        display: flex;
+        flex-direction: row; /* Display row to place image next to form */
+        background-color: #ebcccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(167, 6, 6, 0.1);
+        padding: 20px; /* Add padding to the form */
+        h2{
+            color: #2B3674;
+        }
+        p{
+            color: #2B3674;
+        }
     }
-    
-    h2 {
-        color: #2B3674;
-        margin-bottom: 20px;
+
+    .login-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center content vertically */
+        align-items: center; /* Center content horizontally */
+        padding: 20px;
     }
-    .SignInGG{
+
+    .SignInGG {
         color: #2B3674;
+        
         button {
             font-size: 12px;
             padding: 10px;
             background-color: #F4F7FE;
             color: #2B3674;
-
             
-            label{
+            label {
                 margin-left: 10px;
-            
             }
         }
         
@@ -35,14 +52,11 @@
     }
     
     form {
-        
         display: flex;
         flex-direction: column;
-        width: 350px;
+        width: 70%; /* Take full width available */
         padding: 20px;
-
-       
-
+        
         label {
             color: #2B3674;
             margin-bottom: 5px;
@@ -68,9 +82,19 @@
                 background-color: #0056b3;
             }
         }
-
-      
     }
 
-    
+    .image-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+    }
 }
