@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/user/payment.scss';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import { jwtDecode } from "jwt-decode";
 
 
 const CopyButton = ({ discountCode }) => {
@@ -20,8 +22,6 @@ const CopyButton = ({ discountCode }) => {
         }
     };
 
-
-
     return (
         <div className="copy-button">
             <input
@@ -38,9 +38,12 @@ const CopyButton = ({ discountCode }) => {
     );
 };
 
-
 const Payment = () => {
+    const navigate = useNavigate();
     const location = useLocation();
+
+
+
     const { listCart, total } = location.state || { listCart: [], total: 0 };
     const [formData, setFormData] = useState({
         name: '',
@@ -54,6 +57,7 @@ const Payment = () => {
     const [appliedDiscountCode, setAppliedDiscountCode] = useState('');
     const [enteredDiscountCode, setEnteredDiscountCode] = useState('');
     const [finalTotal, setFinalTotal] = useState(total);
+
 
     const handleDiscountChange = (e) => {
         setEnteredDiscountCode(e.target.value);
@@ -82,13 +86,13 @@ const Payment = () => {
         }
     };
 
-
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     }
 
     const [discountData, setDiscountData] = useState([]);
+
 
     useEffect(() => {
         const fetchDiscountData = async () => {
@@ -112,8 +116,30 @@ const Payment = () => {
         }
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let token = localStorage.getItem('token');
+        if (!token || typeof token !== 'string') {
+            Swal.fire({
+                title: 'Đăng nhập',
+                text: 'Bạn phải đăng nhập để thanh toán',
+                icon: 'warning',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            navigate('/SignIn')
+            return;
+
+        }
+
+        const user = jwtDecode(token);
+        const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
+
+
 
         const orderDetails = listCart.map(item => ({
             sanPhamId: item.id,
@@ -123,8 +149,6 @@ const Payment = () => {
             kichThuoc: item.size,
         }));
 
-
-
         const orderData = {
             hoTen: formData.name,
             diaChi: formData.address,
@@ -132,23 +156,55 @@ const Payment = () => {
             email: formData.email,
             TTThanhToan: formData.paymentMethod,
             orderDetails: orderDetails,
-            ThanhTien: finalTotal
+            ThanhTien: finalTotal,
+            userId: userId
         };
 
         try {
-            const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
-            if (response.status === 200) {
-                alert('Order created successfully');
-            } else {
-                alert('Failed to create order');
+            if (formData.paymentMethod === true) { // COD
+                const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
+                if (response.status === 200) {
+                    alert('Order created successfully');
+                } else {
+                    alert('Failed to create order');
+                }
+            } else { // VnPay
+
+                const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
+                console.log(response)
+
+                const vnpay = await axios.post('https://localhost:7078/api/Payment/create-order', {
+
+                    Amount: finalTotal,
+                    Id: response.data
+                });
+                if (vnpay.status === 200) {
+                    window.location.href = vnpay.data.url; // Redirect to VnPay payment URL
+                } else {
+                    Swal.fire({
+                        title: 'Chưa thanh toán',
+                        text: 'Thanh toán thất bại',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    navigate('/payment')
+                    if (response.status === 200) {
+                        localStorage.removeItem('cart')
+                    }
+                    else {
+                        localStorage.removeItem('cart')
+                    }
+                }
+
+
             }
         } catch (error) {
             console.error('Error creating order:', error);
             alert('An error occurred while creating the order');
         }
-        console.log(listCart);
     };
-
     return (
         <>
             <div className="payment-container my-4">
@@ -163,7 +219,7 @@ const Payment = () => {
                                 {discountData.filter(x => !x.loaiKM).map((item, index) => {
                                     return (
                                         <React.Fragment key={index}>
-                                            <div className="card" >
+                                            <div className="card">
                                                 <div className="main">
                                                     <div className="co-img">
                                                         <img src="https://i.pinimg.com/originals/c7/84/67/c78467db9ff497393cb548a48f02d451.png" alt="" />
@@ -179,9 +235,7 @@ const Payment = () => {
                                             <br />
                                         </React.Fragment>
                                     )
-
                                 })}
-
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
@@ -199,6 +253,7 @@ const Payment = () => {
                             placeholder="Nhập họ và tên"
                             value={formData.name}
                             onChange={handleInputChange}
+                            required
                         />
                         <div className="inline-fields">
                             <input
@@ -208,6 +263,7 @@ const Payment = () => {
                                 placeholder="Nhập email"
                                 value={formData.email}
                                 onChange={handleInputChange}
+                                required
                             />
                             <input
                                 type="tel"
@@ -216,6 +272,7 @@ const Payment = () => {
                                 placeholder="Nhập số điện thoại"
                                 value={formData.phone}
                                 onChange={handleInputChange}
+                                required
                             />
                         </div>
                         <input
@@ -225,6 +282,7 @@ const Payment = () => {
                             placeholder="Nhập địa chỉ"
                             value={formData.address}
                             onChange={handleInputChange}
+                            required
                         />
                         <h4>Phương thức thanh toán</h4>
                         <div className="payment-methods">
