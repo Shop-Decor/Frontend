@@ -60,7 +60,9 @@ class ADProduct extends React.Component {
         colors: [],
         sizes: [],
         searchKeyword: "",
+
         paging: { index: 1, size: 5, totalPage: 0 },
+
     }
 
     handleChange = (e) => {
@@ -110,9 +112,12 @@ class ADProduct extends React.Component {
             errorMessageImage = 'Vui lòng chọn ít nhất một ảnh.';
         }
 
-        if (isNaN(this.state.product.chiTietSanPham[0]?.gia) || this.state.product.chiTietSanPham[0]?.gia <= 0) {
-            errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
-        }
+        const price = Number(this.state.product.chiTietSanPham[0]?.gia);
+    if (isNaN(price) || price <= 0) {
+        errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
+    } else if (price < 20000) {
+        errorMessagePrice = 'Giá sản phẩm phải từ 20,000 VNĐ trở lên.';
+    }
 
         if (isNaN(this.state.product.chiTietSanPham[0]?.soLuong) || this.state.product.chiTietSanPham[0]?.soLuong <= 0) {
             errorMessageQuantity = 'Số lượng sản phẩm phải là một số không âm.';
@@ -342,26 +347,30 @@ class ADProduct extends React.Component {
                 Swal.fire({
                     title: 'Cập nhật sản phẩm thành công!',
                     icon: 'success',
+
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    this.componentDidMount();
+
+                } else {
+                    throw new Error('Cập nhật không thành công');
+                }
+            } catch (error) {
+                console.error('Lỗi khi cập nhật:', error);
+                Swal.fire({
+                    title: 'Có lỗi xảy ra!',
+                    text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
+                    icon: 'error',
+
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 });
                 this.componentDidMount();
 
-            } else {
-                throw new Error('Cập nhật không thành công');
-            }
-        } catch (error) {
-            console.error('Lỗi khi cập nhật:', error);
-            Swal.fire({
-                title: 'Có lỗi xảy ra!',
-                text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
-                icon: 'error',
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            });
-        }
+            } 
     }
 
 
@@ -682,6 +691,7 @@ class ADProduct extends React.Component {
                                             />
                                         </div>
                                     </div>
+                                    {this.state.errorMessageName && <div className="alert alert-danger">{this.state.errorMessageName}</div>}
 
                                     <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Mô tả</label>
@@ -723,7 +733,7 @@ class ADProduct extends React.Component {
 
                                         </div>
                                     </div>
-
+                                    {this.state.errorMessageImage && <div className="alert alert-danger">{this.state.errorMessageImage}</div>}
                                     <div className="img-preview">
                                         {this.state.imgPreviews.length > 0 && this.state.imgPreviews.map((dataVal, index) => (
                                             <img key={index} src={dataVal} width="100px" alt="uploaded" />
@@ -836,7 +846,7 @@ class ADProduct extends React.Component {
                             </li>
                         </ul>
                     </nav>
-                </div >
+                </div>
             </>
         );
     }

@@ -60,7 +60,7 @@ const ADProductDetails = () => {
             setSizes(resSizes && resSizes.data ? resSizes.data : []);
         }
         LoadData();
-    }, [])
+    })
 
 
     const handleDelete = async (productDetailId) => {
@@ -104,10 +104,9 @@ const ADProductDetails = () => {
 
     const handleChange = (e, id) => {
         const { name, value } = e.target;
-
-        // Kiểm tra số dương và không cho phép nhập chữ cho giá và số lượng
+    
         if (name === 'gia' || name === 'soLuong') {
-            // Sử dụng regex để loại bỏ ký tự không phải số
+            // Chỉ xử lý số nguyên và loại bỏ ký tự không phải số
             const numericValue = value.replace(/[^0-9.]/g, '');
             setEditableDetails(prevDetails => ({
                 ...prevDetails,
@@ -116,28 +115,29 @@ const ADProductDetails = () => {
                     [name]: numericValue
                 }
             }));
-        }
-        else if (name === 'colorId') {
+        } else if (name === 'colorId') {
+            // Cập nhật màu sắc dựa trên colorId
+            const color = colors.find(color => color.id == value);
             setEditableDetails(prevDetails => ({
                 ...prevDetails,
                 [id]: {
                     ...prevDetails[id],
                     [name]: value,
-                    ['color']: colors.find(color => color.id == value).tenMauSac,
+                    ['color']: color ? color.tenMauSac : ''
                 }
             }));
-        }
-        else if (name === 'sizeId') {
+        } else if (name === 'sizeId') {
+            // Cập nhật kích thước dựa trên sizeId
+            const size = sizes.find(size => size.id == value);
             setEditableDetails(prevDetails => ({
                 ...prevDetails,
                 [id]: {
                     ...prevDetails[id],
                     [name]: value,
-                    ['size']: sizes.find(size => size.id == value).tenKichThuoc,
+                    ['size']: size ? size.tenKichThuoc : ''
                 }
             }));
-        }
-        else {
+        } else {
             setEditableDetails(prevDetails => ({
                 ...prevDetails,
                 [id]: {
@@ -147,6 +147,8 @@ const ADProductDetails = () => {
             }));
         }
     };
+    
+
 
 
     const handleSave = async (productDetailId) => {
@@ -158,8 +160,8 @@ const ADProductDetails = () => {
             tenKichThuoc: ''
         };
 
-        // Kiểm tra các điều kiện
-        if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương và không được để trống.';
+        // Kiểm tra giá sản phẩm
+        if (!updatedDetail.gia || isNaN(updatedDetail.gia) || updatedDetail.gia < 20000) errorMessages.gia = 'Giá phải từ 20,000 VNĐ trở lên.';
         if (!updatedDetail.soLuong || isNaN(updatedDetail.soLuong) || updatedDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương và không được để trống.';
         if (!updatedDetail.colorId || updatedDetail.colorId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!updatedDetail.sizeId || updatedDetail.sizeId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
@@ -214,18 +216,48 @@ const ADProductDetails = () => {
     };
 
 
+
     const handleNewDetailChange = (e) => {
         const { name, value } = e.target;
-
-        // Chỉ cho phép số dương và không cho phép nhập chữ
         const numericValue = parseFloat(value);
-        if (!isNaN(numericValue) && numericValue >= 0) {
-            setNewDetail(prevDetail => ({
-                ...prevDetail,
-                [name]: parseInt(value)
-            }));
+    
+        if (name === 'gia') {
+            if (!isNaN(numericValue) && numericValue >= 0) { 
+                setNewDetail(prevDetail => ({
+                    ...prevDetail,
+                    [name]: numericValue
+                }));
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    gia: ''
+                }));
+            } else {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    gia: 'Giá trị không hợp lệ.'
+                }));
+            }
+        } else {
+            if (!isNaN(numericValue) && numericValue >= 0) {
+                setNewDetail(prevDetail => ({
+                    ...prevDetail,
+                    [name]: numericValue
+                }));
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: ''
+                }));
+            } else {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: 'Giá trị không hợp lệ.'
+                }));
+            }
         }
     };
+    
+    
+
 
 
     const handleAddNewDetail = async () => {
@@ -235,13 +267,13 @@ const ADProductDetails = () => {
             tenMauSac: '',
             tenKichThuoc: ''
         };
-
-        // Kiểm tra các điều kiện
-        if (!newDetail.gia || isNaN(newDetail.gia) || newDetail.gia < 0) errorMessages.gia = 'Giá phải là số dương.';
+    
+        if (!newDetail.gia || isNaN(newDetail.gia) || newDetail.gia < 0) errorMessages.gia = 'Giá không hợp lệ.'; // Loại bỏ kiểm tra giá nhập tối thiểu
+        if(newDetail.gia < 20000) errorMessages.gia = 'Giá không được dưới 20000.';
         if (!newDetail.soLuong || isNaN(newDetail.soLuong) || newDetail.soLuong < 0) errorMessages.soLuong = 'Số lượng phải là số dương.';
         if (!newDetail.mauSacId || newDetail.mauSacId == 0) errorMessages.tenMauSac = 'Màu sắc không được để trống.';
         if (!newDetail.kichThuocId || newDetail.kichThuocId == 0) errorMessages.tenKichThuoc = 'Kích thước không được để trống.';
-
+    
         if (Object.values(errorMessages).some(msg => msg)) {
             setErrors(errorMessages);
             if (errorTimeout) {
@@ -258,7 +290,7 @@ const ADProductDetails = () => {
             setErrorMessage('');
             return;
         }
-
+    
         try {
             const response = await axios.post('https://localhost:7078/api/ProductDetails', newDetail);
             if (response.status === 201) {
@@ -282,6 +314,8 @@ const ADProductDetails = () => {
             setErrorMessage(`Có lỗi xảy ra khi thêm chi tiết sản phẩm: ${error.message}`);
         }
     };
+    
+    
 
 
     if (loading) {
@@ -323,7 +357,14 @@ const ADProductDetails = () => {
                                         <div className="row mb-3">
                                             <label className="col-md-4 col-form-label">Giá</label>
                                             <div className="col-md-8">
-                                                <input type="number" className="form-control" name="gia" value={editableDetails[detail.id].gia} onChange={(e) => handleChange(e, detail.id)} />
+                                                <input
+                                                    type="number"
+                                                    className="form-control"
+                                                    name="gia"
+                                                    value={editableDetails[detail.id]?.gia || ''}
+                                                    onChange={(e) => handleChange(e, detail.id)}
+                                                />
+
                                                 {errors.gia && <div className="text-danger">{errors.gia}</div>}
                                             </div>
                                         </div>
@@ -343,7 +384,7 @@ const ADProductDetails = () => {
                                                     value={editableDetails[detail.id].colorId}
                                                     onChange={(e) => handleChange(e, detail.id)}
                                                 >
-                                                    <option value="">Chọn màu sắc</option>
+                                                   
                                                     {colors.map(color => (
                                                         <option key={color.id} value={color.id}>
                                                             {color.tenMauSac}
@@ -362,7 +403,7 @@ const ADProductDetails = () => {
                                                     value={editableDetails[detail.id].sizeId}
                                                     onChange={(e) => handleChange(e, detail.id)}
                                                 >
-                                                    <option value="">Chọn kích thước</option>
+                                                   
                                                     {sizes.map(size => (
                                                         <option key={size.id} value={size.id}>
                                                             {size.tenKichThuoc}
@@ -449,13 +490,14 @@ const ADProductDetails = () => {
                                 <div className="mb-3">
                                     <label className="form-label">Giá</label>
                                     <input
-                                        type="number"
+                                        type="text"
                                         className="form-control"
                                         name="gia"
-                                        value={newDetail.gia}
+                                        value={newDetail.gia || ''}
                                         onChange={handleNewDetailChange}
                                         min="0"
                                     />
+
                                     {errors.gia && <div className="text-danger">{errors.gia}</div>}
                                 </div>
 
