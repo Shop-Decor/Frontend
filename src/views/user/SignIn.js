@@ -34,8 +34,8 @@ const SignIn = () => {
             // Lưu token vào localStorage
             localStorage.setItem('token', token.token); // string "abcedkfsdk"
             localStorage.setItem('user', JSON.stringify(token));
-        
-            
+
+
             // console.log('Token:', token.token);
             // Lấy thông tin user từ token
             const user = jwtDecode(token.token);
@@ -44,9 +44,10 @@ const SignIn = () => {
             let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             localStorage.setItem('userID', userID);
             console.log('User ID:', userID);
-            console.log('Role',userRole);
+            console.log('Role', userRole);
             console.log('User:', userU);
             localStorage.setItem('userName', userName);
+            localStorage.setItem('photo', user.Link);
             // console.log("Time", user.exp);
             // console.log((Date.now() - user.exp )< 0 );
             // console.log(Date.now());
@@ -60,21 +61,21 @@ const SignIn = () => {
                 });
             }
             if (userRole === "Admin") {
-                
+
                 navigate('/admin');
             }
             else {
                 navigate('/');
             }
-            
-            
+
+
 
 
 
             // Chuyển hướng đến trang Home
 
         } catch (err) {
-           
+
             if (err.response) {
                 // console.error('Response error:', err.response);
                 setError('Đăng nhập thất bại, Vui lòng kiểm trả tài khoản và mật khẩu');

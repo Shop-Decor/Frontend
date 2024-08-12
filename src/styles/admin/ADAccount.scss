@@ -1,35 +1,38 @@
 .content-container {
-    padding: 1rem;
-    border-radius: 8px; // Add border-radius
-    box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1); // Add shadow
-    background-color: #fff; // Add background color to make the shadow visible
-    margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 8px; // Add border-radius
+  box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1); // Add shadow
+  background-color: #fff; // Add background color to make the shadow visible
+  margin-bottom: 1rem;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 0;
+  color: #212529;
+  text-align: center; // Center text horizontally
+
+  th,
+  td {
+    padding: 0.75rem;
+    vertical-align: middle; // Center text vertically
+    border-top: 1px solid #dee2e6;
   }
-  
-  .table {
-    width: 100%;
-    margin-bottom: 0;
-    color: #212529;
-    text-align: center; // Center text horizontally
-  
-    th,
-    td {
-      padding: 0.75rem;
-      vertical-align: middle; // Center text vertically
-      border-top: 1px solid #dee2e6;
-    }
-  
-    thead th {
-      vertical-align: middle; // Center text vertically
-      border-bottom: 2px solid #dee2e6;
-    }
-  
-    tbody + tbody {
-      border-top: 2px solid #dee2e6;
-    }
-  
-    .btn {
-      margin-right: 0.5rem;
+
+  thead th {
+    vertical-align: middle; // Center text vertically
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  tbody {
+    border-top: 2px solid #dee2e6;
+
+    .img-ad-account {
+      width: 100px;
     }
   }
-  
+
+  .btn {
+    margin-right: 0.5rem;
+  }
+}

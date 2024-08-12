@@ -42,7 +42,6 @@ const ProductUser = (props) => {
 
         try {
             let res = await axios.get('https://localhost:7078/api/Product/user/category', { params });
-            console.log(res);
             setProducts(res.data.items || []);
             setCurrentPage(res.data.currentPage);
             settoTalPages(res.data.totalPages);
@@ -233,25 +232,28 @@ const ProductUser = (props) => {
                             </div>
                         ))}
                     </div>
-                    <div className='row'>
-                        <nav aria-label="Page navigation example">
-                            <ul className="pagination">
-                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                    <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage - 1)}> &lt; </a>
-                                </li>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                    <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
-                                        <a className="page-link" href="#" onClick={(e) => handlePageChange(e, page)}>
-                                            {page}
-                                        </a>
+                    {totalPages && totalPages !== 1 ?
+                        <div className='row'>
+                            <nav aria-label="Page navigation example">
+                                <ul className="pagination">
+                                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                        <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage - 1)}> &lt; </a>
                                     </li>
-                                ))}
-                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                                    <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage + 1)}> &gt; </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                        <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                                            <a className="page-link" href="#" onClick={(e) => handlePageChange(e, page)}>
+                                                {page}
+                                            </a>
+                                        </li>
+                                    ))}
+                                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                        <a className="page-link" href="#" onClick={(e) => handlePageChange(e, currentPage + 1)}> &gt; </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        : ""
+                    }
                 </div>
             </div>
         </>

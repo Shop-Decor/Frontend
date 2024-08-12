@@ -5,12 +5,25 @@ nav {
 
     #collapsibleNavbar {
         .main-menu {
-            flex: 3;
+            flex: 2;
             justify-content: center;
             align-items: center;
+            font-size: 20px;
 
             .nav-item {
                 padding: 0 20px;
+
+                .nav-link {
+                    color: #000;
+
+                    &:hover {
+                        color: #FF7675;
+                    }
+                }
+
+                .active {
+                    color: #FF7675;
+                }
             }
 
             .menu-item {
@@ -24,8 +37,12 @@ nav {
                     cursor: pointer;
                     display: inline-block;
 
+                    &:hover {
+                        color: #FF7675;
+                    }
+
                     &.active {
-                        color: red;
+                        color: #FF7675;
                     }
                 }
 
@@ -33,7 +50,7 @@ nav {
                     display: none;
                     position: absolute;
                     background-color: #fff;
-                    min-width: 160px;
+                    min-width: 250px;
                     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
                     z-index: 1;
                     list-style: none;
@@ -47,7 +64,7 @@ nav {
                         color: #000;
 
                         &:hover {
-                            background-color: #f0f0f0;
+                            color: #FF7675;
                         }
                     }
                 }
@@ -64,6 +81,116 @@ nav {
 
             .nav-item {
                 padding: 0 20px;
+            }
+
+            .user-menu {
+                position: relative;
+
+                &:hover .sub-user-menu {
+                    display: block;
+                }
+
+                .menu-link {
+                    display: flex;
+                    width: 45px;
+
+                    .img-account {
+                        width: 100%;
+                        border-radius: 50%;
+                    }
+                }
+
+                .sub-user-menu {
+                    position: absolute;
+                    background-color: #fff;
+                    z-index: 1000;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    right: -100%;
+                    width: 200px;
+                    display: none;
+
+                    ul {
+                        padding: 10px;
+
+                        .sub-item {
+                            list-style: none;
+                            padding: 5px;
+
+                            .sub-link {
+                                color: #000;
+                                text-decoration: none;
+                                display: block;
+                                width: 100%;
+
+                                &:hover {
+                                    color: #FF7675;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .search {
+                position: relative;
+
+                .sub-search {
+                    position: absolute;
+                    width: 150%;
+                    top: 100%;
+                    z-index: 1000;
+                    margin-top: 25px;
+                    padding: 10px;
+                    background-color: white;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    max-height: 300px;
+                    overflow-y: auto;
+
+                    .product-search {
+                        display: flex;
+                        border-bottom: 1px solid gray;
+
+                        .product-content-search {
+                            flex: 3;
+
+                            .name {
+                                cursor: pointer;
+
+                                &:hover {
+                                    color: #FF7675;
+                                }
+                            }
+
+                            .price {
+                                margin-right: 15px;
+                                color: red;
+                            }
+
+                            .priced {
+                                text-decoration: line-through;
+                            }
+                        }
+
+                        .product-img-search {
+                            flex: 1;
+                            padding: 10px;
+                        }
+                    }
+                }
+
+                .more {
+                    display: flex;
+                    justify-content: center;
+
+                    .btn-more {
+                        text-decoration: none;
+                        color: black;
+
+                        &:hover {
+                            color: #FF7675;
+                        }
+                    }
+                }
             }
 
             .icon {

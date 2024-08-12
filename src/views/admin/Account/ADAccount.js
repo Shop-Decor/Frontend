@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { imageDb } from "../../../services/config";
 import '../../../styles/admin/ADAccount.scss';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +9,10 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import SignIn from '../../user/SignIn';
 
 const ADAccount = () => {
+    const [imgFile, setImgFile] = useState();
+    const [imgPreview, setImgPreview] = useState();
     const [newUser, setNewUser] = useState({
         fullName: '',
         userName: '',
@@ -19,6 +21,7 @@ const ADAccount = () => {
         email: '',
         phoneNumber: '',
         address: '',
+        link: ''
     });
 
     const [editUser, setEditUser] = useState({
@@ -28,6 +31,7 @@ const ADAccount = () => {
         email: '',
         phoneNumber: '',
         address: '',
+        link: ''
     });
 
     const navigate = useNavigate();
@@ -42,6 +46,7 @@ const ADAccount = () => {
         email: '',
         phoneNumber: '',
         address: '',
+        link: ''
 
     });
     const [deleteUser, setDeleteUser] = useState(null);
@@ -103,7 +108,6 @@ const ADAccount = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const newU = { ...newUser };
-        console.log("asdasd", newU);
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
         let errors = {};
         // kiểm tra tên người dùng ít nhất 6 kí tự
@@ -114,7 +118,7 @@ const ADAccount = () => {
             errors.userName = 'Tên tài khoản tối đa 20 kí tự';
         }
         // kiểm tra tên người dùng chỉ chứa kí tự chữ và dấu cách
-        
+
         if (/\d/.test(newU.fullName) || /[!@#$&*]/.test(newU.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
@@ -137,15 +141,22 @@ const ADAccount = () => {
         if (newU.password !== newU.confirmPassword) {
             errors.confirmPassword = 'Mật khẩu không khớp';
         }
+        if (!imgFile) {
+            errors.link = "Hình ảnh không để trống";
+        }
         if (Object.keys(errors).length > 0) {
             setErrorMessage(errors);
             return false;
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-        
+
         try {
             // console.log("vô nè");
+            if (imgFile) {
+                const url = await uploadImage(imgFile);
+                newUser.link = url;
+            }
             await axios.post('https://localhost:7078/api/Account/Create', newUser);
             setShowModal(!showModal); // Close the modal
             // Clear the form
@@ -163,7 +174,7 @@ const ADAccount = () => {
 
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-        
+
         if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
@@ -190,6 +201,10 @@ const ADAccount = () => {
         }
 
         try {
+            if (imgFile) {
+                const url = await uploadImage(imgFile);
+                updatedUser.link = url;
+            }
             const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
             setShowModal(!showModal); // Close the modal
             if (response.status === 200) {
@@ -245,6 +260,36 @@ const ADAccount = () => {
         }
     };
 
+    const handleChangeLink = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const filePreview = URL.createObjectURL(file);
+            setImgFile(file);
+            setImgPreview(filePreview);
+        }
+    }
+
+    const uploadImage = async (file) => {
+        const imgRef = ref(imageDb, `account/${v4()}`);
+        const snapshot = await uploadBytes(imgRef, file);
+        return await getDownloadURL(snapshot.ref);
+    };
+
+    const cleanFromAdd = () => {
+        setNewUser({
+            fullName: '',
+            userName: '',
+            password: '',
+            confirmPassword: '',
+            email: '',
+            phoneNumber: '',
+            address: '',
+            link: ''
+        });
+        setImgFile(null);
+        setImgPreview("");
+    }
+
     return (
         <>
             <div className="account-list container">
@@ -255,6 +300,7 @@ const ADAccount = () => {
                         className="btn btn-primary mb-3"
                         data-bs-toggle="modal"
                         data-bs-target="#addUserModal"
+                        onClick={() => cleanFromAdd()}
                     >
                         Thêm Người Dùng
                     </button>
@@ -268,6 +314,7 @@ const ADAccount = () => {
                     <table className="table">
                         <thead>
                             <tr>
+                                <th>Hình ảnh</th>
                                 <th>Tên tài khoản</th>
                                 <th>Tên người dùng</th>
                                 <th>Email</th>
@@ -279,6 +326,9 @@ const ADAccount = () => {
                         <tbody>
                             {accounts.map((account) => (
                                 <tr key={account.id}>
+                                    <td>
+                                        <img className="img-ad-account" src={account.link} alt={account.id} />
+                                    </td>
                                     <td>{account.userName}</td>
                                     <td>{account.fullName}</td>
                                     <td>{account.email}</td>
@@ -436,6 +486,22 @@ const ADAccount = () => {
                                             />
                                         </div>
                                     </div>
+                                    <div className="row mb-3">
+                                        <label className="col-sm-3 col-form-label">Hình ảnh:</label>
+                                        <div className="col-sm-9">
+                                            <input type="file" className={`form-control ${errorMessage.link ? 'is-invalid' : ''}`} accept="image/*" onChange={handleChangeLink} />
+                                            {errorMessage.link && (
+                                                <div className="invalid-feedback">
+                                                    {errorMessage.link}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="img-preview mt-3">
+                                            {imgPreview && (
+                                                <img src={imgPreview} width="200px" alt="uploaded" />
+                                            )}
+                                        </div>
+                                    </div>
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                         <button type="submit" className="btn btn-primary">Thêm</button>
@@ -531,6 +597,22 @@ const ADAccount = () => {
                                                 name="address"
                                             // required
                                             />
+                                        </div>
+                                    </div>
+                                    <div className="row mb-3">
+                                        <label className="col-sm-3 col-form-label">Hình ảnh:</label>
+                                        <div className="col-sm-9">
+                                            <input type="file" className="form-control" accept="image/*" onChange={handleChangeLink} />
+                                            {errorMessage.link && (
+                                                <div className="invalid-feedback">
+                                                    {errorMessage.link}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="img-preview mt-3">
+                                            {imgPreview && (
+                                                <img src={imgPreview} width="200px" alt="uploaded" />
+                                            )}
                                         </div>
                                     </div>
                                     <div className="modal-footer">
