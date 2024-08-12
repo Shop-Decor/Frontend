@@ -91,7 +91,7 @@ const OrderUser = (props) => {
                                 </div>
                                 {item.detail && item.detail.length > 0 &&
                                     item.detail.map((x, y) => (
-                                        <Link to={`order/orderdetail/${item.id}`} className="link-detail" key={`orderDetail${x.id}`}>
+                                        <Link to={`orderdetail/${item.id}`} className="link-detail" key={`orderDetail${x.id}`}>
                                             <div className="m-order">
                                                 <div className="order-img">
                                                     <img src={x.product.hinh} className="img-fluid" alt={`img-product${y}`} />
