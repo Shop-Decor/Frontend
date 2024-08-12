@@ -46,45 +46,45 @@ const ADDetailAccount = () => {
     const [showModal, setShowModal] = useState(false); // Add state for modal visibility
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchAccounts = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                const user = jwtDecode(token);
-                if (((Date.now() / 1000) - user.exp) > 0) {
-                    navigate('/SignIn');
-                } else {
-                    try {
-                        const response = await axios.get('https://localhost:7078/api/Account/GetUser', {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
+    const fetchAccounts = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const user = jwtDecode(token);
+            if (((Date.now() / 1000) - user.exp) > 0) {
+                navigate('/SignIn');
+            } else {
+                try {
+                    const response = await axios.get('https://localhost:7078/api/Account/GetUser', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        const accounts = response.data || {};
+                        setNewUser(accounts);
+                        setEditUser({
+                            fullName: accounts.fullName || '',
+                            userName: accounts.userName || '',
+                            email: accounts.email || '',
+                            phoneNumber: accounts.phoneNumber || '',
+                            address: accounts.address || '',
                         });
-                        if (response.status === 200) {
-                            const accounts = response.data || {};
-                            setNewUser(accounts);
-                            setEditUser({
-                                fullName: accounts.fullName || '',
-                                userName: accounts.userName || '',
-                                email: accounts.email || '',
-                                phoneNumber: accounts.phoneNumber || '',
-                                address: accounts.address || '',
-                            });
-                        } else if (response.status === 401) {
-                            navigate('/SignIn');
-                        }
-                    } catch (error) {
-                        console.error('Error fetching accounts:', error);
-                        if (error.response && error.response.status === 401) {
-                            navigate('/SignIn');
-                        }
+                    } else if (response.status === 401) {
+                        navigate('/SignIn');
+                    }
+                } catch (error) {
+                    console.error('Error fetching accounts:', error);
+                    if (error.response && error.response.status === 401) {
+                        navigate('/SignIn');
                     }
                 }
-            } else {
-                navigate('/SignIn');
             }
-        };
+        } else {
+            navigate('/SignIn');
+        }
+    };
 
+    useEffect(() => {
         fetchAccounts();
     }, [showModal]);
 
@@ -112,8 +112,8 @@ const ADDetailAccount = () => {
 
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-       
-        if ( /\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
+
+        if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
         // kiểm tra tên người dùng ít nhất 6 kí tự
@@ -137,7 +137,7 @@ const ADDetailAccount = () => {
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-        
+
         editUser.id = localStorage.getItem('userID');
         try {
             const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
@@ -153,23 +153,23 @@ const ADDetailAccount = () => {
                     showConfirmButton: false,
                 });
             }
-            if(response.data === 2002){
-               
+            if (response.data === 2002) {
+
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ôi Không',
                     text: 'Email đã tồn tại',
                 });
             }
-            if(response.data === 2003){
+            if (response.data === 2003) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ôi Không',
                     text: 'Số điện thoại đã tồn tại',
                 });
             }
-           //reload form bởi useeffect
-           fetchAccounts();
+            //reload form bởi useeffect
+            fetchAccounts();
         } catch (error) {
             setError('Error updating user');
         }

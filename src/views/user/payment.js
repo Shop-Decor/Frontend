@@ -137,7 +137,7 @@ const Payment = () => {
 
         const user = jwtDecode(token);
         const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-
+        console.log(userId)
 
 
 
