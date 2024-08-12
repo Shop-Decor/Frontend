@@ -152,7 +152,7 @@ const OrderUserDetail = (props) => {
                                         </tr>
                                         <tr>
                                             <td>Giảm giá</td>
-                                            <td>{order.discount.loaiGiam ? (order.thanhTien * order.discount.menhGia) / 100 : order.discount.menhGia} đ</td>
+                                            <td>{`${order.discount ? (order.discount.loaiGiam ? (order.thanhTien * order.discount.menhGia) / 100 : order.discount.menhGia) : 0} đ`}</td>
                                         </tr>
                                         <tr>
                                             <td>Thành tiền</td>

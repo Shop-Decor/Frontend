@@ -54,8 +54,6 @@ const ADDetailAccount = () => {
         const token = localStorage.getItem('token');
         if (token) {
             const user = jwtDecode(token);
-            console.log(user.exp);
-            console.log(Math.floor(Date.now() / 1000));
             if (((Date.now() / 1000) - user.exp) > 0) {
                 navigate('/SignIn');
             } else {
@@ -125,23 +123,10 @@ const ADDetailAccount = () => {
         return await getDownloadURL(snapshot.ref);
     };
 
-    const handleClick = async () => {
-        if (imgFile) {
-            const url = await uploadImage(imgFile);
-            setEditUser(prev => ({
-                ...prev,
-                link: url
-            }));
-        }
-    };
-
     const handleEditSubmit = async (event) => {
         event.preventDefault();
-        handleClick();
         const updatedUser = { ...editUser };
         let errors = {};
-
-
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
 
@@ -172,6 +157,10 @@ const ADDetailAccount = () => {
 
         editUser.id = localStorage.getItem('userID');
         try {
+            if (imgFile) {
+                const url = await uploadImage(imgFile);
+                updatedUser.link = url;
+            }
             const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
             setShowModal(!showModal); // Close the modal
             console.log(response.data);
