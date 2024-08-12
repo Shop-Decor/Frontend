@@ -26,6 +26,7 @@ import LayoutAccountManagement from "./user/accountUser/LayoutAccountManagement"
 import SignUp from "./user/SignUp";
 import ADDetailAccount from "./admin/Account/ADDetailAccount";
 import UserDetail from "./user/accountUser/DetailAccount";
+import Search from "./user/Search";
 
 class App extends React.Component {
   renderSignIn = () => {
@@ -42,11 +43,11 @@ class App extends React.Component {
             <Route path="ProductUser" element={<ProductUser />} />
             <Route path="ProductUser/:id" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
+            <Route path="search/:key" element={<Search />} />
             <Route path="user" element={<LayoutAccountManagement />}>
-              <Route index element={<OrderUser />} />
+              <Route index element={<UserDetail />} />
               <Route path="order" element={<OrderUser />} />
               <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
-              <Route path="UserDetail" element={<UserDetail />} />
             </Route>
 
           </Route>

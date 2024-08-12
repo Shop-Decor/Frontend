@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { imageDb } from "../../../services/config";
 import '../../../styles/admin/ADDetailAccount.scss';
 import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
@@ -9,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const ADDetailAccount = () => {
+    const [imgFile, setImgFile] = useState();
+    const [imgPreview, setImgPreview] = useState();
     const [newUser, setNewUser] = useState({
         fullName: '',
         userName: '',
@@ -25,6 +28,7 @@ const ADDetailAccount = () => {
         email: '',
         phoneNumber: '',
         address: '',
+        link: ''
     });
     const [passwordData, setPasswordData] = useState({
 
@@ -46,47 +50,47 @@ const ADDetailAccount = () => {
     const [showModal, setShowModal] = useState(false); // Add state for modal visibility
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchAccounts = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                const user = jwtDecode(token);
-                console.log(user.exp);
-                console.log(Math.floor(Date.now() / 1000));
-                if (((Date.now() / 1000) - user.exp) > 0) {
-                    navigate('/SignIn');
-                } else {
-                    try {
-                        const response = await axios.get('https://localhost:7078/api/Account/GetUser', {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
+    const fetchAccounts = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const user = jwtDecode(token);
+            console.log(user.exp);
+            console.log(Math.floor(Date.now() / 1000));
+            if (((Date.now() / 1000) - user.exp) > 0) {
+                navigate('/SignIn');
+            } else {
+                try {
+                    const response = await axios.get('https://localhost:7078/api/Account/GetUser', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        const accounts = response.data || {};
+                        setNewUser(accounts);
+                        setEditUser({
+                            fullName: accounts.fullName || '',
+                            userName: accounts.userName || '',
+                            email: accounts.email || '',
+                            phoneNumber: accounts.phoneNumber || '',
+                            address: accounts.address || '',
                         });
-                        if (response.status === 200) {
-                            const accounts = response.data || {};
-                            setNewUser(accounts);
-                            setEditUser({
-                                fullName: accounts.fullName || '',
-                                userName: accounts.userName || '',
-                                email: accounts.email || '',
-                                phoneNumber: accounts.phoneNumber || '',
-                                address: accounts.address || '',
-                            });
-                        } else if (response.status === 401) {
-                            navigate('/SignIn');
-                        }
-                    } catch (error) {
-                        console.error('Error fetching accounts:', error);
-                        if (error.response && error.response.status === 401) {
-                            navigate('/SignIn');
-                        }
+                    } else if (response.status === 401) {
+                        navigate('/SignIn');
+                    }
+                } catch (error) {
+                    console.error('Error fetching accounts:', error);
+                    if (error.response && error.response.status === 401) {
+                        navigate('/SignIn');
                     }
                 }
-            } else {
-                navigate('/SignIn');
             }
-        };
+        } else {
+            navigate('/SignIn');
+        }
+    };
 
+    useEffect(() => {
         fetchAccounts();
     }, [showModal]);
 
@@ -106,16 +110,42 @@ const ADDetailAccount = () => {
         }));
     };
 
+    const handleEditChangeLink = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const filePreview = URL.createObjectURL(file);
+            setImgFile(file);
+            setImgPreview(filePreview);
+        }
+    }
+
+    const uploadImage = async (file) => {
+        const imgRef = ref(imageDb, `account/${v4()}`);
+        const snapshot = await uploadBytes(imgRef, file);
+        return await getDownloadURL(snapshot.ref);
+    };
+
+    const handleClick = async () => {
+        if (imgFile) {
+            const url = await uploadImage(imgFile);
+            setEditUser(prev => ({
+                ...prev,
+                link: url
+            }));
+        }
+    };
+
     const handleEditSubmit = async (event) => {
         event.preventDefault();
+        handleClick();
         const updatedUser = { ...editUser };
         let errors = {};
 
 
 
         // kiểm tra tên người dùng chỉ chứa kí tự chữ
-       
-        if ( /\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
+
+        if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
         // kiểm tra tên người dùng ít nhất 6 kí tự
@@ -139,7 +169,7 @@ const ADDetailAccount = () => {
         } else {
             setErrorMessage({}); // Clear error messages if validation passes
         }
-        
+
         editUser.id = localStorage.getItem('userID');
         try {
             const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
@@ -155,23 +185,23 @@ const ADDetailAccount = () => {
                     showConfirmButton: false,
                 });
             }
-            if(response.data === 2002){
-               
+            if (response.data === 2002) {
+
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ôi Không',
                     text: 'Email đã tồn tại',
                 });
             }
-            if(response.data === 2003){
+            if (response.data === 2003) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Ôi Không',
                     text: 'Số điện thoại đã tồn tại',
                 });
             }
-           //reload form bởi useeffect
-           fetchAccounts();
+            //reload form bởi useeffect
+            fetchAccounts();
         } catch (error) {
             setError('Error updating user');
         }
@@ -319,6 +349,16 @@ const ADDetailAccount = () => {
                                     <label htmlFor="editAddress" className="form-label">Địa chỉ</label>
                                     <input type="text" className="form-control" id="editAddress" name="address" value={editUser.address} onChange={handleEditChange} />
                                     <div className="text-danger">{errorMessage.address}</div>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="editLink" className="form-label">Hình ảnh</label>
+                                    <input type="file" className="form-control" id="editLink" name="link" accept="image/*" onChange={handleEditChangeLink} />
+                                    <div className="text-danger">{errorMessage.link}</div>
+                                    <div className="img-preview mt-3">
+                                        {imgPreview && (
+                                            <img src={imgPreview} width="200px" alt="uploaded" />
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

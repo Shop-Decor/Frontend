@@ -99,13 +99,6 @@ class TestUploadImg extends React.Component {
     render() {
         return (
             <div className="App">
-                <input
-                    type="file"
-                    onChange={this.handleChange}
-                    multiple
-                />
-                <button onClick={this.handleClick}>Upload</button>
-                <br />
                 <div className="img-preview">
                     {this.state.imgPreviews.map((dataVal, index) => (
                         <img key={index} src={dataVal} width="200px" alt="uploaded" />

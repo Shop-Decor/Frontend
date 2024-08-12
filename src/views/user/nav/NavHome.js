@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import logo from "../../../assets/images/shopdecor.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartShopping,
   faCircleUser,
-  faMagnifyingGlass,
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import "../../../styles/user/nav/Nav.scss";
@@ -21,6 +21,15 @@ const NavHome = (props) => {
   const { listCart, setListCart, total } = props;
   const [categories, setCategories] = useState();
   const [isActive, setIsActive] = useState(false);
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [searchList, setSearchList] = useState([]);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState();
+  const [token, setToken] = useState();
 
   const toggleCart = (e) => {
     e.stopPropagation();
@@ -45,8 +54,6 @@ const NavHome = (props) => {
     setListCart(cart => cart.filter((_, i) => i !== index));
   }
 
-
-
   const fetchCtegories = async () => {
     try {
       let res = await axios.get('https://localhost:7078/api/Category');
@@ -64,6 +71,44 @@ const NavHome = (props) => {
     setIsActive(!isActive);
   };
 
+  const fetchProductSearch = async () => {
+    try {
+      const params = {};
+      if (debouncedSearch) params.key = debouncedSearch;
+      let res = await axios.get(`https://localhost:7078/api/Product/autosearch`, { params });
+      setSearchList(res.data || []);
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api tìm kiếm sản phẩm:', error);
+    }
+  }
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 200);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  useEffect(() => {
+    fetchProductSearch();
+  }, [debouncedSearch]);
+
+  const handleClickLink = (id) => {
+    setIsFocused(false);
+    setSearch("");
+    navigate(`/ProductDetail/${id}`);
+  }
+
+  const handleSubmit = (event) => {
+    if (event.key === "Enter") {
+      setIsFocused(false);
+      setSearch("");
+      navigate(`/search/${search}`);
+    }
+  }
+
   const location = useLocation();
 
   useEffect(() => {
@@ -74,9 +119,19 @@ const NavHome = (props) => {
     }
   }, [location, categories]);
 
-
   //get user 
-  const userName = localStorage.getItem('userName');
+
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    setToken(token);
+    if (token) {
+      setUser(jwtDecode(token));
+    }
+    else {
+      setUser({});
+    }
+  }, []);
+
   return (
     <>
       <nav className="navbar navbar-expand-sm">
@@ -146,17 +201,75 @@ const NavHome = (props) => {
               </li>
             </ul>
             <ul className="navbar-nav icon-btn">
-              <li className="nav-item">
-                <Link className="nav-link icon" to="/cart">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </Link>
+              <li className="nav-item d-flex search">
+                <input className="form-control"
+                  type="search"
+                  placeholder="Tìm kiếm sản phẩm"
+                  value={search}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                  onChange={(event) => setSearch(event.target.value)}
+                  onKeyDown={(event) => handleSubmit(event)}
+                />
+                {isFocused && searchList && searchList.length > 0 && (
+                  <div className="sub-search">
+                    {searchList.slice(0, 5).map((item, index) => (
+                      <div className="product-search" key={item.id}>
+                        <div className="product-content-search">
+                          <p className="name" onClick={() => handleClickLink(item.id)}>
+                            {item.ten}
+                          </p>
+                          <span className="price">
+                            {item.khuyenMai ? (item.khuyenMai.loaiGiam ? `${item.gia - (item.gia * item.khuyenMai.menhGia / 100)} đ` : `${item.gia - item.khuyenMai.menhGia} đ`) : ""}
+                          </span>
+                          <span className="priced">
+                            {`${item.gia} đ`}
+                          </span>
+                        </div>
+                        <div className="product-img-search">
+                          <img className="img-fluid" src={item.hinh} />
+                        </div>
+                      </div>
+                    ))}
+                    <div className="more">
+                      {searchList.length > 5 && (
+                        <a className="btn-more" href="#">Xem thêm {searchList.length - 5} sản phẩm</a>
+                      )}
+                    </div>
+                  </div>
+                )}
               </li>
-              <li className="nav-item">                
-                <Link className="nav-link icon" to="/User ">
-                {userName}
-                  <FontAwesomeIcon icon={faCircleUser} />
-                
-                </Link>
+              <li className="nav-item user-menu">
+                {token && user ?
+                  <>
+                    <Link className="menu-link" to="/User ">
+                      <img src={user.Link} className="img-account" alt="img account" />
+                    </Link>
+                    <div className="sub-user-menu">
+                      <ul>
+                        <li className="sub-item">
+                          <Link className="sub-link" to="/User">
+                            Tài khoản của tôi
+                          </Link>
+                        </li>
+                        <li className="sub-item">
+                          <Link className="sub-link" to="/user/order">
+                            Đơn mua
+                          </Link>
+                        </li>
+                        <li className="sub-item">
+                          <Link className="sub-link" to="/SignIn">
+                            Đăng xuất
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </>
+                  :
+                  <Link className="nav-link icon" to="/User ">
+                    <FontAwesomeIcon icon={faCircleUser} />
+                  </Link>
+                }
               </li>
               <li className="nav-item">
                 <div id="cart" className="nav-link icon position-relative" onClick={toggleCart} ref={cartIconRef}>
