@@ -1,8 +1,7 @@
 .btn_add {
-    height          : 50px;
-    width           : 150px;
-    border-radius   : 20px;
-    background-color: greenyellow;
+    height       : 50px;
+    width        : 150px;
+    border-radius: 20px;
 
 
 }
@@ -11,10 +10,18 @@
     .container {
         .row {
             .col-6 {
+
+
                 .input_search {
                     height       : 50px;
                     width        : 400px;
                     border-radius: 20px;
+                }
+            }
+
+            .addIcon {
+                .btn_add {
+                    text-decoration: none;
                 }
             }
         }

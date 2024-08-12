@@ -25,20 +25,31 @@ class ADDiscount extends React.Component {
             loaiKM: ''
         },
         errors: {},
-        errorsupdate: {}
+        errorsupdate: {},
+        searchKeyword: "",
+        paging: { index: 1, size: 5, totalPage: 0 },
 
     }
 
 
     async componentDidMount() {
-        let res = await axios.get('https://localhost:7078/api/discount');
-        const discounts = res && res.data ? res.data.map(discount => ({
-            ...discount,
-            hsd: discount.hsd.split('T')[0]
-        })) : [];
-        this.setState({
-            discounts
-        });
+        try {
+            let res = await axios.get('https://localhost:7078/api/discount');
+            console.log('API Response:', res.data);
+
+            const discounts = res && res.data && Array.isArray(res.data.list) ? res.data.list.map(discount => ({
+                ...discount,
+                hsd: discount.hsd ? discount.hsd.split('T')[0] : '' // Chỉ cần split nếu có giá trị
+            })) : [];
+            console.log(discounts)
+            this.setState({
+                discounts
+            });
+
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu giảm giá:", error);
+            this.setState({ errorMessage: 'Có lỗi xảy ra khi tải dữ liệu giảm giá. Vui lòng thử lại!' });
+        }
     }
 
     formatDate = (dateString) => {
@@ -176,7 +187,7 @@ class ADDiscount extends React.Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        const { maGiamGia, menhGia, HSD } = this.state.discountsCreate;
+        const { maGiamGia, menhGia, HSD, loaiGiam } = this.state.discountsCreate;
         let errors = {};
 
         if (!maGiamGia.trim()) errors.maGiamGia = 'Mã khuyến mãi không được để trống.';
@@ -184,7 +195,18 @@ class ADDiscount extends React.Component {
         if (isDuplicate) errors.maGiamGia = 'Mã giảm giá đã tồn tại.';
         const specialCharPattern = /[^a-zA-Z0-9]/;
         if (specialCharPattern.test(maGiamGia)) errors.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
-        if (!menhGia.trim()) errors.menhGia = 'Mệnh giá không được để trống.';
+        if (!menhGia.trim()) {
+            errors.menhGia = 'Mệnh giá không được để trống.';
+        }
+        else {
+            if ((loaiGiam === true) && ((menhGia < 5) || (menhGia > 100))) {
+                errors.menhGia = 'Mệnh giá giảm theo % phải nằm trong khoảng từ 5 đến 100!';
+            }
+            if ((loaiGiam === false) && ((menhGia < 20000) || (menhGia > 200000))) {
+                errors.menhGia = 'Mệnh giá giảm theo VNĐ phải nằm trong khoảng từ 20000 đến 200000';
+            }
+        }
+
         if (!HSD.trim()) errors.HSD = 'HSD không được để trống.';
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
@@ -228,6 +250,61 @@ class ADDiscount extends React.Component {
         }
     }
 
+    async componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.paging.index !== this.state.paging.index ||
+            prevState.paging.size !== this.state.paging.size ||
+            prevState.paging.totalPage !== this.state.paging.totalPage
+        ) {
+            await this.handleLoadListProduct();
+        }
+    }
+
+    handleLoadListProduct = async () => {
+        let resDiscounts = await axios.get(`https://localhost:7078/api/discount?keyword=${this.state.searchKeyword ?? ""}&index=${this.state.paging.index ?? 1}&size=${this.state.paging.size ?? 16}`);
+
+        this.setState({
+            discounts: resDiscounts && resDiscounts.data.list ? resDiscounts.data.list : [],
+            paging: resDiscounts && resDiscounts.data.paging ? resDiscounts.data.paging : this.state.paging,
+        });
+    }
+
+    getPaginationItems = () => {
+        const paginationItems = [];
+        const { index, totalPage } = this.state.paging;
+
+        // Trang đầu tiên luôn được hiển thị
+        paginationItems.push(1);
+
+        // Nếu trang hiện tại lớn hơn 4, thêm dấu ba chấm sau trang đầu tiên
+        if (index > 4) {
+            paginationItems.push('...');
+        }
+
+        // Hiển thị các trang xung quanh trang hiện tại
+        for (let i = Math.max(2, index - 2); i <= Math.min(totalPage - 1, index + 2); i++) {
+            paginationItems.push(i);
+        }
+
+        // Nếu trang hiện tại nhỏ hơn `totalPage - 3`, thêm dấu ba chấm trước trang cuối cùng
+        if (index < totalPage - 3) {
+            paginationItems.push('...');
+        }
+
+        // Trang cuối cùng luôn được hiển thị
+        if (totalPage > 1) {
+            paginationItems.push(totalPage);
+        }
+
+        return paginationItems;
+    };
+
+    handlePageChange = (pageIndex) => {
+        this.setState({
+            paging: { ...this.state.paging, index: pageIndex }
+        })
+    };
+
     handleEdit = async (discount) => {
 
         this.setState({ discountsEdit: { ...discount } });
@@ -258,14 +335,26 @@ class ADDiscount extends React.Component {
     }
 
 
+
     handleUpdate = async (event) => {
         event.preventDefault();
-        const { maGiamGia } = this.state.discountsEdit;
+        const { maGiamGia, loaiGiam, menhGia } = this.state.discountsEdit;
         let errorsupdate = {};
 
         if (!maGiamGia.trim()) errorsupdate.maGiamGia = 'Mã khuyến mãi không được để trống.';
         const specialCharPattern = /[^a-zA-Z0-9]/;
         if (specialCharPattern.test(maGiamGia)) errorsupdate.maGiamGia = 'Mã giảm giá không được chứa ký tự đặc biệt hoặc chữ tiếng Việt.';
+        if (!menhGia.trim()) {
+            errorsupdate.menhGia = 'Mệnh giá không được để trống.';
+        }
+        else {
+            if ((loaiGiam === true) && ((menhGia < 5) || (menhGia > 100))) {
+                errorsupdate.menhGia = 'Mệnh giá giảm theo % phải nằm trong khoảng từ 5 đến 100!';
+            }
+            if ((loaiGiam === false) && ((menhGia < 20000) || (menhGia > 200000))) {
+                errorsupdate.menhGia = 'Mệnh giá giảm theo VNĐ phải nằm trong khoảng từ 20000 đến 200000';
+            }
+        }
         if (Object.keys(errorsupdate).length > 0) {
             this.setState({ errorsupdate });
             return;
@@ -523,19 +612,32 @@ class ADDiscount extends React.Component {
 
                 <div className="container p-3">
                     <div className="row">
-                        <div className="col-12">
-                            <h3>Quản lý sản phẩm</h3>
+                        <div className="col-12 text-center">
+                            <h3 style={{ fontWeight: '500' }}>Khuyến mãi</h3>
                         </div>
                     </div>
                     <div className="pt-4"></div>
                     <div className="row">
-                        <div className="col-6">
-                            <input type='search' className='input_search' />
-                        </div>
-                        <div className="col-6 text-end addIcon">
+                        <div className="col-6 addIcon">
                             <button type="button" className="btn btn-primary btn_add" data-bs-toggle="modal" data-bs-target="#exampleModal">Thêm mới<FontAwesomeIcon className='icon-plus' icon={faPlus} /></button>
 
                         </div>
+
+                        <div className="col-6">
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    value={this.state.searchKeyword}
+                                    onChange={(e) => this.setState({ searchKeyword: e.target.value })}
+                                />
+                                <button className="btn btn-primary" onClick={this.handleLoadListProduct}>
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+
 
                     </div>
                     <br />
@@ -554,7 +656,7 @@ class ADDiscount extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {discounts && discounts.length > 0 && discounts.map((item, index) => {
+                            {discounts && discounts.length > 0 && discounts.map((item) => {
                                 return (
                                     <tr key={item.maGiamGia}>
                                         <td>
@@ -579,6 +681,37 @@ class ADDiscount extends React.Component {
 
                         </tbody>
                     </table>
+                    <br />
+                    <nav className='pb-5'>
+                        <ul className="pagination">
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Previous" onClick={() => this.handlePageChange(this.state.paging.index - 1)}>
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {this.getPaginationItems().map((page, index) =>
+                                page === '...' ? (
+                                    <li key={index} className="page-item disabled">
+                                        <span className="page-link">...</span>
+                                    </li>
+                                ) : (
+                                    <li
+                                        key={index}
+                                        className={`page-item ${this.state.paging.index === page ? 'active' : ''}`}
+                                    >
+                                        <a className="page-link" onClick={() => this.handlePageChange(page)}>
+                                            {page}
+                                        </a>
+                                    </li>
+                                )
+                            )}
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Next" onClick={() => this.handlePageChange(this.state.paging.index + 1)}>
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
 
             </>
