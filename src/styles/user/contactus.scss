@@ -1,0 +1,67 @@
+.about-us-container {
+    .hero-section {
+        background-image   : url('../../assets/images/2569f3b43fd5ecfc10b279420a4e575a.jpg');
+        background-repeat  : no-repeat;
+        background-position: center;
+        background-size    : cover;
+        background-size    : cover;
+        color              : #fff;
+        text-align         : center;
+        padding            : 5rem 2rem;
+
+        h1 {
+            font-size    : 3rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.5rem;
+        }
+    }
+
+    .content-section {
+        padding  : 2rem;
+        max-width: 1200px;
+        margin   : 0 auto;
+
+        .intro,
+        .story {
+            margin-bottom: 2rem;
+
+            h2 {
+                font-size    : 2rem;
+                margin-bottom: 1rem;
+            }
+
+            p {
+                font-size  : 1.2rem;
+                line-height: 1.6;
+            }
+        }
+
+        .gallery {
+            h2 {
+                font-size    : 2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .image-grid {
+                display  : flex;
+                flex-wrap: wrap;
+                gap      : 1rem;
+
+                .image-item {
+                    flex     : 1;
+                    min-width: 300px;
+
+                    img {
+                        width        : 100%;
+                        height       : auto;
+                        border-radius: 8px;
+                        box-shadow   : 0 4px 8px rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
+        }
+    }
+}

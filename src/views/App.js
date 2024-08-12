@@ -27,6 +27,8 @@ import SignUp from "./user/SignUp";
 import ADDetailAccount from "./admin/Account/ADDetailAccount";
 import UserDetail from "./user/accountUser/DetailAccount";
 import Search from "./user/Search";
+import About from "./user/about";
+import ContactUs from "./user/contactus";
 
 class App extends React.Component {
   renderSignIn = () => {
@@ -44,6 +46,8 @@ class App extends React.Component {
             <Route path="ProductUser/:id" element={<ProductUser />} />
             <Route path="Cart" element={<Cart />} />
             <Route path="search/:key" element={<Search />} />
+            <Route path="About" element={<About />} />
+            <Route path="Contactus" element={<ContactUs />} />
             <Route path="user" element={<LayoutAccountManagement />}>
               <Route index element={<UserDetail />} />
               <Route path="order" element={<OrderUser />} />
@@ -63,6 +67,7 @@ class App extends React.Component {
             <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
             <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
             <Route path="ADDetailAccount" element={<ADDetailAccount />} />
+
           </Route>
           <Route path="SignIn" >
             <Route index element={<SignIn />} />

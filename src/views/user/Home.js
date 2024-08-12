@@ -4,6 +4,7 @@ import axios from "axios";
 import Image from "../../assets/images/sp1.png";
 import { useOutletContext, Link } from 'react-router-dom';
 import "../../styles/user/hover/hover.scss";
+import Loading from "../loading/Loading";
 import {
   faCartPlus,
   faEye
@@ -35,7 +36,7 @@ const Home = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Đang tải...</div>;
+    return <Loading />
   }
 
   if (error) {
@@ -45,6 +46,7 @@ const Home = () => {
 
   return (
     <div className="container">
+      <br />
       <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
       <div className="row">
         {products && products.length > 0 ? (

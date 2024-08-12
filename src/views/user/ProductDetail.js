@@ -230,7 +230,7 @@ const ProductDetail = (props) => {
             <hr />
             <div className="row saleBlock">
               <div className="sale">
-                <p>{selectedDetail.discountAmount}{selectedDetail.discountType === true ? '%' : 'vnđ'}</p>
+                <p>{selectedDetail.discountAmount}{selectedDetail.discountType === true ? '%' : 'đ'}</p>
               </div>
               <div className="MoneyRed">{totalPrice.toLocaleString()}đ</div>
               <div className="Moneygach">{originalPrice.toLocaleString()}đ</div>

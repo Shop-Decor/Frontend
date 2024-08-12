@@ -11,16 +11,46 @@
     .link-xem {
       width           : 150px;
       height          : 40px;
-      border-radius   : 10%;
-      background-color: #efd4d0;
-      border          : 0px solid #fff;
+      background-color: #ff7675;
       text-decoration : none;
       display         : flex;
       justify-content : center;
+      border          : 2px solid #ff7675;
       /* căn giữa theo chiều ngang */
       align-items     : center;
-      color           : #000;
+      color           : #fff;
+      z-index         : 1;
+      overflow        : hidden;
+      position        : relative;
     }
+
+    .link-xem:hover {
+      color: #ff7675;
+    }
+
+    .link-xem::after {
+      content   : "";
+      background: #fff;
+      position  : absolute;
+      z-index   : -1;
+      padding   : 0.85em 0.75em;
+      display   : block;
+    }
+
+    .link-xem::after {
+      left      : -20%;
+      right     : -20%;
+      top       : 0;
+      bottom    : 0;
+      transform : skewX(-45deg) scale(0, 1);
+      transition: all 0.3s ease;
+    }
+
+    .link-xem:hover::after {
+      transform : skewX(-45deg) scale(1, 1);
+      transition: all 0.3s ease-out;
+    }
+
   }
 
   .dung {
