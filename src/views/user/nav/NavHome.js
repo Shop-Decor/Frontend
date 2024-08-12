@@ -184,7 +184,7 @@ const NavHome = (props) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/otheruser"
+                  to="/contactus"
                 >
                   Giới thiệu
                 </NavLink>
@@ -194,7 +194,7 @@ const NavHome = (props) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
-                  to="/Payment"
+                  to="/About"
                 >
                   Liên hệ
                 </NavLink>
