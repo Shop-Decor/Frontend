@@ -98,7 +98,7 @@ const Payment = () => {
         const fetchDiscountData = async () => {
             try {
                 const response = await axios.get('https://localhost:7078/api/discount');
-                setDiscountData(response.data);
+                setDiscountData(response.data.list);
             } catch (error) {
                 console.error('Truyền thông tin khuyến mãi thất bại:', error);
             }
