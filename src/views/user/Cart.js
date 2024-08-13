@@ -1,13 +1,15 @@
-import React from "react";
-import "../../styles/user/Cart.scss";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from 'sweetalert2';
+import axios from "axios";
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import {
     faRotateLeft
 } from "@fortawesome/free-solid-svg-icons";
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import "../../styles/user/Cart.scss";
+
 
 const Cart = (props) => {
-
     const { listCart, setListCart, total } = useOutletContext();
     const navigate = useNavigate();
 
@@ -45,6 +47,47 @@ const Cart = (props) => {
             return list;
         });
     };
+
+    useEffect(() => {
+        console.log(window.location.search);
+        const checkPaymentStatus = async () => {
+            try {
+                const response = await axios.get('https://localhost:7078/api/Payment/vnpay-return' + window.location.search);
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.data.message,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: response.data.message,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Có lỗi xảy ra',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            }
+        };
+
+        // Kiểm tra xem có các tham số truy vấn cần thiết không
+        if (window.location.search) {
+            checkPaymentStatus();
+        } else {
+            console.log('Không có dữ liệu thanh toán.');
+        }
+    }, []);
 
     return (
         <>

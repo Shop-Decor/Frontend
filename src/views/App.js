@@ -53,7 +53,6 @@ class App extends React.Component {
               <Route path="order" element={<OrderUser />} />
               <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
             </Route>
-
           </Route>
 
           <Route path="admin" element={<AdminLayout />}>

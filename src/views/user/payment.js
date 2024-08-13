@@ -171,15 +171,13 @@ const Payment = () => {
             } else { // VnPay
 
                 const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
-                console.log(response)
 
                 const vnpay = await axios.post('https://localhost:7078/api/Payment/create-order', {
-
-                    Amount: finalTotal,
-                    Id: response.data
+                    amount: finalTotal,
+                    orderId: response.data
                 });
                 if (vnpay.status === 200) {
-                    window.location.href = vnpay.data.url; // Redirect to VnPay payment URL
+                    window.location.href = vnpay.data; // Redirect to VnPay payment URL
                 } else {
                     Swal.fire({
                         title: 'Chưa thanh toán',
@@ -197,8 +195,6 @@ const Payment = () => {
                         localStorage.removeItem('cart')
                     }
                 }
-
-
             }
         } catch (error) {
             console.error('Error creating order:', error);
