@@ -192,6 +192,7 @@ const ADDetailAccount = () => {
             //reload form bởi useeffect
             fetchAccounts();
         } catch (error) {
+            console.error('Error updating user:', error);
             setError('Error updating user');
         }
     };

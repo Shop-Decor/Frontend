@@ -207,19 +207,19 @@ const ADAccount = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
-                if (modalRefAdd.current) {
+                // if (modalRefAdd.current) {
 
-                    modalRefAdd.current.classList.remove('show');
-                    modalRefAdd.current.setAttribute('aria-hidden', 'true');
-                    modalRefAdd.current.style.display = 'none';
+                //     modalRefAdd.current.classList.remove('show');
+                //     modalRefAdd.current.setAttribute('aria-hidden', 'true');
+                //     modalRefAdd.current.style.display = 'none';
 
-                    // Remove the backdrop and 'modal-open' class from the body
-                    document.body.classList.remove('modal-open');
-                    const backdrop = document.querySelector('.modal-backdrop');
-                    if (backdrop) {
-                        backdrop.remove();
-                    }
-                }
+                //     // Remove the backdrop and 'modal-open' class from the body
+                //     document.body.classList.remove('modal-open');
+                //     const backdrop = document.querySelector('.modal-backdrop');
+                //     if (backdrop) {
+                //         backdrop.remove();
+                //     }
+                // }
                
             }
 
@@ -304,26 +304,6 @@ const ADAccount = () => {
                 });
                 //load lại trang
                 setShowModal(!showModal);
-
-                // if (modalRef.current) {
-
-                //     modalRef.current.classList.remove('show');
-                //     modalRef.current.setAttribute('aria-hidden', 'true');
-                //     modalRef.current.style.display = 'none';
-
-                //     // Remove the backdrop and 'modal-open' class from the body
-                //     document.body.classList.remove('modal-open');
-                //     const backdrop = document.querySelector('.modal-backdrop');
-                //     if (backdrop) {
-                //         backdrop.remove();
-                //     }
-                //     console.log("vô nè");
-                // }
-
-                const modalElement = document.getElementById('editUserModal'); // Replace 'yourModalId' with the actual ID of your modal
-                const modalInstance = new bootstrap.Modal(modalElement);
-                modalInstance.hide();
-
             }
 
             if (response.data === 2001) {
@@ -344,6 +324,7 @@ const ADAccount = () => {
             }
         }
         catch (error) {
+            console.log(error);
             setError('Error updating user');
         }
     };
@@ -386,19 +367,19 @@ const ADAccount = () => {
                     showConfirmButton: false,
 
                 });
-                if (modalRefDelete.current) {
+                // if (modalRefDelete.current) {
 
-                    modalRefDelete.current.classList.remove('show');
-                    modalRefDelete.current.setAttribute('aria-hidden', 'true');
-                    modalRefDelete.current.style.display = 'none';
+                //     modalRefDelete.current.classList.remove('show');
+                //     modalRefDelete.current.setAttribute('aria-hidden', 'true');
+                //     modalRefDelete.current.style.display = 'none';
 
-                    // Remove the backdrop and 'modal-open' class from the body
-                    document.body.classList.remove('modal-open');
-                    const backdrop = document.querySelector('.modal-backdrop');
-                    if (backdrop) {
-                        backdrop.remove();
-                    }
-                }
+                //     // Remove the backdrop and 'modal-open' class from the body
+                //     document.body.classList.remove('modal-open');
+                //     const backdrop = document.querySelector('.modal-backdrop');
+                //     if (backdrop) {
+                //         backdrop.remove();
+                //     }
+                // }
                 //tải lại trang 
                 setShowModal(!showModal);
 
@@ -443,8 +424,6 @@ const ADAccount = () => {
         setImgPreview("");
     }
 
-    
-
     const handlePageChange = (pageIndex) => {
         // Update the state with the new page index
         setState((prevState) => {
@@ -471,10 +450,7 @@ const ADAccount = () => {
             return newState;
         });
     };
-   
 
-    
-    
     const handleLoadListAccount = async () => {
         let resUser = await axios.get(`https://localhost:7078/api/Account?keyword=${state.searchKeyword ?? ""}&index=${state.paging.index ?? 1}&size=${state.paging.size ?? 16}`);
 
@@ -915,7 +891,7 @@ const ADAccount = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                <button type="button" className="btn btn-danger" onClick={handleDeleteSubmit}>Xóa</button>
+                                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDeleteSubmit}>Xóa</button>
                             </div>
                         </div>
                     </div>
