@@ -33,6 +33,8 @@
   }
 
   .btn {
-    margin-right: 0.5rem;
+    margin-right: 0.5rem; // Add margin to the right of buttons
+    border-radius: 4px; // Optional: Add border-radius for rounded corners on buttons
+    padding: 0.5rem 1rem; // Optional: Adjust padding for button size
   }
 }

@@ -12,9 +12,13 @@ class AdminLayout extends React.Component {
         const user = jwtDecode(token);
         console.log(user.iss);
         const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-        console.log(userId);
+        console.log(user);
         console.log(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
         const userName = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        const userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        if (userRole !== "Admin") {
+            window.location.href = '/';
+        }
         return (
             <div className="web-body">
                 <div className="container-fluid admin-board">
