@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 import { imageDb } from "../../../services/config";
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const ADAccount = () => {
+
     const [imgFile, setImgFile] = useState();
     const [imgPreview, setImgPreview] = useState();
     const [newUser, setNewUser] = useState({
@@ -34,6 +35,16 @@ const ADAccount = () => {
         link: ''
     });
 
+    const [state, setState] = useState({
+        accounts: [],
+        paging: {
+            index: 1,
+            size: 4,
+            totalPage: 1,
+        },
+        searchKeyword: "",
+    });
+
     const navigate = useNavigate();
     const [accounts, setAccounts] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -50,11 +61,14 @@ const ADAccount = () => {
 
     });
     const [deleteUser, setDeleteUser] = useState(null);
-
+    const modalRef = useRef(null);
+    const modalRefAdd = useRef(null);
+    const modalRefDelete = useRef(null);
 
     useEffect(() => {
         const fetchAccounts = async () => {
             const token = localStorage.getItem('token');
+            console.log(token);
             if (token) {
                 const user = jwtDecode(token);
                 if (((Date.now() / 1000) - user.exp) > 0) {
@@ -69,7 +83,23 @@ const ADAccount = () => {
                         });
 
                         if (response.status === 200) {
-                            const accounts = response.data || [];
+                            const data = response.data;
+                            const div = Math.ceil(data.list.length / state.paging.size);
+                            setState({
+                                ...state,
+                                accounts: [...data.list],
+                                paging: { ...state.paging, totalPage: div },
+                            });
+                            const accounts = [];
+                            // get size of accounts from state
+                            for (let i = state.paging.index * state.paging.size - state.paging.size; i < state.paging.index * state.paging.size; i++) {
+                                if (i >= data.list.length) {
+                                    break;
+                                }
+                                accounts.push(data.list[i]);
+                            }
+                            console.log(accounts);
+                            console.log(data.list);
                             setAccounts(accounts);
                         } else if (response.status === 401) {
                             // Handle unauthorized status
@@ -131,7 +161,7 @@ const ADAccount = () => {
         }
         // Check phone number 10 kí tự
         if (!/^\d{10}$/.test(newU.phoneNumber) && newU.phoneNumber !== '') {
-            errors.phoneNumber = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
+            errors.phoneNumber = 'SĐT không hợp lệ. Vui lòng nhập 10 chữ số.';
         }
         // Check password chứa 1 in hoa, 1 in thường, 1 số, 1 kí tự đặc biệt
         if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/.test(newU.password)) {
@@ -157,10 +187,61 @@ const ADAccount = () => {
                 const url = await uploadImage(imgFile);
                 newUser.link = url;
             }
-            await axios.post('https://localhost:7078/api/Account/Create', newUser);
-            setShowModal(!showModal); // Close the modal
-            // Clear the form
-            // useEffect();
+            const token = localStorage.getItem('token');
+            const response = await axios.post('https://localhost:7078/api/Account/Create', newUser,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+
+            );
+            // window.location.reload();
+            // //load lại trang
+            // console.log("vô load lại roồi");
+            if (response.data === true) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thêm người dùng thành công',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+                if (modalRefAdd.current) {
+
+                    modalRefAdd.current.classList.remove('show');
+                    modalRefAdd.current.setAttribute('aria-hidden', 'true');
+                    modalRefAdd.current.style.display = 'none';
+
+                    // Remove the backdrop and 'modal-open' class from the body
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                }
+               
+            }
+
+            if (response.data === 2001) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Tên tài khoản đã tồn tại',
+                });
+            }
+            if (response.data === 2002) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Email đã tồn tại',
+                });
+            }
+            //hide modal
+            setShowModal(!showModal);
+
         } catch (error) {
             setError('Error adding user');
         }
@@ -189,7 +270,7 @@ const ADAccount = () => {
 
         // Check phone number có dữ liệu và chỉ chứa 10 kí tự 
         if (!/^\d{10}$/.test(updatedUser.phoneNumber) && updatedUser.phoneNumber !== '') {
-            errors.phoneNumber = 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số.';
+            errors.phoneNumber = 'SĐT không hợp lệ. Vui lòng nhập 10 chữ số.';
         }
 
 
@@ -205,19 +286,64 @@ const ADAccount = () => {
                 const url = await uploadImage(imgFile);
                 updatedUser.link = url;
             }
-            const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser);
-            setShowModal(!showModal); // Close the modal
-            if (response.status === 200) {
+            const token = localStorage.getItem('token');
+            const response = await axios.put(`https://localhost:7078/api/Account/${editUser.id}`, updatedUser, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+
+            });
+            // Close the modal
+            if (response.data === true) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Thành công',
-                    text: 'Cập nhật người dùng thành công',
+                    title: 'Sửa người dùng thành công',
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
+                //load lại trang
+                setShowModal(!showModal);
+
+                // if (modalRef.current) {
+
+                //     modalRef.current.classList.remove('show');
+                //     modalRef.current.setAttribute('aria-hidden', 'true');
+                //     modalRef.current.style.display = 'none';
+
+                //     // Remove the backdrop and 'modal-open' class from the body
+                //     document.body.classList.remove('modal-open');
+                //     const backdrop = document.querySelector('.modal-backdrop');
+                //     if (backdrop) {
+                //         backdrop.remove();
+                //     }
+                //     console.log("vô nè");
+                // }
+
+                const modalElement = document.getElementById('editUserModal'); // Replace 'yourModalId' with the actual ID of your modal
+                const modalInstance = new bootstrap.Modal(modalElement);
+                modalInstance.hide();
+
             }
-        } catch (error) {
+
+            if (response.data === 2001) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Tên tài khoản đã tồn tại',
+                });
+            }
+            if (response.data === 2002) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Email đã tồn tại',
+                });
+            }
+        }
+        catch (error) {
             setError('Error updating user');
         }
     };
@@ -236,7 +362,20 @@ const ADAccount = () => {
     // xác nhận xóa người dùng
     const handleDeleteSubmit = async () => {
         try {
-            const response = await axios.put(`https://localhost:7078/api/Account/Delete/${deleteUser.id}`);
+            console.log(deleteUser.id);
+            const token = localStorage.getItem('token');
+            console.log(`token 2: ${token}`);
+            const user = jwtDecode(token);
+            let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            console.log(userRole);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            const response = await axios.put(
+                `https://localhost:7078/api/Account/Delete/${deleteUser.id}`, '', config
+            );
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
@@ -245,10 +384,24 @@ const ADAccount = () => {
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false,
+
                 });
-                setAccounts(accounts.filter(account => account.id !== deleteUser.id));
-                setDeleteUser(null); // Clear the selected user
-                setShowModal(false); // Close the confirmation modal
+                if (modalRefDelete.current) {
+
+                    modalRefDelete.current.classList.remove('show');
+                    modalRefDelete.current.setAttribute('aria-hidden', 'true');
+                    modalRefDelete.current.style.display = 'none';
+
+                    // Remove the backdrop and 'modal-open' class from the body
+                    document.body.classList.remove('modal-open');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                }
+                //tải lại trang 
+                setShowModal(!showModal);
+
             }
         } catch (error) {
             setError('Error deleting user');
@@ -290,6 +443,82 @@ const ADAccount = () => {
         setImgPreview("");
     }
 
+    
+
+    const handlePageChange = (pageIndex) => {
+        // Update the state with the new page index
+        setState((prevState) => {
+            const newState = {
+                ...prevState,
+                paging: { ...prevState.paging, index: pageIndex }
+            };
+    
+            // Calculate the new accounts based on the updated state
+            const accounts = [];
+            const startIndex = newState.paging.index * newState.paging.size - newState.paging.size;
+            const endIndex = newState.paging.index * newState.paging.size;
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                if (i >= newState.accounts.length) {
+                    break;
+                }
+                accounts.push(newState.accounts[i]);
+            }
+    
+            // Update the accounts state
+            setAccounts(accounts);
+    
+            return newState;
+        });
+    };
+   
+
+    
+    
+    const handleLoadListAccount = async () => {
+        let resUser = await axios.get(`https://localhost:7078/api/Account?keyword=${state.searchKeyword ?? ""}&index=${state.paging.index ?? 1}&size=${state.paging.size ?? 16}`);
+
+        setState({
+            ...state,
+            accounts: resUser && resUser.data.list ? resUser.data.list : [],
+            paging: resUser && resUser.data.paging ? resUser.data.paging : state.paging,
+        });
+    }
+
+    const getPaginationItems = () => {
+        const paginationItems = [];
+        const { index, totalPage } = state.paging;
+
+        // Trang đầu tiên luôn được hiển thị
+        paginationItems.push(1);
+
+        // Nếu trang hiện tại lớn hơn 4, thêm dấu ba chấm sau trang đầu tiên
+        if (index > 4) {
+            paginationItems.push('...');
+        }
+
+        // Hiển thị các trang xung quanh trang hiện tại
+        for (let i = Math.max(2, index - 2); i <= Math.min(totalPage - 1, index + 2); i++) {
+            paginationItems.push(i);
+        }
+
+        // Nếu trang hiện tại nhỏ hơn `totalPage - 3`, thêm dấu ba chấm trước trang cuối cùng
+        if (index < totalPage - 3) {
+            paginationItems.push('...');
+        }
+
+        // Trang cuối cùng luôn được hiển thị
+        if (totalPage > 1) {
+            paginationItems.push(totalPage);
+        }
+
+        return paginationItems;
+    };
+
+   
+
+
+
     return (
         <>
             <div className="account-list container">
@@ -304,7 +533,20 @@ const ADAccount = () => {
                     >
                         Thêm Người Dùng
                     </button>
-
+                    <div className='col'>
+                            <div className="input-group mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search..."
+                                    value={ state.searchKeyword}
+                                    onChange={(e) =>  setState({ ...state, searchKeyword: e.target.value })}
+                                />
+                                <button className="btn btn-primary" onClick={handleLoadListAccount}>
+                                    Search
+                                </button>
+                            </div>
+                        </div>
                     {error && (
                         <div className="alert alert-danger">
                             {error}
@@ -318,55 +560,91 @@ const ADAccount = () => {
                                 <th>Tên tài khoản</th>
                                 <th>Tên người dùng</th>
                                 <th>Email</th>
-                                <th>Số điện thoại</th>
+                                <th>SĐT</th>
                                 <th>Địa chỉ</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {accounts.map((account) => (
-                                <tr key={account.id}>
-                                    <td>
-                                        <img className="img-ad-account" src={account.link} alt={account.id} />
-                                    </td>
-                                    <td>{account.userName}</td>
-                                    <td>{account.fullName}</td>
-                                    <td>{account.email}</td>
-                                    <td>{account.phoneNumber}</td>
-                                    <td>{account.address}</td>
-                                    <td>
-                                        <button
-                                            className="btn btn-sm m-2 btn-primary"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editUserModal"
-                                            onClick={() => handleEditClick(account)}
-                                        >
-                                            Sửa
-                                        </button>
-                                        <button className="btn btn-sm btn-danger"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteUserModal"
-                                            onClick={() => handleDeleteClick(account)}
-
-                                        >Xóa</button>
-                                    </td>
+                            {Array.isArray(accounts) && accounts.length > 0 ? (
+                                accounts.map((account) => (
+                                    <tr key={account.id}>
+                                        <td>
+                                            <img className="img-ad-account" src={account.link} alt={account.id} />
+                                        </td>
+                                        <td>{account.userName}</td>
+                                        <td>{account.fullName}</td>
+                                        <td>{account.email}</td>
+                                        <td>{account.phoneNumber}</td>
+                                        <td>{account.address}</td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm m-2 btn-primary"
+                                                type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal"
+                                                onClick={() => handleEditClick(account)}
+                                            >
+                                                Sửa
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteUserModal"
+                                                onClick={() => handleDeleteClick(account)}
+                                            >
+                                                Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center">No accounts available</td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
-
+                <nav className='pb-5'>
+                        <ul className="pagination">
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Previous" onClick={() =>  handlePageChange(state.paging.index - 1)}>
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            { getPaginationItems().map((page, index) =>
+                                page === '...' ? (
+                                    <li key={index} className="page-item disabled">
+                                        <span className="page-link">...</span>
+                                    </li>
+                                ) : (
+                                    <li
+                                        key={index}
+                                        className={`page-item ${state.paging.index === page ? 'active' : ''}`}
+                                    >
+                                        <a className="page-link" onClick={() =>  handlePageChange(page)}>
+                                            {page}
+                                        </a>
+                                    </li>
+                                )
+                            )}
+                            <li className="page-item">
+                                <a className="page-link" href="#" aria-label="Next" onClick={() =>  handlePageChange(state.paging.index + 1)}>
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
 
                 {/* Modal thêm người dùng */}
-
-                <div className="modal fade" id="addUserModal" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                <div className="modal fade" id="addUserModal" aria-labelledby="addUserModalLabel" aria-hidden="true" ref={modalRefAdd}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h1 className="modal-title fs-5" id="addUserModalLabel">Thêm Người Dùng Mới</h1>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button className="btn-close" data-bs-dismiss="modal"  ></button>
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit}>
@@ -407,7 +685,7 @@ const ADAccount = () => {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Xác nhận Mật khẩu *:</label>
+                                        <label className="col-sm-3 col-form-label">Xác Nhận MK *:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="password"
@@ -456,7 +734,7 @@ const ADAccount = () => {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Số Điện Thoại:</label>
+                                        <label className="col-sm-3 col-form-label">SĐT:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="tel"
@@ -513,7 +791,7 @@ const ADAccount = () => {
                 </div>
 
                 {/* Modal sửa người dùng */}
-                <div className="modal fade" id="editUserModal" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                <div className="modal fade" id="editUserModal" aria-labelledby="editUserModalLabel" aria-hidden="true" ref={modalRef}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -569,7 +847,7 @@ const ADAccount = () => {
                                         </div>
                                     </div>
                                     <div className="row mb-3">
-                                        <label className="col-sm-3 col-form-label">Số Điện Thoại:</label>
+                                        <label className="col-sm-3 col-form-label">SĐT:</label>
                                         <div className="col-sm-9">
                                             <input
                                                 type="tel"
@@ -617,7 +895,7 @@ const ADAccount = () => {
                                     </div>
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                        <button type="submit" className="btn btn-primary">Cập Nhật</button>
+                                        <button type="submit" className="btn btn-primary"  >Cập Nhật</button>
                                     </div>
                                 </form>
                             </div>
@@ -625,7 +903,7 @@ const ADAccount = () => {
                     </div>
                 </div>
                 {/* Modal xóa người dùng */}
-                <div className="modal fade" id="deleteUserModal" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+                <div className="modal fade" id="deleteUserModal" aria-labelledby="deleteUserModalLabel" aria-hidden="true" ref={modalRefDelete}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">

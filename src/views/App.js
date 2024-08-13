@@ -70,9 +70,6 @@ class App extends React.Component {
           <Route path="SignUp" >
             <Route index element={<SignUp />} />
           </Route>
-          {/* <Route path="ADDetailAccount" >
-            <Route index element={<ADDetailAccount />} />
-          </Route> */}
         </Routes>
       </BrowserRouter>
     );

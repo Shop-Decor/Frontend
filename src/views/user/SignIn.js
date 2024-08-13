@@ -18,6 +18,8 @@ const SignIn = () => {
     useEffect(() => {
         // Clear any existing token when the component mounts
         localStorage.removeItem('token');
+        localStorage.removeItem('userID');
+        localStorage.removeItem('userName');
     }, []);
     let token;
     const handleSubmit = async (e) => {
