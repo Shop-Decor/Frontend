@@ -2,26 +2,26 @@
 
 .container {
   .botton-xem {
-    display        : flex;
+    display: flex;
     justify-content: center;
     /* căn giữa theo chiều ngang */
-    align-items    : center;
+    align-items: center;
 
     /* căn giữa theo chiều dọc */
     .link-xem {
-      width           : 150px;
-      height          : 40px;
+      width: 150px;
+      height: 40px;
       background-color: #ff7675;
-      text-decoration : none;
-      display         : flex;
-      justify-content : center;
-      border          : 2px solid #ff7675;
+      text-decoration: none;
+      display: flex;
+      justify-content: center;
+      border: 2px solid #ff7675;
       /* căn giữa theo chiều ngang */
-      align-items     : center;
-      color           : #fff;
-      z-index         : 1;
-      overflow        : hidden;
-      position        : relative;
+      align-items: center;
+      color: #fff;
+      z-index: 1;
+      overflow: hidden;
+      position: relative;
     }
 
     .link-xem:hover {
@@ -29,25 +29,25 @@
     }
 
     .link-xem::after {
-      content   : "";
+      content: "";
       background: #fff;
-      position  : absolute;
-      z-index   : -1;
-      padding   : 0.85em 0.75em;
-      display   : block;
+      position: absolute;
+      z-index: -1;
+      padding: 0.85em 0.75em;
+      display: block;
     }
 
     .link-xem::after {
-      left      : -20%;
-      right     : -20%;
-      top       : 0;
-      bottom    : 0;
-      transform : skewX(-45deg) scale(0, 1);
+      left: -20%;
+      right: -20%;
+      top: 0;
+      bottom: 0;
+      transform: skewX(-45deg) scale(0, 1);
       transition: all 0.3s ease;
     }
 
     .link-xem:hover::after {
-      transform : skewX(-45deg) scale(1, 1);
+      transform: skewX(-45deg) scale(1, 1);
       transition: all 0.3s ease-out;
     }
 
@@ -58,23 +58,38 @@
   }
 
 
-  .row {
+  .prodcut-card {
     .product {
-      .product-content {
-        margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 292px;
 
-        // .card-title {
-        //   white-space  : nowrap;
-        //   overflow     : hidden;
-        //   text-overflow: ellipsis;
-        //   max-width    : 100%;
-        // }
+      .product-main {
+        min-height: 198px;
+      }
+
+      .product-content {
+        margin: 10px 0 20px 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+
+        .card-title {
+          white-space: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
 
         .product-price {
-          display        : flex;
+          display: flex;
           justify-content: space-between;
-          font-weight    : 500;
-          font-size      : 17px;
+          font-weight: 500;
+          font-size: 17px;
 
           .price {
             color: red;
@@ -88,7 +103,7 @@
 
       .link_to {
         text-decoration: none;
-        color          : black;
+        color: black;
       }
 
       img {

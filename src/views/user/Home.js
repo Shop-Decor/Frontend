@@ -48,13 +48,13 @@ const Home = () => {
     <div className="container">
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
-      <div className="row">
+      <div className="row prodcut-card">
         {products && products.length > 0 ? (
           products.map((product, index) => (
             <div className="col-md-2 product" key={index}>
               <div className="product-main">
                 <div className="hovereffect">
-                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
                   <div className="overlay">
                     <div className="btn-product">
                       <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
@@ -66,12 +66,8 @@ const Home = () => {
               <div className="product-content">
                 <h5 className="card-title">{product.ten}</h5>
                 <div className="product-price">
-                  <span className="price">
-                    {product.loaiGiam
-                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
-                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
-                  </span>
-                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                  <span className="price">{product.loaiGiam ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                  <span className="priced">{product.maGiamGia === null ? "" : product.gia.toLocaleString('vi-VN') + "đ"} </span>
                 </div>
               </div>
             </div>
@@ -81,19 +77,17 @@ const Home = () => {
         )}
       </div>
       <div className="botton-xem">
-
         <Link to="/ProductUser" className="align-item-center link-xem">Xem thêm</Link>
-
       </div>
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
-      <div className="row">
+      <div className="row prodcut-card">
         {featuredProducts && featuredProducts.length > 0 ? (
           featuredProducts.map((product, index) => (
             <div className="col-md-2 product" key={product.id}>
               <div className="product-main">
                 <div className="hovereffect">
-                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
                   <div className="overlay">
                     <div className="btn-product">
                       <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
@@ -105,12 +99,8 @@ const Home = () => {
               <div className="product-content">
                 <h5 className="card-title">{product.ten}</h5>
                 <div className="product-price">
-                  <span className="price">
-                    {product.loaiGiam
-                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
-                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
-                  </span>
-                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                  <span className="price">{product.loaiGiam ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                  <span className="priced">{product.maGiamGia === null ? "" : product.gia.toLocaleString('vi-VN') + "đ"} </span>
                 </div>
               </div>
             </div>
@@ -120,9 +110,7 @@ const Home = () => {
         )}
       </div>
       <div className="botton-xem">
-
         <Link to="/ProductUser" className="align-item-center link-xem">Xem thêm</Link>
-
       </div>
       <br />
     </div>

@@ -4,24 +4,24 @@
     // p{
     //   font-family: DungHo;
     // }
-    display         : flex;
-    align-items     : center;
-    width           : 100%;
-    height          : 40px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
     background-color: #efd4d0;
 
     .border-line {
-      margin-left     : 50px;
-      width           : 5px;
-      height          : 80%;
+      margin-left: 50px;
+      width: 5px;
+      height: 80%;
       background-color: black;
-      border          : 3px solid black;
-      border-radius   : 20px;
+      border: 3px solid black;
+      border-radius: 20px;
     }
   }
 
   .row {
-    width : 90%;
+    width: 90%;
     margin: 0 auto;
 
     .ProductImg {
@@ -39,7 +39,7 @@
 
           .btn-img {
             min-width: 100px;
-            height   : auto;
+            height: auto;
           }
 
           .button_0 {
@@ -56,34 +56,32 @@
 
     .ProductDetail {
       .ProductName {
-        font-size  : 30px;
+        font-size: 30px;
         font-weight: 700;
       }
 
       .saleBlock {
-        width          : 100%;
-        font-size      : 30px;
-        justify-content: space-between;
-        padding-right  : 245px;
+        font-size: 30px;
+        display: flex;
 
         .sale {
-          p {
-            text-align: center;
+          text-align: center;
+          background-color: #ededed;
+          color: red;
+          margin-right: 10px;
+        }
+
+        .money {
+          display: flex;
+
+          .MoneyRed {
+            color: red;
+            margin-right: 10px;
           }
 
-          background-color: #ededed;
-          color           : red;
-
-          height : 45px;
-        }
-
-        .MoneyRed {
-          color: red;
-        }
-
-        .Moneygach {
-          text-decoration: line-through;
-          width          : 0%;
+          .Moneygach {
+            text-decoration: line-through;
+          }
         }
       }
 
@@ -94,51 +92,51 @@
           width: 15%;
 
           .size-checkbox-container {
-            display  : flex;
+            display: flex;
             flex-wrap: wrap;
           }
 
           .size-checkbox-label {
-            flex         : 0 1 auto;
-            display      : inline-flex;
-            align-items  : center;
-            padding      : 5px 10px;
-            border       : 1px solid #ccc;
+            flex: 0 1 auto;
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            cursor       : pointer;
-            margin-right : 10px;
+            cursor: pointer;
+            margin-right: 10px;
             margin-bottom: 10px;
-            min-width    : 50px;
+            min-width: 50px;
             /* Minimum width to make sure it's not too small */
           }
 
           .size-checkbox-label.checked {
             background-color: black;
-            color           : white;
+            color: white;
           }
 
         }
 
         .stocking {
-          display         : flex;
-          align-items     : center;
-          justify-content : center;
-          color           : white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
           background-color: #000;
-          width           : 80px;
-          height          : 80px;
+          width: 80px;
+          height: 80px;
         }
 
         .nostocking {
-          width           : 80px;
-          height          : 80px;
+          width: 80px;
+          height: 80px;
           background-color: white;
-          color           : black;
-          display         : flex;
-          align-items     : center;
-          justify-content : center;
-          text-decoration : line-through;
-          border          : 1px solid black;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: line-through;
+          border: 1px solid black;
         }
       }
 
@@ -146,17 +144,17 @@
         width: 100%;
 
         .add {
-          display         : flex;
-          width           : 50px;
-          height          : 50px;
+          display: flex;
+          width: 50px;
+          height: 50px;
           background-color: #f5f5f5;
-          align-items     : center;
-          justify-content : center;
-          border          : none;
+          align-items: center;
+          justify-content: center;
+          border: none;
         }
 
         .quantity {
-          width : 100px;
+          width: 100px;
           height: 50px;
           border: 3px solid black;
         }
@@ -165,29 +163,29 @@
         .quantity::-webkit-inner-spin-button {
           -webkit-appearance: none;
           /* Chrome, Safari, Edge, Opera */
-          margin            : 0;
+          margin: 0;
         }
 
         .minus {
-          display         : flex;
-          width           : 50px;
-          height          : 50px;
+          display: flex;
+          width: 50px;
+          height: 50px;
           background-color: #f5f5f5;
-          align-items     : center;
-          justify-content : center;
-          border          : none;
+          align-items: center;
+          justify-content: center;
+          border: none;
         }
       }
 
       .button-them {
         button {
-          width           : 100%;
-          height          : 70px;
+          width: 100%;
+          height: 70px;
           background-color: #ff8787;
-          color           : white;
-          border          : 2px solid white;
-          font-size       : 20px;
-          border-radius   : 10px;
+          color: white;
+          border: 2px solid white;
+          font-size: 20px;
+          border-radius: 10px;
         }
       }
 
@@ -196,23 +194,21 @@
       }
 
       .TenMoTa {
-        font-size  : 30px;
-        color      : red;
-        font-weight: 550;
+        font-size: 20px;
       }
     }
   }
 
   .colorLine {
     flex-wrap: wrap;
-    gap      : 10px;
+    gap: 10px;
 
     .form-check {
       width: 5%;
     }
 
     .form-check-input {
-      width : 30px;
+      width: 30px;
       height: 30px;
     }
 
@@ -230,40 +226,22 @@
   }
 
   .botton-xem {
-    display        : flex;
+    display: flex;
     justify-content: center;
     /* căn giữa theo chiều ngang */
-    align-items    : center;
+    align-items: center;
 
     /* căn giữa theo chiều dọc */
     button {
-      width           : 150px;
-      height          : 40px;
-      border-radius   : 10%;
+      width: 150px;
+      height: 40px;
+      border-radius: 10%;
       background-color: #efd4d0;
-      border          : 0px solid #fff;
+      border: 0px solid #fff;
     }
   }
 
   .dung {
     color: red;
-  }
-
-  .row {
-    .product {
-      img {
-        width: 95%;
-      }
-
-      p {
-        width: 90%;
-
-        text-align: center;
-      }
-
-      width: 20%;
-    }
-
-    display: flex;
   }
 }
