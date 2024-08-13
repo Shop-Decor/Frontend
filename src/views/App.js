@@ -29,16 +29,62 @@ import UserDetail from "./user/accountUser/DetailAccount";
 import Search from "./user/Search";
 import About from "./user/about";
 import ContactUs from "./user/contactus";
+import AccessTo from "./loading/AccessTo";
+import { jwtDecode } from "jwt-decode";
 
 class App extends React.Component {
   renderSignIn = () => {
     return <SignIn />;
   };
+
+  
   render() {
+    const isAdmin = () => {
+      let token = localStorage.getItem('token');
+      if (!token) {
+        return false;
+      }
+      let user = jwtDecode(token);
+      const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      if (role === 'Admin') {
+        return true;
+      }
+      return false;
+     
+    };
+    
+    // AdminRoute component to protect admin routes
+    const AdminRoute = ({ children }) => {
+      return isAdmin() ? children : <AccessTo />;
+    };
+
+    //userRoute component to protect user routes
+    const isUser = () => { 
+      let token = localStorage.getItem('token');
+      if (!token) {
+        return false;
+      }
+      let user = jwtDecode(token);
+      const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      if (role === 'User') {
+        return true;
+      }
+      if (role === 'Admin') {
+        return false;
+      }
+      return false;
+    };
+
+    const UserRoute = ({ children }) => {
+      return isUser() ? children : <AccessTo />;
+    };
+
+    
+
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<LayoutUser />}>
+          <Route path="" element={<UserRoute><LayoutUser /></UserRoute>}>
             <Route index element={<Home />} />
             <Route path="ProductDetail/:id" element={<ProductDetail />} />
             <Route path="Payment" element={<Payment />} />
@@ -55,7 +101,7 @@ class App extends React.Component {
             </Route>
           </Route>
 
-          <Route path="admin" element={<AdminLayout />}>
+          <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
             <Route index element={<ADhome />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
