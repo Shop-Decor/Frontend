@@ -117,15 +117,15 @@ const SignIn = () => {
                         <h2>Đăng Nhập</h2>
                         <p>Nhập Email và Mật Khẩu để đăng nhập</p>
                     </form>
-                    <form className="SignInGG">
+                    {/* <form className="SignInGG">
                         <button type="button">
                             <FontAwesomeIcon icon={faGoogle} />
                             <label>Đăng nhập bằng Google</label>
                         </button>
-                    </form>
+                    </form> */}
                     <form onSubmit={handleSubmit}>
                         {error && <p className='text-'>{error}</p>}
-                        <label>User Name:</label>
+                        <label>Tên tài khoản:</label>
                         <input
                             type="userName"
                             value={userName}

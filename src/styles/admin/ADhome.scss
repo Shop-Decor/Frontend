@@ -55,7 +55,7 @@
                 background-color: #fff;
                 height: 50px;
                 width: calc(100% - 16%);
-                z-index: 1;
+                z-index: 3;
                 box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
                 padding: 0 20px;
 
@@ -80,6 +80,7 @@
                         .dropdown-menu {
                             li {
                                 .dropdown-item-ed {
+                                    z-index: 1;
                                     text-decoration: none;
                                     color: black;
                                     padding: 5px 20px;

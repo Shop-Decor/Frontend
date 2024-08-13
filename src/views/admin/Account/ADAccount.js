@@ -220,7 +220,8 @@ const ADAccount = () => {
                 //         backdrop.remove();
                 //     }
                 // }
-               
+                //clear form
+                cleanFromAdd();
             }
 
             if (response.data === 2001) {
@@ -304,6 +305,26 @@ const ADAccount = () => {
                 });
                 //load lại trang
                 setShowModal(!showModal);
+
+                // if (modalRef.current) {
+
+                //     modalRef.current.classList.remove('show');
+                //     modalRef.current.setAttribute('aria-hidden', 'true');
+                //     modalRef.current.style.display = 'none';
+
+                //     // Remove the backdrop and 'modal-open' class from the body
+                //     document.body.classList.remove('modal-open');
+                //     const backdrop = document.querySelector('.modal-backdrop');
+                //     if (backdrop) {
+                //         backdrop.remove();
+                //     }
+                //     console.log("vô nè");
+                // }
+
+                const modalElement = document.getElementById('editUserModal'); // Replace 'yourModalId' with the actual ID of your modal
+                const modalInstance = new bootstrap.Modal(modalElement);
+                modalInstance.hide();
+
             }
 
             if (response.data === 2001) {
@@ -324,7 +345,6 @@ const ADAccount = () => {
             }
         }
         catch (error) {
-            console.log(error);
             setError('Error updating user');
         }
     };
@@ -424,6 +444,8 @@ const ADAccount = () => {
         setImgPreview("");
     }
 
+
+
     const handlePageChange = (pageIndex) => {
         // Update the state with the new page index
         setState((prevState) => {
@@ -431,34 +453,63 @@ const ADAccount = () => {
                 ...prevState,
                 paging: { ...prevState.paging, index: pageIndex }
             };
-    
+
             // Calculate the new accounts based on the updated state
             const accounts = [];
             const startIndex = newState.paging.index * newState.paging.size - newState.paging.size;
             const endIndex = newState.paging.index * newState.paging.size;
-            
+
             for (let i = startIndex; i < endIndex; i++) {
                 if (i >= newState.accounts.length) {
                     break;
                 }
                 accounts.push(newState.accounts[i]);
             }
-    
+
             // Update the accounts state
             setAccounts(accounts);
-    
+
             return newState;
         });
     };
 
-    const handleLoadListAccount = async () => {
-        let resUser = await axios.get(`https://localhost:7078/api/Account?keyword=${state.searchKeyword ?? ""}&index=${state.paging.index ?? 1}&size=${state.paging.size ?? 16}`);
 
-        setState({
-            ...state,
-            accounts: resUser && resUser.data.list ? resUser.data.list : [],
-            paging: resUser && resUser.data.paging ? resUser.data.paging : state.paging,
-        });
+
+
+    const handleLoadListAccount = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const resUser = await axios.get(`https://localhost:7078/api/Account/Get`, {
+                params: {
+                    keyword: state.searchKeyword || "",
+                    index: state.paging.index || 1,
+                    size: state.paging.size || 16
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            const newPaging = resUser.data?.paging || state.paging;
+            const newAccounts = resUser.data?.list || [];
+
+            setState({
+                ...state,
+                accounts: newAccounts,
+                paging: newPaging,
+            });
+            const accounts = [];
+            // get size of accounts from state
+            for (let i = newPaging.index * newPaging.size - newPaging.size; i < newPaging.index * newPaging.size; i++) {
+                if (i >= newAccounts.length) {
+                    break;
+                }
+                accounts.push(newAccounts[i]);
+            }
+            setAccounts(accounts);
+        } catch (error) {
+            console.error("Error fetching accounts", error);
+            // Optionally, handle the error (e.g., show a message to the user)
+        }
     }
 
     const getPaginationItems = () => {
@@ -491,7 +542,7 @@ const ADAccount = () => {
         return paginationItems;
     };
 
-   
+
 
 
 
@@ -500,29 +551,32 @@ const ADAccount = () => {
             <div className="account-list container">
                 <div className="content-container">
                     <h2>Người Dùng <FontAwesomeIcon icon={faUser} /></h2>
-                    <button
-                        type="button"
-                        className="btn btn-primary mb-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addUserModal"
-                        onClick={() => cleanFromAdd()}
-                    >
-                        Thêm Người Dùng
-                    </button>
-                    <div className='col'>
+                    <div className='row'>
+                        <button
+                            type="button"
+                            className="btn btn-primary mb-3 col-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addUserModal"
+                            onClick={() => cleanFromAdd()}
+                        >
+                            Thêm Người Dùng
+                        </button>
+                        <div className='col-7 ms-auto'>
                             <div className="input-group mb-3">
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search..."
-                                    value={ state.searchKeyword}
-                                    onChange={(e) =>  setState({ ...state, searchKeyword: e.target.value })}
+                                    placeholder="Tìm kiếm..."
+                                    value={state.searchKeyword}
+                                    onChange={(e) => setState({ ...state, searchKeyword: e.target.value })}
                                 />
                                 <button className="btn btn-primary" onClick={handleLoadListAccount}>
-                                    Search
+                                    Tìm kiếm
                                 </button>
                             </div>
                         </div>
+                    </div>
+
                     {error && (
                         <div className="alert alert-danger">
                             {error}
@@ -584,35 +638,35 @@ const ADAccount = () => {
                     </table>
                 </div>
                 <nav className='pb-5'>
-                        <ul className="pagination">
-                            <li className="page-item">
-                                <a className="page-link" href="#" aria-label="Previous" onClick={() =>  handlePageChange(state.paging.index - 1)}>
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            { getPaginationItems().map((page, index) =>
-                                page === '...' ? (
-                                    <li key={index} className="page-item disabled">
-                                        <span className="page-link">...</span>
-                                    </li>
-                                ) : (
-                                    <li
-                                        key={index}
-                                        className={`page-item ${state.paging.index === page ? 'active' : ''}`}
-                                    >
-                                        <a className="page-link" onClick={() =>  handlePageChange(page)}>
-                                            {page}
-                                        </a>
-                                    </li>
-                                )
-                            )}
-                            <li className="page-item">
-                                <a className="page-link" href="#" aria-label="Next" onClick={() =>  handlePageChange(state.paging.index + 1)}>
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <ul className="pagination">
+                        <li className="page-item">
+                            <a className="page-link" href="#" aria-label="Previous" onClick={() => handlePageChange(state.paging.index - 1)}>
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {getPaginationItems().map((page, index) =>
+                            page === '...' ? (
+                                <li key={index} className="page-item disabled">
+                                    <span className="page-link">...</span>
+                                </li>
+                            ) : (
+                                <li
+                                    key={index}
+                                    className={`page-item ${state.paging.index === page ? 'active' : ''}`}
+                                >
+                                    <a className="page-link" onClick={() => handlePageChange(page)}>
+                                        {page}
+                                    </a>
+                                </li>
+                            )
+                        )}
+                        <li className="page-item">
+                            <a className="page-link" href="#" aria-label="Next" onClick={() => handlePageChange(state.paging.index + 1)}>
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
 
                 {/* Modal thêm người dùng */}
                 <div className="modal fade" id="addUserModal" aria-labelledby="addUserModalLabel" aria-hidden="true" ref={modalRefAdd}>
@@ -891,7 +945,7 @@ const ADAccount = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDeleteSubmit}>Xóa</button>
+                                <button type="button" className="btn btn-danger" onClick={handleDeleteSubmit}>Xóa</button>
                             </div>
                         </div>
                     </div>
