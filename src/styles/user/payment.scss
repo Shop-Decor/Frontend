@@ -128,10 +128,41 @@
                 background-color: #EE1818;
                 color           : #fff;
                 padding         : 10px 20px;
-                border          : none;
                 border-radius   : 3px;
                 cursor          : pointer;
+                border          : 2px solid #EE1818;
+                position        : relative;
+                z-index         : 1;
+                overflow        : hidden;
             }
+
+            .submit-form:hover {
+                color: #EE1818;
+            }
+
+            .submit-form::after {
+                content   : "";
+                background: #fff;
+                position  : absolute;
+                z-index   : -1;
+                padding   : 0.85em 0.75em;
+                display   : block;
+            }
+
+            .submit-form::after {
+                left      : -20%;
+                right     : -20%;
+                top       : 0;
+                bottom    : 0;
+                transform : skewX(-45deg) scale(0, 1);
+                transition: all 0.3s ease;
+            }
+
+            .submit-form:hover::after {
+                transform : skewX(-45deg) scale(1, 1);
+                transition: all 0.3s ease-out;
+            }
+
 
             label {
                 display      : block;
@@ -259,27 +290,59 @@
                 cursor          : pointer;
             }
 
+            .getdiscountText:hover {
+                background-color: #EE1818;
+            }
+
             .discount-input {
                 input {
                     height: 40px;
                     width : 68%;
                 }
 
-                button {
+                .discount-btn {
                     margin-left     : 20px;
-                    height          : 40px;
+                    height          : 43px;
                     background-color: #EE1818;
                     color           : #fff;
                     padding         : 10px 20px;
-                    border          : none;
                     border-radius   : 3px;
                     cursor          : pointer;
+                    border          : 2px solid #EE1818;
+                    position        : relative;
+                    z-index         : 1;
+                    overflow        : hidden;
+                    text-align      : center;
 
-                    .discount-text {
-                        display        : flex;
-                        justify-content: center;
-                        align-items    : center;
-                    }
+
+
+                }
+
+                .discount-btn:hover {
+                    color: #EE1818;
+                }
+
+                .discount-btn::after {
+                    content   : "";
+                    background: #fff;
+                    position  : absolute;
+                    z-index   : -1;
+                    padding   : 0.85em 0.75em;
+                    display   : block;
+                }
+
+                .discount-btn::after {
+                    left      : -20%;
+                    right     : -20%;
+                    top       : 0;
+                    bottom    : 0;
+                    transform : skewX(-45deg) scale(0, 1);
+                    transition: all 0.3s ease;
+                }
+
+                .discount-btn:hover::after {
+                    transform : skewX(-45deg) scale(1, 1);
+                    transition: all 0.3s ease-out;
                 }
             }
         }

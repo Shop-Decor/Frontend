@@ -50,13 +50,14 @@ const Payment = () => {
         email: '',
         phone: '',
         address: '',
-        paymentMethod: null,
+        paymentMethod: true,
         totalmoney: ''
     });
 
     const [appliedDiscountCode, setAppliedDiscountCode] = useState('');
     const [enteredDiscountCode, setEnteredDiscountCode] = useState('');
     const [finalTotal, setFinalTotal] = useState(total);
+
 
 
     const handleDiscountChange = (e) => {
@@ -164,9 +165,25 @@ const Payment = () => {
             if (formData.paymentMethod === true) { // COD
                 const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
                 if (response.status === 200) {
-                    alert('Order created successfully');
+                    Swal.fire({
+                        title: 'Đặt hàng',
+                        text: 'Đặt hàng thành công',
+                        icon: 'success',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    localStorage.removeItem('cart')
                 } else {
-                    alert('Failed to create order');
+                    Swal.fire({
+                        title: 'Đặt hàng',
+                        text: 'Đặt hàng thất bại',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    navigate('/Cart')
                 }
             } else { // VnPay
 
@@ -287,7 +304,7 @@ const Payment = () => {
                                     type="radio"
                                     name="paymentMethod"
                                     value="COD"
-                                    checked={formData.paymentMethod === true}
+                                    defaultChecked={formData.paymentMethod === true}
                                     onChange={handleInputChange}
                                 />
                                 <p>Thanh toán khi nhận hàng</p>
@@ -298,7 +315,7 @@ const Payment = () => {
                                     type="radio"
                                     name="paymentMethod"
                                     value="VNPAY"
-                                    checked={formData.paymentMethod === false}
+                                    defaultChecked={formData.paymentMethod === false}
                                     onChange={handleInputChange}
                                 />
                                 <p>Chuyển khoản ngân hàng</p>
@@ -327,7 +344,7 @@ const Payment = () => {
                         ))}
                         <div className="discount-input">
                             <input type="text" placeholder="Nhập mã giảm giá" value={enteredDiscountCode} onChange={handleDiscountChange} />
-                            <button className="text-center" onClick={applyDiscount}>
+                            <button className="text-center discount-btn" onClick={applyDiscount}>
                                 <p className='discount-text'>Áp dụng</p>
                             </button>
                         </div>

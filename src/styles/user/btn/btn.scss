@@ -1,10 +1,10 @@
 .grow_skew_forward {
     background: #ff7675;
-    color: #fff;
-    border: 2px solid #ff7675;
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
+    color     : #fff;
+    border    : 2px solid #ff7675;
+    position  : relative;
+    z-index   : 1;
+    overflow  : hidden;
 }
 
 .grow_skew_forward:hover {
@@ -12,24 +12,24 @@
 }
 
 .grow_skew_forward::after {
-    content: "";
+    content   : "";
     background: #fff;
-    position: absolute;
-    z-index: -1;
-    padding: 0.85em 0.75em;
-    display: block;
+    position  : absolute;
+    z-index   : -1;
+    padding   : 0.85em 0.75em;
+    display   : block;
 }
 
 .grow_skew_forward::after {
-    left: -20%;
-    right: -20%;
-    top: 0;
-    bottom: 0;
-    transform: skewX(-45deg) scale(0, 1);
+    left      : -20%;
+    right     : -20%;
+    top       : 0;
+    bottom    : 0;
+    transform : skewX(-45deg) scale(0, 1);
     transition: all 0.3s ease;
 }
 
 .grow_skew_forward:hover::after {
-    transform: skewX(-45deg) scale(1, 1);
+    transform : skewX(-45deg) scale(1, 1);
     transition: all 0.3s ease-out;
 }

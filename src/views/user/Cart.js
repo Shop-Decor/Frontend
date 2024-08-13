@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from 'sweetalert2';
 import axios from "axios";
@@ -12,6 +12,19 @@ import "../../styles/user/Cart.scss";
 const Cart = (props) => {
     const { listCart, setListCart, total } = useOutletContext();
     const navigate = useNavigate();
+    const [product, setProduct] = useState([]);
+    const fetchProducts = async () => {
+        try {
+            let res = await axios.get("https://localhost:7078/api/ProductDetails/details");
+            setProduct(res.data || []);
+        } catch (error) {
+            console.error('Lỗi lấy dữ liệu api:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
 
     const handleCheckout = () => {
         navigate('/Payment', { state: { listCart, total } });

@@ -31,6 +31,10 @@ const NavHome = (props) => {
   const [user, setUser] = useState();
   const [token, setToken] = useState();
 
+  const handleCheckout = () => {
+    navigate('/Payment', { state: { listCart, total } });
+  };
+
   const toggleCart = (e) => {
     e.stopPropagation();
     setIsCartVisible((prev) => !prev);
@@ -312,8 +316,12 @@ const NavHome = (props) => {
                       </li>
                     </ul>
                     <div className="cart-btn">
-                      <a href="#" className="grow_skew_forward">Xem giỏ hàng</a>
-                      <a href="#" className="grow_skew_forward">Thanh toán</a>
+                      <Link className="grow_skew_forward" to="/cart">
+                        Xem giỏ hàng
+                      </Link>
+                      <button className="grow_skew_forward" onClick={handleCheckout}>
+                        Thanh toán
+                      </button>
                     </div>
                   </div>
                 )}
