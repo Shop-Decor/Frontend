@@ -55,7 +55,7 @@ const ProductDetail = (props) => {
 
   const fetchRelateProducts = async () => {
     try {
-      let res = await axios.get(`https://localhost:7078/api/Product/GetProductsByTypeId/${id}`);
+      let res = await axios.get(`https://localhost:7078/api/Product/${id}`);
       setRelateProduct(res.data || []);
     } catch (error) {
       console.error('Lỗi lấy dữ liệu api:', error);
