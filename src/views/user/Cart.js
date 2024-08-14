@@ -103,6 +103,7 @@ const Cart = (props) => {
                         timerProgressBar: true,
                         showConfirmButton: false,
                     });
+                    setListCart([]);
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -208,7 +209,7 @@ const Cart = (props) => {
                                 </button>
                                 <br />
                                 <span className="icon"><FontAwesomeIcon icon={faRotateLeft} className="icon-repurchase" /></span>
-                                <Link to={"/ProductUser"}><span className="repurchase">Tiếp tục mua hàng</span></Link>
+                                <Link to={"/ProductUser"} className="repurchase">Tiếp tục mua hàng</Link>
                             </div>
                         </div>
                         : ""

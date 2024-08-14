@@ -210,9 +210,15 @@
                 }
 
                 .repurchase {
-                    color: red;
+                    color: black;
                     margin-left: 5px;
-                    font-size: 13px;
+                    font-size: 15px;
+                    font-weight: 400;
+                    text-decoration: none;
+
+                    &:hover {
+                        color: red;
+                    }
                 }
 
                 .icon-repurchase {
