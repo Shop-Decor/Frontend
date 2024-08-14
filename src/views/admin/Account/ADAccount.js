@@ -207,20 +207,6 @@ const ADAccount = () => {
                     timerProgressBar: true,
                     showConfirmButton: false,
                 });
-                // if (modalRefAdd.current) {
-
-                //     modalRefAdd.current.classList.remove('show');
-                //     modalRefAdd.current.setAttribute('aria-hidden', 'true');
-                //     modalRefAdd.current.style.display = 'none';
-
-                //     // Remove the backdrop and 'modal-open' class from the body
-                //     document.body.classList.remove('modal-open');
-                //     const backdrop = document.querySelector('.modal-backdrop');
-                //     if (backdrop) {
-                //         backdrop.remove();
-                //     }
-                // }
-                //clear form
                 cleanFromAdd();
             }
 
@@ -260,8 +246,8 @@ const ADAccount = () => {
         if (/\d/.test(updatedUser.fullName) || /[!@#$&*]/.test(updatedUser.fullName)) {
             errors.fullName = 'Tên người dùng chỉ chứa kí tự chữ';
         }
-        // kiểm tra tên người dùng ít nhất 6 kí tự
-        if (updatedUser.fullName.length < 6) {
+        // kiểm tra tên người dùng ít nhất  kí tự
+        if (updatedUser.fullName.length < 5) {
             errors.fullName = 'Tên người dùng phải ít nhất 6 kí tự';
         }
 
@@ -270,8 +256,8 @@ const ADAccount = () => {
         }
 
         // Check phone number có dữ liệu và chỉ chứa 10 kí tự 
-        if (!/^\d{10}$/.test(updatedUser.phoneNumber) && updatedUser.phoneNumber !== '') {
-            errors.phoneNumber = 'SĐT không hợp lệ. Vui lòng nhập 10 chữ số.';
+        if (!/^\d{10}$/.test(updatedUser.phoneNumber) && (updatedUser.phoneNumber !== '') ) {
+            errors.phoneNumber = 'SĐT không hợp lệ. Vui lòng nhập 10 chữ số nha.';
         }
 
 
@@ -324,6 +310,14 @@ const ADAccount = () => {
                     text: 'Email đã tồn tại',
                 });
             }
+            if (response.data === 2003) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'SĐT đã tồn tại hoặc không có giá trị',
+                });
+            }
         }
         catch (error) {
             setError('Error updating user');
@@ -368,20 +362,6 @@ const ADAccount = () => {
                     showConfirmButton: false,
 
                 });
-                // if (modalRefDelete.current) {
-
-                //     modalRefDelete.current.classList.remove('show');
-                //     modalRefDelete.current.setAttribute('aria-hidden', 'true');
-                //     modalRefDelete.current.style.display = 'none';
-
-                //     // Remove the backdrop and 'modal-open' class from the body
-                //     document.body.classList.remove('modal-open');
-                //     const backdrop = document.querySelector('.modal-backdrop');
-                //     if (backdrop) {
-                //         backdrop.remove();
-                //     }
-                // }
-                //tải lại trang 
                 setShowModal(!showModal);
 
             }
@@ -428,6 +408,9 @@ const ADAccount = () => {
 
 
     const handlePageChange = (pageIndex) => {
+        if (pageIndex < 1 || pageIndex > state.paging.totalPage) {
+            return;
+        }
         // Update the state with the new page index
         setState((prevState) => {
             const newState = {
@@ -530,7 +513,7 @@ const ADAccount = () => {
     return (
         <>
             <div className="account-list container">
-                <div className="content-container">
+                <div className="content-container mt-5">
                     <h2>Người Dùng <FontAwesomeIcon icon={faUser} /></h2>
                     <div className='row'>
                         <button
@@ -579,6 +562,7 @@ const ADAccount = () => {
                         <tbody>
                             {Array.isArray(accounts) && accounts.length > 0 ? (
                                 accounts.map((account) => (
+                                    console.log(account),
                                     <tr key={account.id}>
                                         <td>
                                             <img className="img-ad-account" src={account.link} alt={account.id} />
