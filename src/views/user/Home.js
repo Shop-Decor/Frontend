@@ -23,7 +23,6 @@ const Home = () => {
         const sortedProducts = response.data
           .sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
         const top5Products = sortedProducts.slice(0, 5);
-
         setProducts(sortedProducts);
         setFeaturedProducts(top5Products);
         setIsLoading(false);
@@ -49,7 +48,7 @@ const Home = () => {
       <h1 className="dung text-center pb-3">Sản phẩm mới</h1>
       <div className="row prodcut-card">
         {products && products.length > 0 ? (
-          products.map((product, index) => (
+          products.slice(0, 10).map((product, index) => (
             <div className="col-md-2 product" key={index}>
               <div className="product-main">
                 <div className={product.totalCount === 0 ? "hovereffect out-of-stock" : "hovereffect"}>
@@ -90,7 +89,7 @@ const Home = () => {
       <h1 className="dung text-center pb-3">Sản phẩm nổi bật</h1>
       <div className="row prodcut-card">
         {featuredProducts && featuredProducts.length > 0 ? (
-          featuredProducts.map((product, index) => (
+          featuredProducts.slice(0, 10).map((product, index) => (
             <div className="col-md-2 product" key={product.id}>
               <div className="product-main">
                 <div className={product.totalCount === 0 ? "hovereffect out-of-stock" : "hovereffect"}>

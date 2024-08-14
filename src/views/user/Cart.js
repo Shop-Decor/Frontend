@@ -27,8 +27,36 @@ const Cart = (props) => {
     }, []);
 
     const handleCheckout = () => {
-        navigate('/Payment', { state: { listCart, total } });
+        const invalidItem = listCart.find((cartItem, index) => {
+            const matchingProduct = product.find(productItem =>
+                productItem.productId === cartItem.id
+            );
+
+            if (matchingProduct) {
+                const matchingDetail = matchingProduct.chiTietSanPham.find(detail =>
+                    detail.color === cartItem.color && detail.size === cartItem.size
+                );
+                const currentQuantity = +cartItem.quantity;
+                return matchingDetail && currentQuantity > matchingDetail.quantity;
+            }
+
+            return false;
+        });
+
+        if (invalidItem) {
+            Swal.fire({
+                title: 'Cảnh báo',
+                text: `Số lượng của sản phẩm vượt quá số lượng tồn kho`,
+                icon: 'warning',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        } else {
+            navigate('/Payment', { state: { listCart, total } });
+        }
     };
+
 
     const handleChangeQuantity = (event, index) => {
         setListCart(cart => {
