@@ -32,7 +32,7 @@ class ADOrder extends React.Component {
 
     }
     async componentDidMount() {
-
+        console.log("chạy vô đây");// kiểm tra xem có chạy vào hàm này không
         let resP = await axios.get('https://localhost:7078/api/Order?status=0');
 
         let resC = await axios.get('https://localhost:7078/api/Order?status=1');
@@ -102,6 +102,7 @@ class ADOrder extends React.Component {
             let res = await axios.put(`https://localhost:7078/api/Order/${this.state.updatestatus.id}?status=${status}&un=${this.state.updatestatus.lyDoHuy}`, {
                 ttDonHang: this.state.updatestatus.ttDonHang
             });
+
             if (res.status === 200 || res.status === 204) {
                 alert('Thành công');
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
@@ -116,7 +117,7 @@ class ADOrder extends React.Component {
     }
 
     handleUpdatee = async (status) => {
-       
+
 
         try {
             let res = await axios.put(`https://localhost:7078/api/Order/${this.state.updatestatus.id}?status=${status}&un=${this.state.updatestatus.lyDoHuy}`, {
@@ -213,7 +214,7 @@ class ADOrder extends React.Component {
 
                                                 <th>Giảm giá</th>
                                                 <th>Thành tiền</th>
-                                                
+
                                                 <th>Trạng thái thanh toán</th>
                                                 <th>Trạng thái đơn hàng</th>
                                                 <th></th>
@@ -232,9 +233,11 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
-                                                               
+
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
@@ -365,7 +368,7 @@ class ADOrder extends React.Component {
                                                                                         <span>địa chỉ:</span><br />
                                                                                         <span>Phương thức thanh toán:</span><br />
                                                                                         <span>Ghi chú:</span>
-                                                                                        
+
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
@@ -395,7 +398,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   <span className="kk">{this.formatPrice(item.khuyenMai.menhGia)} đ</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -445,7 +448,9 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
@@ -607,7 +612,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   <span className="kk">{this.formatPrice(item.khuyenMai.menhGia)} đ</span><br />
+                                                                                        Giảm giá:   Giảm giá: <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -661,7 +666,9 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen} </td>
 
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
@@ -779,7 +786,7 @@ class ADOrder extends React.Component {
 
                                                                                         <span className="kh"> {item.hoTen}</span><br />
                                                                                         <span className="kh"> {item.sdt}</span><br />
-                                                                                        <span className="kh"> {item.diaChi}</span><br/>
+                                                                                        <span className="kh"> {item.diaChi}</span><br />
                                                                                         <span className="kh"> {item.ptThanhToan}
                                                                                             {(() => {
                                                                                                 switch (item.ptThanhToan) {
@@ -803,7 +810,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   <span className="kk">{this.formatPrice(item.khuyenMai.menhGia)} đ</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -851,7 +858,9 @@ class ADOrder extends React.Component {
                                                             <tr key={item.id}>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
-                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.khuyenMai.menhGia)} đ</td>
+                                                                <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatDate(item.ngayHuy)}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
@@ -962,7 +971,7 @@ class ADOrder extends React.Component {
                                                                                         <span>Số điện thoại:</span><br />
                                                                                         <span>địa chỉ:</span><br />
                                                                                         <span>Phương thức thanh toán:</span><br />
-                                                                                        
+
                                                                                         <span>Ghi chú:</span><br />
                                                                                         <span>Lý do hủy đơn:</span>
 
@@ -991,17 +1000,17 @@ class ADOrder extends React.Component {
                                                                                                 }
                                                                                             })()}
 
-                                                                                        </span><br/>
+                                                                                        </span><br />
                                                                                         <span className="kh"> </span><br />
                                                                                         <span className="kh">{item.lyDoHuy}</span>
-                                                                                        
+
 
 
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        Giảm giá:   <span className="kk">{this.formatPrice(item.khuyenMai.menhGia)} đ</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
                                                                                         Tổng tiền:  <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
 
@@ -1065,7 +1074,7 @@ class ADOrder extends React.Component {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdates(2,true)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
+                                    <button type="button" onClick={(event) => this.handleUpdates(2, true)} className="btn btn-primary" data-bs-dismiss="modal">Xác nhận</button>
                                 </div>
                             </div>
                         </div>
