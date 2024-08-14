@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/user/payment.scss';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { jwtDecode } from "jwt-decode";
@@ -42,7 +42,7 @@ const Payment = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-
+    const { setListCart } = useOutletContext();
 
     const { listCart, total } = location.state || { listCart: [], total: 0 };
     const [formData, setFormData] = useState({
@@ -173,7 +173,8 @@ const Payment = () => {
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
-                    localStorage.removeItem('cart')
+                    setListCart([]);
+                    navigate('/Cart')
                 } else {
                     Swal.fire({
                         title: 'Đặt hàng',
