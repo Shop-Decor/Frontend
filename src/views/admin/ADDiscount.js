@@ -75,6 +75,16 @@ class ADDiscount extends React.Component {
         }));
     }
 
+    handleChangeType = (event) => {
+        const value = event.target.value === "true";
+        this.setState((x) => ({
+            discountsCreate: {
+                ...x.discountsCreate,
+                loaiGiam: value
+            }
+        }));
+    }
+
     handleChangeValue = (event) => {
         const value = event.target.value;
         if (isNaN(value)) {
@@ -98,19 +108,7 @@ class ADDiscount extends React.Component {
         }
     }
 
-    handleChangeValue = (event) => {
-        const value = event.target.value;
-        let error = '';
-        if (isNaN(value)) {
-            error = 'Mệnh giá phải là số';
-        }
-        this.setState((x) => ({
-            discountsCreate: {
-                ...x.discountsCreate,
-                menhGia: event.target.value
-            }
-        }))
-    }
+
 
     handleChangeHSD = (event) => {
         this.setState((x) => ({
@@ -150,10 +148,11 @@ class ADDiscount extends React.Component {
     }
 
     handleChangeUpdateType = (event) => {
+        const value = event.target.value === "true";
         this.setState((x) => ({
             discountsEdit: {
                 ...x.discountsEdit,
-                loaiGiam: event.target.value
+                loaiGiam: value
             }
         }));
     }
