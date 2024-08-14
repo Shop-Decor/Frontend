@@ -50,7 +50,7 @@ const Payment = () => {
         email: '',
         phone: '',
         address: '',
-        paymentMethod: true,
+        paymentMethod: "COD",
         totalmoney: ''
     });
 
@@ -110,14 +110,8 @@ const Payment = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'paymentMethod') {
-            setFormData({ ...formData, paymentMethod: value === 'COD' });
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
+        setFormData({ ...formData, [name]: value });
     };
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -155,14 +149,14 @@ const Payment = () => {
             diaChi: formData.address,
             sdt: formData.phone,
             email: formData.email,
-            TTThanhToan: formData.paymentMethod,
+            TTThanhToan: false,
             orderDetails: orderDetails,
             ThanhTien: finalTotal,
             userId: userId
         };
 
         try {
-            if (formData.paymentMethod === true) { // COD
+            if (formData.paymentMethod === "COD") { // COD
                 const response = await axios.post('https://localhost:7078/api/Order/CreateOrders', orderData);
                 if (response.status === 200) {
                     Swal.fire({
@@ -305,7 +299,7 @@ const Payment = () => {
                                     type="radio"
                                     name="paymentMethod"
                                     value="COD"
-                                    defaultChecked={formData.paymentMethod === true}
+                                    checked={formData.paymentMethod === "COD"}
                                     onChange={handleInputChange}
                                 />
                                 <p>Thanh toán khi nhận hàng</p>
@@ -316,7 +310,7 @@ const Payment = () => {
                                     type="radio"
                                     name="paymentMethod"
                                     value="VNPAY"
-                                    defaultChecked={formData.paymentMethod === false}
+                                    checked={formData.paymentMethod === "VNPAY"}
                                     onChange={handleInputChange}
                                 />
                                 <p>Chuyển khoản ngân hàng</p>
@@ -335,26 +329,25 @@ const Payment = () => {
                                 </div>
                                 <div className="col-md-8">
                                     <span>Tên sản phẩm: {item.ten}</span>
-                                    <span>
-                                        Giá: {item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + "đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}
-                                        Số lượng: {item.quantity}
-                                    </span>
-                                    <span>Kích thước: {item.size} Màu sắc: {item.color}</span>
+                                    <span>Giá: {item.loaiGiam ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                                    <span>Số lượng: {item.quantity}</span>
+                                    <span>Kích thước: {item.size}</span>
+                                    <span>Màu sắc: {item.color}</span>
                                 </div>
                             </div>
                         ))}
                         <div className="discount-input">
                             <input type="text" placeholder="Nhập mã giảm giá" value={enteredDiscountCode} onChange={handleDiscountChange} />
                             <button className="text-center discount-btn" onClick={applyDiscount}>
-                                <p className='discount-text'>Áp dụng</p>
+                                Áp dụng
                             </button>
                         </div>
                         <br></br>
                         <div className='get-discount'>
-                            <button type='button' className='getdiscountText' data-bs-toggle="modal" data-bs-target="#myModal">Bấm vào để lấy mã khuyến mãi</button>
+                            <button type='button' className="getdiscountText" data-bs-toggle="modal" data-bs-target="#myModal">Bấm vào để lấy mã khuyến mãi</button>
                         </div>
                         <div className="total">
-                            <span>Tổng tiền: {finalTotal.toLocaleString('vi-VN')}  đ</span>
+                            <div className="total-content">Tổng tiền: <span className="money">{`${finalTotal.toLocaleString('vi-VN')} đ`}</span></div>
                         </div>
                     </div>
                 </div>
