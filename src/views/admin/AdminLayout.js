@@ -10,10 +10,10 @@ class AdminLayout extends React.Component {
         }
         let token = localStorage.getItem('token');
         const user = jwtDecode(token);
-        console.log(user.iss);
+        //console.log(user.iss);
         const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-        console.log(user);
-        console.log(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
+       // console.log(user);
+       // console.log(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
         const userName = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
         const userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         if (userRole !== "Admin") {

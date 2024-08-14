@@ -68,7 +68,7 @@ const ADAccount = () => {
     useEffect(() => {
         const fetchAccounts = async () => {
             const token = localStorage.getItem('token');
-            console.log(token);
+           // console.log(token);
             if (token) {
                 const user = jwtDecode(token);
                 if (((Date.now() / 1000) - user.exp) > 0) {
@@ -98,8 +98,8 @@ const ADAccount = () => {
                                 }
                                 accounts.push(data.list[i]);
                             }
-                            console.log(accounts);
-                            console.log(data.list);
+                           // console.log(accounts);
+                           // console.log(data.list);
                             setAccounts(accounts);
                         } else if (response.status === 401) {
                             // Handle unauthorized status
@@ -363,12 +363,13 @@ const ADAccount = () => {
     // xác nhận xóa người dùng
     const handleDeleteSubmit = async () => {
         try {
-            console.log(deleteUser.id);
+           // console.log("ID nè",localStorage.getItem('userID'));
+            //console.log(deleteUser.id);
             const token = localStorage.getItem('token');
-            console.log(`token 2: ${token}`);
+            //console.log(`token 2: ${token}`);
             const user = jwtDecode(token);
             let userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-            console.log(userRole);
+            //console.log(userRole);
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -377,7 +378,7 @@ const ADAccount = () => {
             const response = await axios.put(
                 `https://localhost:7078/api/Account/Delete/${deleteUser.id}`, '', config
             );
-            if (response.status === 200) {
+            if (response.data === true) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Thành công',
@@ -387,6 +388,10 @@ const ADAccount = () => {
                     showConfirmButton: false,
 
                 });
+                if (localStorage.getItem('userID') === deleteUser.id) {
+                    localStorage.clear();
+                    navigate('/SignIn');
+                }
                 // if (modalRefDelete.current) {
 
                 //     modalRefDelete.current.classList.remove('show');
@@ -403,6 +408,20 @@ const ADAccount = () => {
                 //tải lại trang 
                 setShowModal(!showModal);
 
+            }
+            if(response.data === 2003){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Không thể xóa tài khoản của bạn',
+                });
+            }
+            if(response.data === 2004){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Không tìm thấy tài khoản',
+                });
             }
         } catch (error) {
             setError('Error deleting user');
@@ -945,7 +964,7 @@ const ADAccount = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                <button type="button" className="btn btn-danger" onClick={handleDeleteSubmit}>Xóa</button>
+                                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDeleteSubmit}>Xóa</button>
                             </div>
                         </div>
                     </div>
