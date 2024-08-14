@@ -175,6 +175,15 @@ class ADOrder extends React.Component {
         }
 
     }
+    checkDiscount = (loaiGiam) => {
+      if(loaiGiam === true){
+        return "%";
+      }
+      else if(loaiGiam === false){
+        return "đ";
+      }
+
+    }
 
     render() {
         let { OrderP, OrderC, OrderD, OrderE, orderdetail } = this.state;
@@ -234,21 +243,21 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
-                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}
                                                                 </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
 
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
-                                                                        switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                       switch (item.ttThanhToan) {
+                                                                            case true:
                                                                                 return (
                                                                                     <span className="badge bg-success rounded-3 fw-semibold">
                                                                                         Đã thanh toán
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <span className="badge bg-warning rounded-3 fw-semibold">
                                                                                         Chưa thanh toán
@@ -297,13 +306,13 @@ class ADOrder extends React.Component {
                                                                     <Link to="" data-bs-toggle="modal" data-bs-target="#myModal-updatestatus0" className="edit"><FontAwesomeIcon icon={faCheck} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
                                                                     {(() => {
                                                                         switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                            case true:
                                                                                 return (
                                                                                     <span>
 
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
                                                                                 );
@@ -360,7 +369,7 @@ class ADOrder extends React.Component {
 
                                                                                     </tbody>
                                                                                 </table>
-
+                                                                                
                                                                                 <div className="row nn">
                                                                                     <div className="col-md-4">
                                                                                         <span>Tên người nhận hàng:</span><br />
@@ -371,10 +380,11 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-
+                                                                                       
                                                                                         <span className="kh"> {item.hoTen}</span><br />
                                                                                         <span className="kh"> {item.sdt}</span><br />
                                                                                         <span className="kh"> {item.diaChi}</span><br />
+                                                                                        {console.log(item.ptThanhToan)}
                                                                                         <span className="kh"> {item.ptThanhToan}
                                                                                             {(() => {
                                                                                                 switch (item.ptThanhToan) {
@@ -398,7 +408,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -449,20 +459,20 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
-                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}
                                                                 </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
                                                                         switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                            case true:
                                                                                 return (
                                                                                     <span className="badge bg-success rounded-3 fw-semibold">
                                                                                         Đã thanh toán
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <span className="badge bg-warning rounded-3 fw-semibold">
                                                                                         Chưa thanh toán
@@ -512,13 +522,13 @@ class ADOrder extends React.Component {
                                                                     <Link to="" className="edit" data-bs-toggle="modal" data-bs-target="#myModal-updatestatus1"><FontAwesomeIcon icon={faCheck} className="iconedit" onClick={() => this.handleEdit(item)} /></Link>
                                                                     {(() => {
                                                                         switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                            case true:
                                                                                 return (
                                                                                     <span>
-
+                                                                                        
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <Link to="" className="delete" data-bs-toggle="modal" data-bs-target="#myModal-unupdatestatus"><FontAwesomeIcon icon={faXmark} className="icondelete" onClick={() => this.handleEdit(item)} /></Link>
                                                                                 );
@@ -592,11 +602,11 @@ class ADOrder extends React.Component {
                                                                                         <span className="kh"> {item.ptThanhToan}
                                                                                             {(() => {
                                                                                                 switch (item.ptThanhToan) {
-                                                                                                    case false:
+                                                                                                    case true:
                                                                                                         return (
                                                                                                             <span>Thanh toán bằng ngân hàng</span>
                                                                                                         );
-                                                                                                    case true:
+                                                                                                    case false:
                                                                                                         return (
                                                                                                             <span >
                                                                                                                 COD (Trả tiền mặt khi nhận hàng)
@@ -612,7 +622,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   Giảm giá: <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -667,20 +677,20 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen} </td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
-                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}
                                                                 </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
 
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
-                                                                        switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                       switch (item.ttThanhToan) {
+                                                                            case true:
                                                                                 return (
                                                                                     <span className="badge bg-success rounded-3 fw-semibold">
                                                                                         Đã thanh toán
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <span className="badge bg-warning rounded-3 fw-semibold">
                                                                                         Chưa thanh toán
@@ -790,11 +800,11 @@ class ADOrder extends React.Component {
                                                                                         <span className="kh"> {item.ptThanhToan}
                                                                                             {(() => {
                                                                                                 switch (item.ptThanhToan) {
-                                                                                                    case false:
+                                                                                                    case true:
                                                                                                         return (
                                                                                                             <span>Thanh toán bằng ngân hàng</span>
                                                                                                         );
-                                                                                                    case true:
+                                                                                                    case false:
                                                                                                         return (
                                                                                                             <span >
                                                                                                                 COD (Trả tiền mặt khi nhận hàng)
@@ -810,7 +820,7 @@ class ADOrder extends React.Component {
 
                                                                                     </div>
                                                                                     <div className="col-md-4">
-                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}</span><br />
                                                                                         Tổng tiền:   <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
                                                                                     </div>
@@ -859,20 +869,20 @@ class ADOrder extends React.Component {
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.id}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.hoTen}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>
-                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}
+                                                                    {item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) +this.checkDiscount(item.khuyenMai.loaiGiam) : ""}
                                                                 </td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatPrice(item.thanhTien)} đ</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{this.formatDate(item.ngayHuy)}</td>
                                                                 <td data-bs-toggle="collapse" data-bs-target={"#" + item.id} onClick={() => this.handleUpdatedetail(item.id)}>{item.ttThanhToan}
                                                                     {(() => {
-                                                                        switch (item.ttThanhToan) {
-                                                                            case false:
+                                                                       switch (item.ttThanhToan) {
+                                                                            case true:
                                                                                 return (
                                                                                     <span className="badge bg-success rounded-3 fw-semibold">
                                                                                         Đã thanh toán
                                                                                     </span>
                                                                                 );
-                                                                            case true:
+                                                                            case false:
                                                                                 return (
                                                                                     <span className="badge bg-warning rounded-3 fw-semibold">
                                                                                         Chưa thanh toán
@@ -984,11 +994,11 @@ class ADOrder extends React.Component {
                                                                                         <span className="kh"> {item.ptThanhToan}
                                                                                             {(() => {
                                                                                                 switch (item.ptThanhToan) {
-                                                                                                    case false:
+                                                                                                    case true:
                                                                                                         return (
                                                                                                             <span>Thanh toán bằng ngân hàng</span>
                                                                                                         );
-                                                                                                    case true:
+                                                                                                    case false:
                                                                                                         return (
                                                                                                             <span >
                                                                                                                 COD (Trả tiền mặt khi nhận hàng)
@@ -1010,7 +1020,7 @@ class ADOrder extends React.Component {
                                                                                     </div>
                                                                                     <div className="col-md-4">
 
-                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + " đ" : ""}</span><br />
+                                                                                        Giảm giá:   <span className="kk">{item.khuyenMai && item.khuyenMai.menhGia !== null ? this.formatPrice(item.khuyenMai.menhGia) + this.checkDiscount(item.khuyenMai.loaiGiam) : ""}</span><br />
                                                                                         Tổng tiền:  <span className="kk">{this.formatPrice(item.thanhTien)} đ</span>
 
 
