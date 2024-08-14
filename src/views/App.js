@@ -91,17 +91,17 @@ const App = () => {
             <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
           </Route>
         </Route>
-        <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route index element={<ADStatistics />} />
-          <Route path="test" element={<ADtest />} />
-          <Route path="discount" element={<ADDiscount />} />
-          <Route path="ADAccount" element={<ADAccount />} />
-          <Route path="ADCategory" element={<ADCategory />} />
-          <Route path="ADOrder" element={<ADOrder />} />
-          <Route path="product" element={<ADProduct />} />
-          <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
-          <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
-          <Route path="ADDetailAccount" element={<ADDetailAccount />} />
+          <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route index element={<ADStatistics />} />
+            <Route path="test" element={<ADtest />} />
+            <Route path="discount" element={<ADDiscount />} />
+            <Route path="ADAccount" element={<ADAccount  />} />
+            <Route path="ADCategory" element={<ADCategory />} />
+            <Route path="ADOrder" element={<ADOrder />} />
+            <Route path="product" element={<ADProduct />} />
+            <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
+            <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
+            <Route path="ADDetailAccount" element={<ADDetailAccount />} />
         </Route>
         <Route path="SignIn" >
           <Route index element={<SignIn />} />

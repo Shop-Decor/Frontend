@@ -3,9 +3,7 @@ import "../../styles/loading/Loading.scss";
 
 const Loading = () => {
     return (
-        <div className="spinner">
-            <div className="blob blob-0"></div>
-        </div>
+        <></>
     )
 }
 

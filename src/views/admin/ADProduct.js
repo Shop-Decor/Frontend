@@ -771,12 +771,12 @@ class ADProduct extends React.Component {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search..."
+                                    placeholder="Tìm kiếm"
                                     value={this.state.searchKeyword}
                                     onChange={(e) => this.setState({ searchKeyword: e.target.value })}
                                 />
                                 <button className="btn btn-primary" onClick={this.handleLoadListProduct}>
-                                    Search
+                                    Tìm kiếm
                                 </button>
                             </div>
                         </div>
