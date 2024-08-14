@@ -37,7 +37,7 @@ class App extends React.Component {
     return <SignIn />;
   };
 
-  
+
   render() {
     const isAdmin = () => {
       let token = localStorage.getItem('token');
@@ -50,16 +50,16 @@ class App extends React.Component {
         return true;
       }
       return false;
-     
+
     };
-    
+
     // AdminRoute component to protect admin routes
     const AdminRoute = ({ children }) => {
       return isAdmin() ? children : <AccessTo />;
     };
 
     //userRoute component to protect user routes
-    const isUser = () => { 
+    const isUser = () => {
       let token = localStorage.getItem('token');
       if (!token) {
         return false;
@@ -79,7 +79,7 @@ class App extends React.Component {
       return isUser() ? children : <AccessTo />;
     };
 
-    
+
 
     return (
       <BrowserRouter>
@@ -102,7 +102,7 @@ class App extends React.Component {
           </Route>
 
           <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-            <Route index element={<ADhome />} />
+            <Route index element={<ADStatistics />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
             <Route path="ADAccount" element={<ADAccount render={this.renderSignIn} />} />
