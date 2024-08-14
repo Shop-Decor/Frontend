@@ -12,8 +12,8 @@ class AdminLayout extends React.Component {
         const user = jwtDecode(token);
         //console.log(user.iss);
         const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-       // console.log(user);
-       // console.log(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
+        // console.log(user);
+        // console.log(user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
         const userName = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
         const userRole = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
         if (userRole !== "Admin") {
@@ -64,7 +64,6 @@ class AdminLayout extends React.Component {
                                     </Link>
                                 </li>
 
-                                <Link className="menu-item" to="/admin/test">test</Link>
 
                             </ul>
                         </div>
@@ -81,7 +80,7 @@ class AdminLayout extends React.Component {
                                             <li><Link to="/admin/ADDetailAccount" className="dropdown-item-ed" asp-area="">Tài Khoản</Link></li>
                                             <li><Link to="/SignIn" className="dropdown-item-ed" asp-area="">Đăng xuất</Link></li>
                                         </ul>
-                                      
+
                                     </li>
                                 </ul>
                             </div>

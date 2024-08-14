@@ -650,67 +650,6 @@ class ADProduct extends React.Component {
                                     {this.state.errorMessageSize && <div className="alert alert-danger">{this.state.errorMessageSize}</div>}
 
                                     <div className="row mb-3">
-                                        <label className="col-sm-4 col-form-label">Giá</label>
-                                        <div className="col-sm-8">
-                                            <input
-                                                className="form-control"
-                                                type="number"
-                                                value={this.state.product.chiTietSanPham[0]?.gia || ''}
-                                                onChange={this.handleChangePrice}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="row mb-3">
-                                        <label className="col-sm-4 col-form-label">Số lượng</label>
-                                        <div className="col-sm-8">
-                                            <input
-                                                className="form-control"
-                                                type="number"
-                                                value={this.state.product.chiTietSanPham[0]?.soLuong || ''}
-                                                onChange={this.handleChangeQuantity}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-3">
-                                        <label className="col-sm-4 col-form-label">Màu sắc</label>
-                                        <div className="col-sm-8">
-                                            <select
-                                                className="form-control"
-                                                id="color"
-                                                value={this.state.product.chiTietSanPham[0]?.idMauSac || ''}
-                                                onChange={this.handleSelectColor}
-                                            >
-                                                <option value="">Chọn màu sắc</option>
-                                                {this.state.colors.map(color => (
-                                                    <option key={color.id} value={color.id}>
-                                                        {color.tenMauSac}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-3">
-                                        <label className="col-sm-4 col-form-label">Kích thước</label>
-                                        <div className="col-sm-8">
-                                            <select
-                                                className="form-control"
-                                                id="size"
-                                                value={this.state.product.chiTietSanPham[0]?.idKichThuoc || ''}
-                                                onChange={this.handleSelectSize}
-                                            >
-                                                <option value="">Chọn kích thước</option>
-                                                {this.state.sizes.map(size => (
-                                                    <option key={size.id} value={size.id}>
-                                                        {size.tenKichThuoc}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-3">
                                         <label className="col-sm-4 col-form-label">Ảnh</label>
                                         <div className="col-sm-8">
                                             <input
