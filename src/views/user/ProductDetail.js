@@ -8,10 +8,10 @@ import {
   faEye
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import Swal from 'sweetalert2';
 
 const ProductDetail = (props) => {
-  const { listCart, setListCart, handleAddCart } = useOutletContext();
+  const { setListCart, handleAddCart } = useOutletContext();
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [product2, setProduct2] = useState({});
@@ -23,7 +23,6 @@ const ProductDetail = (props) => {
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [availableColors, setAvailableColors] = useState([]);
   const [quantity, setQuantity] = useState(1);
-
   const allSizes = [...new Set(product.map(detail => detail.size))];
   const colorClassMap = {
     'Đỏ': 'red',
@@ -37,6 +36,8 @@ const ProductDetail = (props) => {
     'Đen': 'black',
     'Trắng': 'white'
   };
+
+
 
   const handleSizeChange = (size) => {
     setSelectedSizes([size]); // Only allow one size to be selected at a time
@@ -164,7 +165,29 @@ const ProductDetail = (props) => {
   const originalPrice = calculateOriginalPrice();
 
   const handleIncrement = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
+    const matchingProduct = product.find(product =>
+      selectedColors.includes(product.color) && selectedSizes.includes(product.size)
+    );
+
+    if (matchingProduct) {
+      setQuantity(prevQuantity => {
+        if (prevQuantity < matchingProduct.quantity) {
+          return prevQuantity + 1;
+        } else {
+          Swal.fire({
+            title: 'Cảnh báo',
+            text: 'Vượt quá số lượng tồn kho',
+            icon: 'warning',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
+          return prevQuantity;
+        }
+      });
+    } else {
+      alert('Không tìm thấy sản phẩm phù hợp.');
+    }
   };
 
   const handleDecrement = () => {
@@ -172,8 +195,30 @@ const ProductDetail = (props) => {
   };
 
   const handleQuantityChange = (event) => {
-    const value = Math.max(1, Number(event.target.value)); // Ensure quantity is at least 1
-    setQuantity(value);
+    const value = Math.max(1, Number(event.target.value)); // Đảm bảo số lượng ít nhất là 1
+
+    // Tìm sản phẩm có màu sắc và kích thước tương ứng
+    const matchingProduct = product.find(product =>
+      selectedColors.includes(product.color) && selectedSizes.includes(product.size)
+    );
+
+    if (matchingProduct) {
+      if (value > matchingProduct.quantity) {
+        Swal.fire({
+          title: 'Cảnh báo',
+          text: 'Vượt quá số lượng tồn kho',
+          icon: 'warning',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
+        setQuantity(matchingProduct.quantity); // Giới hạn số lượng tối đa
+      } else {
+        setQuantity(value);
+      }
+    } else {
+      alert('Không tìm thấy sản phẩm phù hợp.');
+    }
   };
 
   if (isLoading) {
@@ -282,14 +327,14 @@ const ProductDetail = (props) => {
                 value={quantity}
                 min={1}
                 type="number"
-                onChange={handleQuantityChange}
+                onChange={(event) => handleQuantityChange(event)}
                 style={{ textAlign: 'center', MozAppearance: 'textfield' }} // Center align the text
               />
               <button className="minus" onClick={handleIncrement}>+</button>
             </div>
             <br />
             <div className="button-them">
-              <button className="align-item-center" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
+              <button className="align-item-center add-cart" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
             </div>
             <br />
             <p className="MoTa">Mô tả:</p>
