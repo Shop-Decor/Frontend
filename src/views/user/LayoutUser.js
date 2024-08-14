@@ -88,7 +88,7 @@ const LayoutUser = (props) => {
             else {
                 const listUpdate = cart.map((item, index) =>
                     index === cartExisting
-                        ? { ...item, quantity: item.quantity += 1 }
+                        ? { ...item, quantity: item.quantity += product.quantity ? product.quantity : 1 }
                         : item
                 );
                 return listUpdate;
@@ -98,26 +98,26 @@ const LayoutUser = (props) => {
 
     return (
         <>
-                <NavHome
-                    listCart={listCart}
-                    setListCart={setListCart}
-                    total={total}
+            <NavHome
+                listCart={listCart}
+                setListCart={setListCart}
+                total={total}
+            />
+            <Slider />
+
+            <div className="container p-0">
+                <Outlet
+                    context={{
+                        listCart,
+                        setListCart,
+                        total,
+                        handleAddCart
+                    }}
+
                 />
-                <Slider />
+            </div>
 
-                <div className="container p-0">
-                    <Outlet
-                        context={{
-                            listCart,
-                            setListCart,
-                            total,
-                            handleAddCart
-                        }}
-
-                    />
-                </div>
-
-                <Footer />
+            <Footer />
 
         </>
     )
