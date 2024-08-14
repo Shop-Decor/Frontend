@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useOutletContext, Link } from "react-router-dom";
 import axios from "axios";
 import "../../styles/user/ProductDetail.scss";
-import Image from "../../assets/images/sp1.png";
 import {
   faCartPlus,
   faEye
@@ -11,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from 'sweetalert2';
 
 const ProductDetail = (props) => {
-  const { setListCart, handleAddCart } = useOutletContext();
+  const { listCart, handleAddCart } = useOutletContext();
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [product2, setProduct2] = useState({});
@@ -100,41 +99,44 @@ const ProductDetail = (props) => {
 
 
   const handleAddToCart = () => {
-    setListCart((cart) => {
-      // Tìm chỉ số của sản phẩm trong giỏ hàng với cùng ID, kích thước, và màu sắc
-      const cartExistingIndex = cart.findIndex(
-        (item) =>
-          item.id === id &&
-          item.size === selectedSizes[0] &&
-          item.color === selectedColors[0]
-      );
+    const matchingProduct = product.find(product =>
+      selectedColors.includes(product.color) && selectedSizes.includes(product.size)
+    );
 
-      // Nếu sản phẩm đã tồn tại trong giỏ hàng
-      if (cartExistingIndex !== -1) {
-        // Cập nhật số lượng của sản phẩm đã tồn tại
-        const updatedCart = cart.map((item, index) =>
-          index === cartExistingIndex
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-        return updatedCart;
-      } else {
-        // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
-        const cartItem = {
-          id: id,
-          ten: product2.ten,
-          hinh: product2.hinhs[0],
-          gia: originalPrice,
-          loaiGiam: selectedDetail.discountType,
-          menhGia: selectedDetail.discountAmount,
-          size: selectedSizes[0], // Sửa để lấy kích thước đầu tiên
-          quantity: quantity,
-          color: selectedColors[0] // Sửa để lấy màu sắc đầu tiên
-        };
-        return [...cart, cartItem];
-      }
-    });
+
+    const cartProduct = listCart.find(item =>
+      item.color === selectedColors[0] &&
+      item.size === selectedSizes[0] &&
+      item.id === +id
+    );
+    const cartQuantity = cartProduct ? cartProduct.quantity : 0;
+
+    if (matchingProduct && (quantity + cartQuantity) > matchingProduct.quantity) {
+      Swal.fire({
+        title: 'Cảnh báo',
+        text: 'Số lượng bạn chọn vượt quá số lượng tồn kho',
+        icon: 'warning',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+    } else {
+      const cart = {
+        color: selectedColors[0],
+        hinh: product2.hinhs[0],
+        id: +id,
+        loaiGiam: selectedDetail.discountType,
+        menhGia: selectedDetail.discountAmount,
+        quantity: quantity,
+        size: selectedSizes[0],
+        ten: product2.ten,
+        gia: originalPrice
+      };
+      console.log(cart);
+      handleAddCart(cart);
+    }
   };
+
 
 
   const calculatePrice = () => {
@@ -195,9 +197,7 @@ const ProductDetail = (props) => {
   };
 
   const handleQuantityChange = (event) => {
-    const value = Math.max(1, Number(event.target.value)); // Đảm bảo số lượng ít nhất là 1
-
-    // Tìm sản phẩm có màu sắc và kích thước tương ứng
+    const value = Math.max(1, Number(event.target.value));
     const matchingProduct = product.find(product =>
       selectedColors.includes(product.color) && selectedSizes.includes(product.size)
     );
@@ -212,7 +212,7 @@ const ProductDetail = (props) => {
           timerProgressBar: true,
           showConfirmButton: false
         });
-        setQuantity(matchingProduct.quantity); // Giới hạn số lượng tối đa
+        setQuantity(matchingProduct.quantity);
       } else {
         setQuantity(value);
       }
@@ -220,6 +220,12 @@ const ProductDetail = (props) => {
       alert('Không tìm thấy sản phẩm phù hợp.');
     }
   };
+
+  const matchingProduct = product.find(detail =>
+    selectedSizes.includes(detail.size) && selectedColors.includes(detail.color)
+  );
+
+  const availableQuantity = matchingProduct ? matchingProduct.quantity : 0;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -269,7 +275,7 @@ const ProductDetail = (props) => {
         ) : (
           <p>Không có hình ảnh nào</p>
         )}
-        {selectedDetail && (
+        {availableQuantity > 0 ? (
           <div className="col-md-6 ProductDetail">
             <p className="ProductName">{product2.ten}</p>
             <hr />
@@ -335,6 +341,76 @@ const ProductDetail = (props) => {
             <br />
             <div className="button-them">
               <button className="align-item-center add-cart" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
+            </div>
+            <br />
+            <p className="MoTa">Mô tả:</p>
+            <p className="TenMoTa">{product2.moTa}</p>
+          </div>
+        ) : (
+          <div className="col-md-6 ProductDetail">
+            <p className="ProductName">{product2.ten}</p>
+            <hr />
+            <div className="saleBlock">
+              <div className="sale">
+                {`${selectedDetail.discountAmount}${selectedDetail.discountType === true ? ' %' : ' đ'}`}
+              </div>
+              <div className="money">
+                <div className="MoneyRed">{`${totalPrice.toLocaleString()} đ`}</div>
+                <div className="Moneygach">{`${originalPrice.toLocaleString()} đ`}</div>
+              </div>
+            </div>
+            <hr />
+            <div className="row Size">
+              {allSizes.map((size, index) => (
+                <div className="form-check" key={index}>
+                  <input
+                    name={size}
+                    checked={selectedSizes.includes(size)}
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={() => handleSizeChange(size)}
+                    id={`size-checkbox-${index}`}
+                    style={{ display: 'none' }}
+                  />
+                  <label
+                    htmlFor={`size-checkbox-${index}`}
+                    className={`size-checkbox-label ${selectedSizes.includes(size) ? 'checked' : ''}`}
+                  >
+                    {size}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <hr />
+            <div className="row colorLine">
+              {availableColors.map((color, index) => (
+                <div className="form-check" key={index}>
+                  <input
+                    name={color}
+                    checked={selectedColors.includes(color)}
+                    className={`form-check-input ${colorClassMap[color] || ''}`}
+                    type="checkbox"
+                    onChange={() => handleColorChange(color)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <hr />
+            <div className="row quantityblock">
+              <input
+                className="quantity"
+                value={quantity}
+                min={1}
+                type="number"
+                onChange={(event) => handleQuantityChange(event)}
+                style={{ textAlign: 'center', MozAppearance: 'textfield' }}
+                readOnly// Center align the text
+              />
+            </div>
+            <br />
+            <div className="button-them">
+              <button className="align-item-center add-cart" disabled>Hết hàng</button>
             </div>
             <br />
             <p className="MoTa">Mô tả:</p>
