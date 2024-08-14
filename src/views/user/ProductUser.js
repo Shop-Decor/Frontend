@@ -212,12 +212,20 @@ const ProductUser = (props) => {
                         {getFilter().map((product, index) => (
                             <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12 card" key={product.id}>
                                 <div className="product-main">
-                                    <div className="hovereffect">
-                                        <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
+                                    <div className={product.totalCount === 0 ? "hovereffect out-of-stock" : "hovereffect"}>
+                                        <div className="img-product">
+                                            <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
+                                        </div>
                                         <div className="overlay">
                                             <div className="btn-product">
-                                                <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
-                                                <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
+                                                {product.totalCount === 0 ?
+                                                    <Link to={"/ProductDetail/" + product.id} className="no-product">Hết hàng</Link>
+                                                    :
+                                                    <>
+                                                        <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
+                                                        <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
+                                                    </>
+                                                }
                                             </div>
                                         </div>
                                     </div>

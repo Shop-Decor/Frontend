@@ -1,25 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import '../../../styles/user/layoutAccountManagement/LayoutAccountManagement.scss';
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const LayoutAccountManagement = (props) => {
+    const { handleAddCart } = useOutletContext();
     const location = useLocation();
+    const [accountName, setAccountName] = useState("");
+    const [linkPhoto, setLinkPhoto] = useState("");
 
-    if (localStorage.getItem('token') === null) {
-        window.location.href = '/SignIn';
+    useEffect(() => {
+        let token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/SignIn';
+        }
+        const user = jwtDecode(token);
+        const userName = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+        setLinkPhoto(user.Link);
+        setAccountName(userName);
+    });
+
+    const handleBuy = (list) => {
+        const cart = {};
+        if (list) {
+            list.map((item, index) => {
+                cart.color = item.mauSac;
+                cart.hinh = item.product.hinh;
+                cart.id = item.product.id;
+                cart.loaiGiam = item.product.discount.loaiGiam;
+                cart.menhGia = item.product.discount.menhGia;
+                cart.quantity = item.soLuong;
+                cart.size = item.kichThuoc;
+                cart.ten = item.product.ten;
+                let arr = item.product.prDetail;
+                if (arr) {
+                    for (let i = 0; i < arr.length; i++) {
+                        if (arr[i].color.tenMauSac === item.mauSac && arr[i].size.tenKichThuoc) {
+                            cart.gia = arr[i].gia;
+                            break;
+                        }
+                    }
+                }
+                handleAddCart(cart)
+            })
+        }
     }
-    let token = localStorage.getItem('token');
-    const user = jwtDecode(token);
-    const userName = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
 
     return (
         <div className="board">
             <div className="menu-bar">
                 <div className="acc-content mb-3">
-                    <img src={user.Link} alt="img account" />
+                    <img src={linkPhoto} alt="img account" />
                     <div className="account-name">
-                        {userName}
+                        {accountName}
                     </div>
                 </div>
                 <ul className="menu">
@@ -41,7 +74,12 @@ const LayoutAccountManagement = (props) => {
                 </ul>
             </div>
             <div className="display">
-                <Outlet />
+                <Outlet
+                    context={{
+                        handleAddCart,
+                        handleBuy
+                    }}
+                />
             </div>
         </div>
     );
