@@ -117,11 +117,11 @@ class ADProduct extends React.Component {
         }
 
         const price = Number(this.state.product.chiTietSanPham[0]?.gia);
-    if (isNaN(price) || price <= 0) {
-        errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
-    } else if (price < 20000) {
-        errorMessagePrice = 'Giá sản phẩm phải từ 20,000 VNĐ trở lên.';
-    }
+        if (isNaN(price) || price <= 0) {
+            errorMessagePrice = 'Giá sản phẩm phải là một số lớn hơn 0.';
+        } else if (price < 20000) {
+            errorMessagePrice = 'Giá sản phẩm phải từ 20,000 VNĐ trở lên.';
+        }
 
         if (isNaN(this.state.product.chiTietSanPham[0]?.soLuong) || this.state.product.chiTietSanPham[0]?.soLuong <= 0) {
             errorMessageQuantity = 'Số lượng sản phẩm phải là một số không âm.';
@@ -356,29 +356,29 @@ class ADProduct extends React.Component {
                     title: 'Cập nhật sản phẩm thành công!',
                     icon: 'success',
 
-                        timer: 2000,
-                        timerProgressBar: true,
-                        showConfirmButton: false
-                    });
-                    this.componentDidMount();
-
-                } else {
-                    throw new Error('Cập nhật không thành công');
-                }
-            } catch (error) {
-                console.error('Lỗi khi cập nhật:', error);
-                Swal.fire({
-                    title: 'Có lỗi xảy ra!',
-                    text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
-                    icon: 'error',
-
                     timer: 2000,
                     timerProgressBar: true,
                     showConfirmButton: false
                 });
                 this.componentDidMount();
 
-            } 
+            } else {
+                throw new Error('Cập nhật không thành công');
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật:', error);
+            Swal.fire({
+                title: 'Có lỗi xảy ra!',
+                text: 'Có lỗi xảy ra khi cập nhật sản phẩm. Vui lòng thử lại!',
+                icon: 'error',
+
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            this.componentDidMount();
+
+        }
     }
 
 
@@ -875,7 +875,7 @@ class ADProduct extends React.Component {
                                             }}
                                         />
                                     </td>
-                                    <td style={{ width: '250px' }}>
+                                    <td style={{ width: '280px' }}>
                                         <button className="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick={() => this.handleEdit(product)}>Sửa</button>
                                         <button className="btn btn-danger me-2" onClick={() => this.handleDelete(product.id)}>Xóa</button>
                                         {/* <button className="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal3" onClick={() => this.handleShowDetails(product)}>Chi tiết</button> */}

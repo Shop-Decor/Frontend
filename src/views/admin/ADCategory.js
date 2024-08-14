@@ -12,6 +12,7 @@ import {
 
 } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
+import Swal from 'sweetalert2';
 class ADCategory extends React.Component {
     state = {
         Category: [],
@@ -101,42 +102,6 @@ class ADCategory extends React.Component {
         }));
         console.log(event.target.value)
     }
-    // handleChangecatagorycolor = (event) => {
-    //     this.setState((x) => ({
-    //         createcategorycolors: {
-    //             ...x.createcategorycolors,
-    //             tenMauSac: event.target.value
-
-    //         }
-
-    //     }));
-    //     console.log(event.target.value)
-    // }
-
-    // handleClickcategorycolor = async () => {
-
-    //     this.setState(prevState => ({
-
-    //         createcategorycolors: {
-    //             ...prevState.createcategorycolors
-
-    //         }
-    //     }), async () => {
-
-    //         try {
-    //             const response = await axios.post('https://localhost:7078/api/CategoryColor', this.state.createcategorycolors);
-               
-    //             console.log("categorts uploaded successfully:", response.data);
-    //             alert('Thêm màu sắc thành công');
-    //             this.componentDidMount();
-    //         } catch (error) {
-    //             console.error("lỗi", error);
-               
-    //         }
-
-           
-    //     });
-    // }
 
     handleSubmitcategory = async (event) => {
         event.preventDefault();
@@ -144,26 +109,39 @@ class ADCategory extends React.Component {
         let errors = {};
 
         if (!tenLoai.trim()) errors.tenLoai = 'Tên loại sản phẩm không được để trống.';
-        if(tenLoai.length>30) errors.tenLoai="Tên loại sản phẩm không được quá 30 ký tự.";
-    
+        if (tenLoai.length > 30) errors.tenLoai = "Tên loại sản phẩm không được quá 30 ký tự.";
+
 
         // Sau khi trạng thái đã được cập nhật, gửi dữ liệu
-        
+
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
             return;
         }
         try {
             const response = await axios.post('https://localhost:7078/api/Category', this.state.createcategorts);
-            
-            alert('Thêm loại sản phẩm thành công');
+            Swal.fire({
+                title: 'Thành công!',
+                text: 'Thêm mới loại sản phẩm thành công.',
+                icon: 'success',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
             this.componentDidMount();
         } catch (error) {
-            
-            errors.tenLoai = 'Có lỗi xảy ra khi kiểm tra tên loại sản phẩm.';
+
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
-        
+
     }
     handleSubmitcategorysize = async (event) => {
         event.preventDefault();
@@ -171,7 +149,7 @@ class ADCategory extends React.Component {
         let errors = {};
 
         if (!tenKichThuoc.trim()) errors.tenKichThuoc = 'Tên kích thước không được để trống.';
-        if(tenKichThuoc.length>30) errors.tenKichThuoc="Tên kích thước không được quá 30 ký tự.";
+        if (tenKichThuoc.length > 30) errors.tenKichThuoc = "Tên kích thước không được quá 30 ký tự.";
         const specialCharPattern = /[^a-zA-Z0-9\s]/;
         if (specialCharPattern.test(tenKichThuoc)) errors.tenKichThuoc = 'Tên kích thước không được chứa ký tự đặc biệt.';
 
@@ -180,25 +158,31 @@ class ADCategory extends React.Component {
             return;
         }
 
-        
+
         try {
             const response = await axios.post('https://localhost:7078/api/Category_Size', this.state.createcategorysizes);
             console.log("categorts uploaded successfully:", response.data);
-            alert('Thêm Kích thước thành công');
+            Swal.fire({
+                title: 'Thành công!',
+                text: 'Thêm mới kích thước thành công.',
+                icon: 'success',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
             this.componentDidMount();
         } catch (error) {
-            console.error("There was an error uploading the categorts!", error);
-            errors.tenKichThuoc = 'Có lỗi xảy ra khi kiểm tra kích thước.';
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới kích thước.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
-    // handleSubmitcategorycolor = async (event) => {
-    //     event.preventDefault();
-    //     await this.handleClickcategorycolor();
-    // }
-
-
-    //hàm sửa..
 
     handleChangeType = (event) => {
         this.setState((x) => ({
@@ -219,8 +203,8 @@ class ADCategory extends React.Component {
         let errors = {};
 
         if (!tenLoai.trim()) errors.tenLoai = 'Tên loại sản phẩm không được để trống.';
-        if(tenLoai.length>30) errors.tenLoai="Tên loại sản phẩm không được quá 30 ký tự.";
-      
+        if (tenLoai.length > 30) errors.tenLoai = "Tên loại sản phẩm không được quá 30 ký tự.";
+
         if (Object.keys(errors).length > 0) {
             this.setState({ errors });
             return;
@@ -232,14 +216,34 @@ class ADCategory extends React.Component {
 
             });
             if (res.status === 200 || res.status === 204) {
-                alert('Cập nhật thành công');
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Thêm mới tên loại thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
             } else {
-                alert('Cập nhật Loại sản phẩm không thành công');
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi cập nhật tên loại.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            console.error('Lỗi khi cập nhật Loại:', error);
-            alert('Có lỗi xảy ra khi cập nhật', error);
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi cập nhật tên loại.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
@@ -263,7 +267,7 @@ class ADCategory extends React.Component {
         let errors = {};
 
         if (!tenKichThuoc.trim()) errors.tenKichThuoc = 'Tên kích thước không được để trống.';
-        if(tenKichThuoc.length>30) errors.tenKichThuoc="Tên kích thước không được quá 30 ký tự";
+        if (tenKichThuoc.length > 30) errors.tenKichThuoc = "Tên kích thước không được quá 30 ký tự";
         const specialCharPattern = /[^a-zA-Z0-9\s]/;
         if (specialCharPattern.test(tenKichThuoc)) errors.tenKichThuoc = 'Tên kích thước không được chứa ký tự đặc biệt.';
 
@@ -277,50 +281,38 @@ class ADCategory extends React.Component {
 
             });
             if (res.status === 200 || res.status === 204) {
-                alert('Cập nhật thành công');
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Cập nhật kích thước thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
             } else {
-                alert('Cập nhật kích thước không thành công');
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi thêm mới kích thước.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            console.error('Lỗi khi cập nhật Loại:', error);
-            alert('Có lỗi xảy ra khi cập nhật', error);
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới kích thước.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
 
-    // handleChangeColor = (event) => {
-    //     this.setState((x) => ({
-    //         updateColor: {
-    //             ...x.updateColor,
-    //             tenMauSac: event.target.value
-    //         }
-    //     }));
-    // }
-    // handleEditColor = async (Categorycolor) => {
-
-    //     this.setState({ updateColor: { ...Categorycolor } });
-    // }
-    // handleUpdateColor = async (event) => {
-    //     event.preventDefault();
-    //     try {
-    //         let res = await axios.put(`https://localhost:7078/api/CategoryColor/${this.state.updateColor.id}`, {
-    //             tenMauSac: this.state.updateColor.tenMauSac
-
-    //         });
-    //         if (res.status === 200 || res.status === 204) {
-    //             alert('Cập nhật màu sắc thành công');
-    //             this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
-    //         } else {
-    //             alert('Cập nhật không thành công');
-    //         }
-    //     } catch (error) {
-    //         console.error('Lỗi khi cập nhật Loại:', error);
-    //         alert('Có lỗi xảy ra khi cập nhật', error);
-    //     }
-
-    // }
-    //hàm xóa
     handleChangeDelateType = (event) => {
         this.setState((x) => ({
             deleteType: {
@@ -340,14 +332,34 @@ class ADCategory extends React.Component {
         try {
             let res = await axios.delete(`https://localhost:7078/api/Category/${this.state.deleteType.id}`)
             if (res.status === 200 || res.status === 204) {
-                alert('xóa thành công');
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Thêm mới thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
             } else {
-                alert('Xóa không thành công');
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi thêm mới.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            console.error('Lỗi khi xóa Loại:', error);
-            alert('Có lỗi xảy ra khi xóa', error);
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm mới.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
@@ -371,48 +383,37 @@ class ADCategory extends React.Component {
         try {
             let res = await axios.delete(`https://localhost:7078/api/Category_Size/${this.state.deleteSize.id}`)
             if (res.status === 200 || res.status === 204) {
-                alert('xóa thành công');
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Xóa thành công.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
                 this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
             } else {
-                alert('Xóa không thành công');
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi xóa.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            console.error('Lỗi khi xóa:', error);
-            alert('Có lỗi xảy ra khi xóa', error);
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi xóa.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
 
     }
-
-    // handleChangeDelateColor = (event) => {
-    //     this.setState((x) => ({
-    //         deleteColor: {
-    //             ...x.deleteColor,
-    //             tenMauSac: event.target.value
-    //         }
-    //     }));
-    // }
-    // handleDatleteColor = async (deletecolor) => {
-
-    //     this.setState({ deleteColor: { ...deletecolor } });
-    // }
-
-
-    // handleDeleteColor = async (event) => {
-    //     event.preventDefault();
-    //     try {
-    //         let res = await axios.delete(`https://localhost:7078/api/CategoryColor/${this.state.deleteColor.id}`)
-    //         if (res.status === 200 || res.status === 204) {
-    //             alert('xóa thành công');
-    //             this.componentDidMount(); // Cập nhật lại dữ liệu khi component được gắn vào
-    //         } else {
-    //             alert('Xóa không thành công');
-    //         }
-    //     } catch (error) {
-    //         console.error('Lỗi khi xóa :', error);
-    //         alert('Có lỗi xảy ra khi xóa', error);
-    //     }
-
-    // }
 
     render() {
         let { Category, Categorysize, Categorycolor } = this.state;
@@ -513,7 +514,6 @@ class ADCategory extends React.Component {
                                         <h6>Màu sắc</h6>
                                     </div>
                                     <div className="col-md-6">
-                                        {/* <Link to="" className="addcl" data-bs-toggle="modal" data-bs-target="#myModal-add-color"><FontAwesomeIcon icon={faPlus} /></Link> */}
                                     </div>
                                 </div>
                                 <table className="table table-striped">
@@ -533,11 +533,6 @@ class ADCategory extends React.Component {
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.tenMauSac}</td>
-                                                        <td>
-                                                            {/* <Link className="editcolor" data-bs-toggle="modal" data-bs-target="#myModal-update-color"><FontAwesomeIcon icon={faPenToSquare} className="iconeditcolor" onClick={() => this.handleEditColor(item)}/></Link> */}
-                                                            {/* <Link to="" className="deletecolor" data-bs-toggle="modal" data-bs-target="#myModal-delete-color"><FontAwesomeIcon icon={faTrash} className="icondeletecolor" onClick={() => this.handleDatleteColor(item)}/></Link> */}
-                                                        </td>
-
                                                     </tr>
 
                                                 )
@@ -623,41 +618,6 @@ class ADCategory extends React.Component {
                         </div>
                     </div>
 
-                    {/* <div className="modal" id="myModal-add-color">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-
-
-                                <div className="modal-header">
-                                    <h4 className="modal-title">Thêm màu sắc</h4>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-
-                                <div className="modal-body">
-                                    <form>
-                                        <div className="mb-3 mt-3">
-                                            <label >Tên màu sắc</label>
-                                            <input value={this.state.createcategorycolors.tenMauSac} onChange={(event) => this.handleChangecatagorycolor(event)} className="form-control" />
-                                        </div>
-                                        <div className="mb-3">
-
-                                        </div>
-
-                                    </form>
-                                </div>
-
-
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleSubmitcategorycolor(event)} className="btn btn-primary" data-bs-dismiss="modal">Thêm</button>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div> */}
-
                     {/* form sửa */}
 
                     <div className="modal" id="myModal-update-Type">
@@ -732,41 +692,6 @@ class ADCategory extends React.Component {
                         </div>
                     </div>
 
-                    {/* <div className="modal" id="myModal-update-color">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-
-
-                                <div className="modal-header">
-                                    <h4 className="modal-title">Sửa màu sắc</h4>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-
-                                <div className="modal-body">
-                                    <form>
-                                        <div className="mb-3 mt-3">
-                                            <label >Tên Màu sắc</label>
-                                            <input value={this.state.updateColor.tenMauSac} onChange={(event) => this.handleChangeColor(event)} className="form-control" />
-                                        </div>
-                                        <div className="mb-3">
-
-                                        </div>
-
-                                    </form>
-                                </div>
-
-
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleUpdateColor(event)} className="btn btn-primary" data-bs-dismiss="modal">Lưu</button>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div> */}
-
                     {/* hàm xóa */}
                     <div className="modal" id="myModal-delete-type">
                         <div className="modal-dialog">
@@ -828,35 +753,6 @@ class ADCategory extends React.Component {
                         </div>
                     </div>
 
-                    {/* <div className="modal" id="myModal-delete-color">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-
-
-
-                                <div className="modal-body">
-                                    <form>
-                                        <div className="mb-3 mt-3">
-                                            <h4 className="modal-title">Bạn có chắc muốn xóa màu sắc này:</h4>
-                                            
-                                        </div>
-                                        <div className="mb-3">
-
-                                        </div>
-
-                                    </form>
-                                </div>
-
-
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="button" onClick={(event) => this.handleDeleteColor(event)} className="btn btn-primary" data-bs-dismiss="modal">Xóa</button>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </>
         )

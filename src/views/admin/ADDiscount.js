@@ -668,7 +668,7 @@ class ADDiscount extends React.Component {
                                         <td>{this.formatDate(item.ngayTao)}</td>
                                         <td>{this.formatDate(item.hsd)}</td>
                                         <td>{item.loaiKM === true ? 'Sản phẩm' : 'Khách hàng'}</td>
-                                        <td>
+                                        <td style={{ width: '15%' }}>
                                             {
                                                 item.loaiKM ? <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal2" className='btn btn-sm btn-primary me-2' onClick={() => this.handleEdit(item)}>Sửa</button> :
                                                     <button disabled type="button" data-bs-toggle="modal" data-bs-target="#exampleModal2" className='btn btn-sm btn-primary me-2' onClick={() => this.handleEdit(item)}>Sửa</button>
