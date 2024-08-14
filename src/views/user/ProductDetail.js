@@ -273,12 +273,14 @@ const ProductDetail = (props) => {
           <div className="col-md-6 ProductDetail">
             <p className="ProductName">{product2.ten}</p>
             <hr />
-            <div className="row saleBlock">
+            <div className="saleBlock">
               <div className="sale">
-                <p>{selectedDetail.discountAmount}{selectedDetail.discountType === true ? '%' : 'đ'}</p>
+                {`${selectedDetail.discountAmount}${selectedDetail.discountType === true ? ' %' : ' đ'}`}
               </div>
-              <div className="MoneyRed">{totalPrice.toLocaleString()}đ</div>
-              <div className="Moneygach">{originalPrice.toLocaleString()}đ</div>
+              <div className="money">
+                <div className="MoneyRed">{`${totalPrice.toLocaleString()} đ`}</div>
+                <div className="Moneygach">{`${originalPrice.toLocaleString()} đ`}</div>
+              </div>
             </div>
             <hr />
             <div className="row Size">
@@ -302,7 +304,6 @@ const ProductDetail = (props) => {
                 </div>
               ))}
             </div>
-
             <hr />
             <div className="row colorLine">
               {availableColors.map((color, index) => (
@@ -336,21 +337,20 @@ const ProductDetail = (props) => {
               <button className="align-item-center add-cart" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
             </div>
             <br />
-            <p className="MoTa">Mô tả</p>
+            <p className="MoTa">Mô tả:</p>
             <p className="TenMoTa">{product2.moTa}</p>
           </div>
         )}
       </div>
-
       <br />
       <h1 className="dung text-center pb-3">Sản phẩm liên quan</h1>
-      <div className="row">
+      <div className="row prodcut-card">
         {relateproduct && relateproduct.length > 0 ? (
           relateproduct.map((product, index) => (
             <div className="col-md-2 product" key={product.id}>
               <div className="product-main">
                 <div className="hovereffect">
-                  <img className="img-fluid" src={product.hinh || Image} alt={"img product " + index} />
+                  <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
                   <div className="overlay">
                     <div className="btn-product">
                       <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
@@ -362,12 +362,8 @@ const ProductDetail = (props) => {
               <div className="product-content">
                 <h5 className="card-title">{product.ten}</h5>
                 <div className="product-price">
-                  <span className="price">
-                    {product.loaiGiam
-                      ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
-                      : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}
-                  </span>
-                  <span className="priced">{product.gia.toLocaleString('vi-VN') + "đ"} </span>
+                  <span className="price">{product.loaiGiam ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                  <span className="priced">{product.maGiamGia === null ? "" : product.gia.toLocaleString('vi-VN') + "đ"} </span>
                 </div>
               </div>
             </div>

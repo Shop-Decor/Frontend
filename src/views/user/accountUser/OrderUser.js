@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import '../../../styles/user/layoutAccountManagement/OrderUser.scss';
+import { Modal, Button } from "react-bootstrap";
+import Swal from 'sweetalert2';
 
 const OrderUser = (props) => {
+    const { handleBuy } = useOutletContext();
     const [orderAll, setOrderAll] = useState([]);
     const [order0, setOrder0] = useState([]);
     const [order1, setOrder1] = useState([]);
     const [order2, setOrder2] = useState([]);
     const [order3, setOrder3] = useState([]);
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [reason, setReason] = useState("");
+
     const fetchOrder = async () => {
         try {
             let token = localStorage.getItem('token');
             const user = jwtDecode(token);
             const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-            console.log(user);
             let res = await axios.get(`https://localhost:7078/api/Order/user?accountId=${userId}`);
             setOrderAll(res.data || []);
             let res0 = await axios.get(`https://localhost:7078/api/Order/user?accountId=${userId}&status=0`);
@@ -28,7 +34,7 @@ const OrderUser = (props) => {
             let res3 = await axios.get(`https://localhost:7078/api/Order/user?accountId=${userId}&status=3`);
             setOrder3(res3.data || []);
         } catch (error) {
-            console.error(`Lỗi lấy dữ liệu api:`, error);
+            console.error(`Lỗi lấy dữ liệu api orderuser:`, error);
         }
     };
 
@@ -51,17 +57,115 @@ const OrderUser = (props) => {
         }
     }
 
-    const btnBuyAndCancel = (item) => {
-        if (item === 3 || item === 2) {
-            return <a href="#" className="grow_skew_forward">Mua lại</a>
-        }
-        if (item === 0) {
-            return <a href="#" className="grow_skew_forward">Hủy đơn</a>
+    const fetchCancel = async () => {
+        const params = {};
+        let token = localStorage.getItem('token');
+        const user = jwtDecode(token);
+        const userId = user["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+        if (selectedOrderId) params.OrderId = selectedOrderId;
+        if (reason) params.Reason = reason;
+        if (userId) params.UserId = userId;
+
+        try {
+            let res = await axios.put('https://localhost:7078/api/Order/user/updateorder', params)
+            console.log(res);
+            if (res.status === 200 || res.status === 201) {
+                if (res.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: res.data.message,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                }
+                else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: res.data.message,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+            else {
+                Swal.fire({
+                    title: 'Có lỗi xảy ra',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+            }
+
+        } catch (error) {
+            Swal.fire({
+                title: 'Có lỗi xảy ra',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
         }
     }
 
+    const handleCancelOrder = () => {
+        fetchCancel();
+        setShowModal(false);
+        fetchOrder();
+    };
+
+    const btnBuyAndCancel = (order) => {
+        if (order.ttDonHang === 3 || order.ttDonHang === 2) {
+            return (
+                <a
+                    href="#"
+                    className="grow_skew_forward"
+                    onClick={() => handleBuy(order.detail)}
+                >
+                    Mua lại
+                </a>
+            );
+        }
+        if (order.ttDonHang === 0 && order.ptThanhToan === false) {
+            return (
+                <a
+                    href="#"
+                    className="grow_skew_forward"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setSelectedOrderId(order.id);
+                        setShowModal(true);
+                    }}
+                >
+                    Hủy đơn
+                </a>
+            );
+        }
+    };
+
     return (
         <>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận hủy đơn hàng</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="mb-3 mt-3">
+                        <label className="form-label">Lý do:</label>
+                        <input type="text" className="form-control" value={reason} onChange={(e) => setReason(e.target.value)} />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Đóng
+                    </Button>
+                    <Button variant="danger" onClick={() => handleCancelOrder()}>
+                        Hủy đơn
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <ul className="nav nav-pills" role="tablist">
                 <li className="nav-item">
                     <a className="nav-link active" data-bs-toggle="pill" href="#all">Tất cả</a>
@@ -85,7 +189,7 @@ const OrderUser = (props) => {
                         orderAll.map((item, index) => (
                             <div className="order" key={`order${item.id}`}>
                                 <div className="h-order">
-                                    <div className={item.ttDonHang === 2 ? "order-status-success" : "order-status"}>
+                                    <div className={item === 2 ? "order-status-success" : "order-status"}>
                                         {status(item.ttDonHang)}
                                     </div>
                                 </div>
@@ -126,7 +230,7 @@ const OrderUser = (props) => {
                                         <p>Thành tiền: <span>{item.thanhTien} đ</span></p>
                                     </div>
                                     <div className="cart-btn">
-                                        {btnBuyAndCancel(item.ttDonHang)}
+                                        {btnBuyAndCancel(item)}
                                     </div>
                                 </div>
                             </div>
@@ -138,8 +242,8 @@ const OrderUser = (props) => {
                         order0.map((item, index) => (
                             <div className="order" key={`order0${item.id}`}>
                                 <div className="h-order">
-                                    <div className={item.ttDonHang === 2 ? "order-status-success" : "order-status"}>
-                                        {status(item.ttDonHang)}
+                                    <div className={item === 2 ? "order-status-success" : "order-status"}>
+                                        {status(item)}
                                     </div>
                                 </div>
                                 {item.detail && item.detail.length > 0 &&
@@ -179,7 +283,7 @@ const OrderUser = (props) => {
                                         <p>Thành tiền: <span>{item.thanhTien} đ</span></p>
                                     </div>
                                     <div className="cart-btn">
-                                        {btnBuyAndCancel(item.ttDonHang)}
+                                        {btnBuyAndCancel(item)}
                                     </div>
                                 </div>
                             </div>
@@ -191,8 +295,8 @@ const OrderUser = (props) => {
                         order1.map((item, index) => (
                             <div className="order" key={`order1${item.id}`}>
                                 <div className="h-order">
-                                    <div className={item.ttDonHang === 2 ? "order-status-success" : "order-status"}>
-                                        {status(item.ttDonHang)}
+                                    <div className={item === 2 ? "order-status-success" : "order-status"}>
+                                        {status(item)}
                                     </div>
                                 </div>
                                 {item.detail && item.detail.length > 0 &&
@@ -232,7 +336,7 @@ const OrderUser = (props) => {
                                         <p>Thành tiền: <span>{item.thanhTien} đ</span></p>
                                     </div>
                                     <div className="cart-btn">
-                                        {btnBuyAndCancel(item.ttDonHang)}
+                                        {btnBuyAndCancel(item)}
                                     </div>
                                 </div>
                             </div>
@@ -244,8 +348,8 @@ const OrderUser = (props) => {
                         order2.map((item, index) => (
                             <div className="order" key={`order2${item.id}`}>
                                 <div className="h-order">
-                                    <div className={item.ttDonHang === 2 ? "order-status-success" : "order-status"}>
-                                        {status(item.ttDonHang)}
+                                    <div className={item === 2 ? "order-status-success" : "order-status"}>
+                                        {status(item)}
                                     </div>
                                 </div>
                                 {item.detail && item.detail.length > 0 &&
@@ -285,7 +389,7 @@ const OrderUser = (props) => {
                                         <p>Thành tiền: <span>{item.thanhTien} đ</span></p>
                                     </div>
                                     <div className="cart-btn">
-                                        {btnBuyAndCancel(item.ttDonHang)}
+                                        {btnBuyAndCancel(item)}
                                     </div>
                                 </div>
                             </div>
@@ -297,8 +401,8 @@ const OrderUser = (props) => {
                         order3.map((item, index) => (
                             <div className="order" key={`order3${item.id}`}>
                                 <div className="h-order">
-                                    <div className={item.ttDonHang === 2 ? "order-status-success" : "order-status"}>
-                                        {status(item.ttDonHang)}
+                                    <div className={item === 2 ? "order-status-success" : "order-status"}>
+                                        {status(item)}
                                     </div>
                                 </div>
                                 {item.detail && item.detail.length > 0 &&
@@ -338,7 +442,7 @@ const OrderUser = (props) => {
                                         <p>Thành tiền: <span>{item.thanhTien} đ</span></p>
                                     </div>
                                     <div className="cart-btn">
-                                        {btnBuyAndCancel(item.ttDonHang)}
+                                        {btnBuyAndCancel(item)}
                                     </div>
                                 </div>
                             </div>
