@@ -52,30 +52,26 @@ const Search = (props) => {
             <div className="key-search mb-3">
                 <h5 className="content">Kết quả tìm kiếm cho: {key}</h5>
             </div>
-            <div className="row">
+            <div className="row prodcut-card">
                 {products && products.length > 0 ? (
-                    products.map((item, index) => (
-                        <div className="col-md-2 product" key={item.id}>
+                    products.map((product, index) => (
+                        <div className="col-md-2 product" key={product.id}>
                             <div className="product-main">
                                 <div className="hovereffect">
-                                    <img className="img-fluid" src={item.hinh} alt={`img product ${index}`} />
+                                    <img className="img-fluid" src={product.hinh} alt={"img product " + index} />
                                     <div className="overlay">
                                         <div className="btn-product">
-                                            <Link to={`/ProductDetail/${item.id}`} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
-                                            <Link className="info" onClick={() => handleAddCart(item)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
+                                            <Link to={"/ProductDetail/" + product.id} className="info"><FontAwesomeIcon className="icon" icon={faEye} /></Link>
+                                            <Link className="info" onClick={() => handleAddCart(product)}><FontAwesomeIcon className="icon" icon={faCartPlus} /></Link>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="product-content">
-                                <h5 className="card-title">Ôi con sông quê</h5>
+                                <h5 className="card-title">{product.ten}</h5>
                                 <div className="product-price">
-                                    <span className="price">
-                                        {item.loaiGiam
-                                            ? (item.gia - ((item.gia * item.menhGia) / 100)).toLocaleString('vi-VN') + " đ"
-                                            : (item.gia - item.menhGia).toLocaleString('vi-VN') + " đ"}
-                                    </span>
-                                    <span className="priced">{item.gia.toLocaleString('vi-VN') + "đ"} </span>
+                                    <span className="price">{product.loaiGiam ? (product.gia - ((product.gia * product.menhGia) / 100)).toLocaleString('vi-VN') + " đ" : (product.gia - product.menhGia).toLocaleString('vi-VN') + " đ"}</span>
+                                    <span className="priced">{product.maGiamGia === null ? "" : product.gia.toLocaleString('vi-VN') + "đ"} </span>
                                 </div>
                             </div>
                         </div>

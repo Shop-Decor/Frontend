@@ -5,6 +5,7 @@
     overflow: hidden;
     position: relative;
     text-align: center;
+    display: flex;
 
     .overlay {
         width: 100%;
@@ -60,6 +61,30 @@
             opacity: 1;
             transform: translatey(0);
             transition-delay: .2s;
+        }
+    }
+
+    &.out-of-stock {
+        .overlay {
+            opacity: 1;
+
+            .no-product {
+                height: 198px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 20px;
+                color: #fff;
+                text-decoration: none;
+            }
+        }
+
+        &:hover {
+
+            .overlay {
+                opacity: 1;
+            }
         }
     }
 }

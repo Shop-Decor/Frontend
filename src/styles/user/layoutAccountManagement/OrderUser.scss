@@ -48,6 +48,10 @@
                 padding: 10px;
                 border-bottom: 1px solid grey;
 
+                &:hover .name {
+                    color: #FF7675;
+                }
+
                 .order-img {
                     width: 10%;
                 }
@@ -62,6 +66,8 @@
 
                         .name {
                             margin: 0;
+                            font-size: 20px;
+                            font-weight: 500;
                         }
 
                         .size-color {

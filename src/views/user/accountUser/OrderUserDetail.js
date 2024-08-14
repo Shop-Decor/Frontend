@@ -9,11 +9,13 @@ import {
     faBox,
     faAngleLeft
 } from "@fortawesome/free-solid-svg-icons";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useOutletContext } from "react-router-dom";
 import Loading from "../../loading/Loading";
 import "../../../styles/user/layoutAccountManagement/OrderUserDetail.scss";
 
 const OrderUserDetail = (props) => {
+
+    const { handleBuy } = useOutletContext();
     const { id } = useParams();
     const [order, setOrder] = useState();
 
@@ -80,9 +82,14 @@ const OrderUserDetail = (props) => {
                             </div>
                         </div>
                     }
-                    <div className="cart-btn">
-                        <a href="#" className="grow_skew_forward">Mua lại</a>
-                    </div>
+                    {order.ttDonHang === 2 || order.ttDonHang === 3 ? (
+                        <div className="cart-btn">
+                            <a href="#" className="grow_skew_forward" onClick={() => handleBuy(order.detail)}>Mua lại</a>
+                        </div>)
+                        : (
+                            <div className="cart-btn"></div>
+                        )
+                    }
                 </div>
                 <div className="f-order-detail">
                     <div className="order">
@@ -136,19 +143,11 @@ const OrderUserDetail = (props) => {
                                 </p>
                             </div>
                             <div className="total">
-                                <table className="table">
+                                <table className="table table-money">
                                     <tbody>
                                         <tr>
                                             <td>Tiền hàng</td>
-                                            <td>{`${order.thanhTien} đ`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Phí vận chuyển</td>
-                                            <td>10000 đ</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Giảm giá vậy chuyển</td>
-                                            <td>10000 đ</td>
+                                            <td>{`${(order.thanhTien) + (order.discount ? (order.discount.loaiGiam ? (order.thanhTien * order.discount.menhGia) / 100 : order.discount.menhGia) : 0)} đ`}</td>
                                         </tr>
                                         <tr>
                                             <td>Giảm giá</td>
@@ -156,11 +155,11 @@ const OrderUserDetail = (props) => {
                                         </tr>
                                         <tr>
                                             <td>Thành tiền</td>
-                                            <td className="money">1000000 đ</td>
+                                            <td className="money">{`${order.thanhTien}  đ`}</td>
                                         </tr>
                                         <tr>
                                             <td>Phương thức thanh thoán</td>
-                                            <td>Thanh toán khi nhận hàng</td>
+                                            <td>{order.ptThanhToan ? "Chuyển khoản ngân hàng" : "Thanh toán khi nhận hàng"}</td>
                                         </tr>
                                     </tbody>
                                 </table>
