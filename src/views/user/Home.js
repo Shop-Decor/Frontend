@@ -15,33 +15,37 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const fetchFeaturedproduct = async () => {
+    try {
+      let res = await axios.get("https://localhost:7078/api/Product/featured-products");
+      setFeaturedProducts(res.data || []);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    axios.get("https://localhost:7078/api/Product/User")
-      .then(response => {
-        const sortedProducts = response.data
-          .sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
-        const top5Products = sortedProducts.slice(0, 5);
+    try {
+      axios.get("https://localhost:7078/api/Product/User")
+        .then(response => {
+          const sortedProducts = response.data
+            .sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
+          const top5Products = sortedProducts.slice(0, 10);
 
-        setProducts(sortedProducts);
-        setFeaturedProducts(top5Products);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-        setIsLoading(false);
-      });
+          setProducts(top5Products);
+          fetchFeaturedproduct();
+          setIsLoading(false);
+        })
+    } catch (error) {
+      setIsLoading(false);
+    }
   }, []);
 
   if (isLoading) {
     return <Loading />
   }
-
-  if (error) {
-    return <div>Lỗi: {error.message}</div>;
-  }
-
 
   return (
     <div className="container">

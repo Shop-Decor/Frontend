@@ -3,14 +3,15 @@ import axios from "axios";
 import { useOutletContext, Link, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faEye } from "@fortawesome/free-solid-svg-icons";
+import Loading from "../loading/Loading";
 import '../../styles/user/ProductUser.scss';
-import "../../styles/user/hover/hover.scss";
 
 const ProductUser = (props) => {
     const { id, pageNumber, pageSize } = useParams();
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState();
     const [totalPages, settoTalPages] = useState();
+    const [isLoading, setIsLoading] = useState(true);
     const [prices, setPrices] = useState([
         { label: 'under500', value: false },
         { label: 'range500to1000', value: false },
@@ -45,6 +46,7 @@ const ProductUser = (props) => {
             setProducts(res.data.items || []);
             setCurrentPage(res.data.currentPage);
             settoTalPages(res.data.totalPages);
+            setIsLoading(false);
         } catch (error) {
             console.error('Lỗi lấy dữ liệu api:', error);
         }
@@ -159,6 +161,11 @@ const ProductUser = (props) => {
             fetchListProducts(id, newPage, pageSize);
         }
     };
+
+    if (isLoading) {
+        return <Loading />
+    }
+
 
     return (
         <>

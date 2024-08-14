@@ -195,6 +195,11 @@ nav {
 
             .icon {
                 font-size: 20px;
+                cursor: pointer;
+
+                &:hover {
+                    color: #FF7675;
+                }
             }
         }
     }
@@ -285,6 +290,7 @@ nav {
             align-items: center;
             border-radius: 3px;
             font-size: 16px;
+            cursor: pointer;
         }
 
     }

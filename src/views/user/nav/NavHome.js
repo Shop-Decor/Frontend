@@ -319,9 +319,9 @@ const NavHome = (props) => {
                       <Link className="grow_skew_forward" to="/cart">
                         Xem giỏ hàng
                       </Link>
-                      <button className="grow_skew_forward" onClick={handleCheckout}>
+                      <a className="grow_skew_forward" onClick={() => handleCheckout()}>
                         Thanh toán
-                      </button>
+                      </a>
                     </div>
                   </div>
                 )}

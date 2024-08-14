@@ -1,12 +1,10 @@
-
-
 .containercart {
-    
+
     .contai-cart {
-     
-        .rowlinks{
-            
-            .rowlines{
+
+        .rowlinks {
+
+            .rowlines {
                 .vertical-thick-line {
                     width: 5px;
                     height: 30px;
@@ -14,23 +12,24 @@
                     /* Thay đổi màu sắc nếu cần */
                     margin: 5px 0px 5px 60px;
                     display: inline-block;
-                    
+
                 }
             }
-            .links{
-                .linkcarts{
+
+            .links {
+                .linkcarts {
                     margin-top: 8px;
                     font-size: 16px;
                 }
             }
         }
-       
-       
-      
+
+
+
         margin-top: 40px;
         background-color: #EFD4D0;
         height: 40px;
-       
+
     }
 
     .mycart {
@@ -51,26 +50,21 @@
 
     .cart-main {
         .row-cart {
-            .row-cart-item {
-                
-                .cart-item {
-                   
-                    .image-product-cart {
-                        margin-left: 0px;
-                        width: 130px;
-                        height: 130px;
-                        
+            .notification {
+                font-size: 20px;
+            }
 
-                        .image-product {
-                            width: 130px;
-                            height: 130px;
-                        }
-                    }
+            .row-cart-item {
+                display: flex;
+                position: relative;
+
+                .image-product-cart {
+                    flex: 1;
                 }
 
                 .cart-product-item {
-                    margin-left: 50px;
-                    
+                    flex: 3;
+
                     .nameproduct {
                         font-weight: bold;
                         font-size: 20px;
@@ -104,8 +98,9 @@
 
                     .quantity {
                         margin-top: 15px;
+
                         .apart-from {
-                            
+
                             text-align: center;
                             border: solid 0px;
                         }
@@ -120,14 +115,29 @@
                         }
 
                         .add {
-                            
+
                             text-align: center;
                             border: solid 0px;
                         }
                     }
                 }
-            }
 
+                .cart-product-delete {
+                    position: absolute;
+                    display: flex;
+                    flex-direction: row-reverse;
+                    padding: 0;
+                    font-size: 25px;
+
+                    .delete-icon {
+                        cursor: pointer;
+
+                        &:hover {
+                            color: red;
+                        }
+                    }
+                }
+            }
         }
 
         .infomationtocart {
@@ -166,11 +176,11 @@
                 .btn-pay {
                     margin-top: 45px;
                     margin-left: 43px;
-                   
+
                     border: solid 0px;
                     width: 280px;
                     height: 45px;
-                   
+
 
                     display: inline-block;
                     padding: 10px 20px;
@@ -180,7 +190,7 @@
                     text-decoration: none;
                     border: none;
                     border-radius: 4px;
-                    background: linear-gradient(to right, red,#EFD4D0 );
+                    background: linear-gradient(to right, red, #EFD4D0);
                     color: #fff;
                     transition: background-position 0.5s ease;
                     background-size: 200% auto;
@@ -190,9 +200,11 @@
                         font-weight: bold;
                     }
                 }
+
                 .btn-pay:hover {
                     background-position: right center;
-                  }
+                }
+
                 .icon {
                     margin-left: 120px;
                 }
@@ -208,19 +220,6 @@
                     height: 12px;
                 }
             }
-        }
-    }
-
-    .note-cart {
-       margin-bottom: 20px;
-       margin-left: 70px;
-        .note-name {
-            font-weight: bold;
-        }
-
-        .note-write {
-            width: 300px;
-            height: 120px;
         }
     }
 }

@@ -322,8 +322,8 @@ const ADAccount = () => {
                 // }
 
                 const modalElement = document.getElementById('editUserModal'); // Replace 'yourModalId' with the actual ID of your modal
-                const modalInstance = new bootstrap.Modal(modalElement);
-                modalInstance.hide();
+                // const modalInstance = new bootstrap.Modal(modalElement);
+                // modalInstance.hide();
 
             }
 
