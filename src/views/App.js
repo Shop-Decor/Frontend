@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles/App.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -32,98 +32,90 @@ import ContactUs from "./user/contactus";
 import AccessTo from "./loading/AccessTo";
 import { jwtDecode } from "jwt-decode";
 
-class App extends React.Component {
-  renderSignIn = () => {
-    return <SignIn />;
+const App = () => {
+
+  const isAdmin = () => {
+    let token = localStorage.getItem('token');
+    if (!token) {
+      return false;
+    }
+    let user = jwtDecode(token);
+    const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    if (role === 'Admin') {
+      return true;
+    }
+    return false;
+
   };
 
-  
-  render() {
-    const isAdmin = () => {
-      let token = localStorage.getItem('token');
-      if (!token) {
-        return false;
-      }
-      let user = jwtDecode(token);
-      const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-      if (role === 'Admin') {
-        return true;
-      }
+  // AdminRoute component to protect admin routes
+  const AdminRoute = ({ children }) => {
+    return isAdmin() ? children : <AccessTo />;
+  };
+
+  //userRoute component to protect user routes
+  const isUser = () => {
+    let token = localStorage.getItem('token');
+    if (!token) {
       return false;
-     
-    };
-    
-    // AdminRoute component to protect admin routes
-    const AdminRoute = ({ children }) => {
-      return isAdmin() ? children : <AccessTo />;
-    };
-
-    //userRoute component to protect user routes
-    const isUser = () => { 
-      let token = localStorage.getItem('token');
-      if (!token) {
-        return false;
-      }
-      let user = jwtDecode(token);
-      const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-      if (role === 'User') {
-        return true;
-      }
-      if (role === 'Admin') {
-        return false;
-      }
+    }
+    let user = jwtDecode(token);
+    const role = user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    if (role === 'User') {
+      return true;
+    }
+    if (role === 'Admin') {
       return false;
-    };
+    }
+    return false;
+  };
 
-    const UserRoute = ({ children }) => {
-      return isUser() ? children : <AccessTo />;
-    };
+  const UserRoute = ({ children }) => {
+    return isUser() ? children : <AccessTo />;
+  };
 
-    
-
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="" element={<UserRoute><LayoutUser /></UserRoute>}>
-            <Route index element={<Home />} />
-            <Route path="ProductDetail/:id" element={<ProductDetail />} />
-            <Route path="Payment" element={<Payment />} />
-            <Route path="ProductUser" element={<ProductUser />} />
-            <Route path="ProductUser/:id" element={<ProductUser />} />
-            <Route path="Cart" element={<Cart />} />
-            <Route path="search/:key" element={<Search />} />
-            <Route path="About" element={<About />} />
-            <Route path="Contactus" element={<ContactUs />} />
-            <Route path="user" element={<LayoutAccountManagement />}>
-              <Route index element={<UserDetail />} />
-              <Route path="order" element={<OrderUser />} />
-              <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
-            </Route>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="" element={<UserRoute><LayoutUser /></UserRoute>}>
+          <Route index element={<Home />} />
+          <Route path="ProductDetail/:id" element={<ProductDetail />} />
+          <Route path="Payment" element={<Payment />} />
+          <Route path="ProductUser" element={<ProductUser />} />
+          <Route path="ProductUser/:id" element={<ProductUser />} />
+          <Route path="Cart" element={<Cart />} />
+          <Route path="search/:key" element={<Search />} />
+          <Route path="About" element={<About />} />
+          <Route path="Contactus" element={<ContactUs />} />
+          <Route path="user" element={<LayoutAccountManagement />}>
+            <Route index element={<UserDetail />} />
+            <Route path="order" element={<OrderUser />} />
+            <Route path="order/orderdetail/:id" element={<OrderUserDetail />} />
           </Route>
+        </Route>
 
-          <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-            <Route index element={<ADhome />} />
-            <Route path="test" element={<ADtest />} />
-            <Route path="discount" element={<ADDiscount />} />
-            <Route path="ADAccount" element={<ADAccount render={this.renderSignIn} />} />
-            <Route path="ADCategory" element={<ADCategory />} />
-            <Route path="ADOrder" element={<ADOrder />} />
-            <Route path="product" element={<ADProduct />} />
-            <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
-            <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
-            <Route path="ADDetailAccount" element={<ADDetailAccount />} />
+        <Route path="admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+          <Route index element={<ADhome />} />
+          <Route path="test" element={<ADtest />} />
+          <Route path="discount" element={<ADDiscount />} />
+          <Route path="ADAccount" element={<ADAccount />} />
+          <Route path="ADCategory" element={<ADCategory />} />
+          <Route path="ADOrder" element={<ADOrder />} />
+          <Route path="product" element={<ADProduct />} />
+          <Route path="product/ADProductDetails/:id" element={<ADProductDetails />} />
+          <Route path="ADStatistics" element={<ADStatistics />} /> {/* Thêm route cho Statistics */}
+          <Route path="ADDetailAccount" element={<ADDetailAccount />} />
 
-          </Route>
-          <Route path="SignIn" >
-            <Route index element={<SignIn />} />
-          </Route>
-          <Route path="SignUp" >
-            <Route index element={<SignUp />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+        </Route>
+        <Route path="SignIn" >
+          <Route index element={<SignIn />} />
+        </Route>
+        <Route path="SignUp" >
+          <Route index element={<SignUp />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App;
