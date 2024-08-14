@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from 'sweetalert2';
+import Loading from "../loading/Loading";
 
 const ProductDetail = (props) => {
   const { listCart, handleAddCart } = useOutletContext();
@@ -16,7 +17,6 @@ const ProductDetail = (props) => {
   const [product2, setProduct2] = useState({});
   const [relateproduct, setRelateProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -79,21 +79,17 @@ const ProductDetail = (props) => {
           if (filteredColors.length > 0) {
             setSelectedColors([filteredColors[0]]);
           }
-          setIsLoading(false);
         }
       })
       .catch(error => {
-        setError(error);
-        setIsLoading(false);
+        console.log(error);
       });
     axios.get(`https://localhost:7078/api/Product/${id}`)
       .then(response => {
         setProduct2(response.data);
-        setIsLoading(false);
       })
       .catch(error => {
-        setError(error);
-        setIsLoading(false);
+        console.log(error);
       });
   }, [id]);
 
@@ -228,11 +224,7 @@ const ProductDetail = (props) => {
   const availableQuantity = matchingProduct ? matchingProduct.quantity : 0;
 
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
+    return <Loading />;
   }
 
   return (
