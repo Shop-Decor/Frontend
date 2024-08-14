@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from 'sweetalert2';
 import axios from "axios";
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useOutletContext, useNavigate, Link } from 'react-router-dom';
 import {
     faRotateLeft
 } from "@fortawesome/free-solid-svg-icons";
@@ -174,7 +174,7 @@ const Cart = (props) => {
                             </button>
                             <br />
                             <span className="icon"><FontAwesomeIcon icon={faRotateLeft} className="icon-repurchase" /></span>
-                            <span className="repurchase">Tiếp tục mua hàng</span>
+                            <Link to={"/ProductUser"}><span className="repurchase">Tiếp tục mua hàng</span></Link>
                         </div>
                     </div>
                 </div>
