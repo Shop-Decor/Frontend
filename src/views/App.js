@@ -95,7 +95,7 @@ const App = () => {
             <Route index element={<ADStatistics />} />
             <Route path="test" element={<ADtest />} />
             <Route path="discount" element={<ADDiscount />} />
-            <Route path="ADAccount" element={<ADAccount render={this.renderSignIn} />} />
+            <Route path="ADAccount" element={<ADAccount  />} />
             <Route path="ADCategory" element={<ADCategory />} />
             <Route path="ADOrder" element={<ADOrder />} />
             <Route path="product" element={<ADProduct />} />

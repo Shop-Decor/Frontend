@@ -352,7 +352,7 @@ const ADAccount = () => {
             const response = await axios.put(
                 `https://localhost:7078/api/Account/Delete/${deleteUser.id}`, '', config
             );
-            if (response.status === 200) {
+            if (response.data === true) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Thành công',
@@ -364,6 +364,13 @@ const ADAccount = () => {
                 });
                 setShowModal(!showModal);
 
+            }
+            if (response.data === 2003) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ôi Không',
+                    text: 'Không thể xóa tài khoản cuối cùng',
+                });
             }
         } catch (error) {
             setError('Error deleting user');
@@ -910,7 +917,7 @@ const ADAccount = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                <button type="button" className="btn btn-danger" onClick={handleDeleteSubmit}>Xóa</button>
+                                <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDeleteSubmit}>Xóa</button>
                             </div>
                         </div>
                     </div>
