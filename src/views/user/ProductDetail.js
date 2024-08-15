@@ -16,7 +16,6 @@ const ProductDetail = (props) => {
   const [product, setProduct] = useState([]);
   const [product2, setProduct2] = useState({});
   const [relateproduct, setRelateProduct] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -35,8 +34,6 @@ const ProductDetail = (props) => {
     'Đen': 'black',
     'Trắng': 'white'
   };
-
-
 
   const handleSizeChange = (size) => {
     setSelectedSizes([size]); // Only allow one size to be selected at a time
@@ -58,39 +55,43 @@ const ProductDetail = (props) => {
       let res = await axios.get(`https://localhost:7078/api/Product/GetProductsByTypeId/${id}`);
       setRelateProduct(res.data || []);
     } catch (error) {
-      console.error('Lỗi lấy dữ liệu api:', error);
+      console.error('Lỗi lấy dữ liệu api RelateProducts:', error);
     }
   };
 
-  useEffect(() => {
-    fetchRelateProducts();
-  }, [id]);
+  const fetchProduct = async () => {
+    try {
+      let res = await axios.get(`https://localhost:7078/api/Product/getproductdetail?spid=${id}`);
+      setProduct(res.data || []);
+      console.log(res);
+      if (res.data.length > 0) {
+        const firstDetail = res.data[0];
+        setSelectedDetail(firstDetail);
+        setSelectedSizes([firstDetail.size]);
+        const filteredColors = res.data.filter(detail => detail.size === firstDetail.size).map(detail => detail.color);
+        setAvailableColors(filteredColors);
+        if (filteredColors.length > 0) {
+          setSelectedColors([filteredColors[0]]);
+        }
+      }
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api Product:', error);
+    }
+  }
+
+  const fetchProduct2 = async () => {
+    try {
+      let res = await axios.get(`https://localhost:7078/api/Product/${id}`);
+      setProduct2(res.data || []);
+    } catch (error) {
+      console.error('Lỗi lấy dữ liệu api Product:', error);
+    }
+  }
 
   useEffect(() => {
-    axios.get(`https://localhost:7078/api/Product/getproductdetail?spid=${id}`)
-      .then(response => {
-        setProduct(response.data);
-        if (response.data.length > 0) {
-          const firstDetail = response.data[0];
-          setSelectedDetail(firstDetail);
-          setSelectedSizes([firstDetail.size]);
-          const filteredColors = response.data.filter(detail => detail.size === firstDetail.size).map(detail => detail.color);
-          setAvailableColors(filteredColors);
-          if (filteredColors.length > 0) {
-            setSelectedColors([filteredColors[0]]);
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    axios.get(`https://localhost:7078/api/Product/${id}`)
-      .then(response => {
-        setProduct2(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    fetchRelateProducts();
+    fetchProduct();
+    fetchProduct2();
   }, [id]);
 
 
@@ -223,7 +224,7 @@ const ProductDetail = (props) => {
 
   const availableQuantity = matchingProduct ? matchingProduct.quantity : 0;
 
-  if (isLoading) {
+  if (!product || !product2 || !relateproduct) {
     return <Loading />;
   }
 
@@ -344,7 +345,7 @@ const ProductDetail = (props) => {
             <hr />
             <div className="saleBlock">
               <div className="sale">
-                {`${selectedDetail.discountAmount}${selectedDetail.discountType === true ? ' %' : ' đ'}`}
+                {selectedDetail ? `${selectedDetail.discountAmount || 0}${selectedDetail.discountType === true ? ' %' : ' đ'}` : 'No discount available'}
               </div>
               <div className="money">
                 <div className="MoneyRed">{`${totalPrice.toLocaleString()} đ`}</div>
